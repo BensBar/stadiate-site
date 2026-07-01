@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Privacy Policy — Stadiate</title>
+<meta name="description" content="Stadiate privacy policy. Stadiate is self-hosted and local-first — it does not collect, sell, or share your personal data.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<style>
+  :root{--red2:#ff2a3c;--ink:#05060a;--panel:#0e1017;--line:#1c2030;--text:#eef0f4;--dim:#9aa0b0}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--ink);color:var(--text);
+    font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--red2)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+  header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+    background:rgba(5,6,10,.72);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1120px;margin:0 auto;padding:0 22px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.5px;color:var(--text);text-decoration:none}
+  .brand img{width:34px;height:34px;border-radius:22%;object-fit:contain}
+  .nav-inner a.back{color:var(--dim);font-size:14px;text-decoration:none}
+  .nav-inner a.back:hover{color:var(--text)}
+  main{padding:56px 0 90px}
+  h1{font-size:clamp(30px,5vw,44px);font-weight:900;letter-spacing:-.8px}
+  .updated{color:var(--dim);font-size:14px;margin-top:8px}
+  h2{font-size:22px;font-weight:800;margin:38px 0 10px;letter-spacing:-.3px}
+  p,li{color:#d5d8e0}
+  ul{margin:10px 0 10px 22px}
+  li{margin:6px 0}
+  .lead{font-size:18px;color:#e6e8ee;margin-top:20px}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin-top:22px}
+  footer{border-top:1px solid var(--line);padding:34px 0;color:var(--dim);font-size:14px;text-align:center}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="assets/icon.png" alt="">STADIATE</a>
+    <a class="back" href="/">← Back to home</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Privacy Policy</h1>
+  <div class="updated">Last updated: July 1, 2026</div>
+
+  <p class="lead">Stadiate is built to be <strong>self-hosted and local-first</strong>. It runs on hardware you control, inside your own home network. We do not operate a cloud service that collects your data, and Stadiate has no user accounts.</p>
+
+  <div class="box">
+    <strong>The short version:</strong> Stadiate does not collect, sell, rent, or share your personal information. Your configuration, your smart-home credentials, and your activity stay on your own device.
+  </div>
+
+  <h2>Information we do not collect</h2>
+  <p>Stadiate does not require you to create an account and does not transmit personal information to us. Specifically, we do not collect your name, email, location, contacts, advertising identifiers, or usage analytics.</p>
+
+  <h2>Information stored on your device</h2>
+  <p>To do its job, Stadiate stores the following <em>locally</em>, on the hardware you run it on:</p>
+  <ul>
+    <li><strong>Your settings</strong> — the teams and leagues you follow, your automation rules, and screen layouts.</li>
+    <li><strong>Device credentials</strong> — the keys and addresses needed to control your own smart-home gear (for example a Philips Hue bridge, Sonos speakers, Govee lights, or Home Assistant). These are used only to talk to those devices on your network.</li>
+    <li><strong>A local PIN</strong> — an optional PIN you set to protect access to your hub.</li>
+  </ul>
+  <p>This information never leaves your network unless you explicitly export it yourself.</p>
+
+  <h2>Third-party sports data</h2>
+  <p>Stadiate fetches publicly available live scores and game information from third-party sports data sources (such as ESPN) to know what is happening in the games you follow. These requests are made from your own device. Your interactions with those services are governed by their respective privacy policies.</p>
+
+  <h2>Smart-home and network devices</h2>
+  <p>When you connect lights, speakers, a TV board, or a home-automation hub, Stadiate communicates with those devices directly over your local network to trigger the effects you configure. Stadiate does not send your smart-home data to us or to any third party.</p>
+
+  <h2>Children's privacy</h2>
+  <p>Stadiate is a general-audience sports companion app and is not directed at children under 13. We do not knowingly collect personal information from children.</p>
+
+  <h2>Data security</h2>
+  <p>Because Stadiate is self-hosted, the security of your data depends primarily on your own network and device. Stadiate stores device credentials locally and supports an optional PIN lock. We recommend running Stadiate on a trusted home network.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>We may update this policy as Stadiate evolves. Material changes will be reflected on this page with a new "last updated" date.</p>
+
+  <h2>Contact</h2>
+  <p>Questions about this policy? Reach out via the project's GitHub page at <a href="https://github.com/bensbar/fanfare" target="_blank" rel="noopener">github.com/bensbar/fanfare</a>.</p>
+</main>
+
+<footer>© 2026 Stadiate · Any room can be your stadium.</footer>
+</body>
+</html>
