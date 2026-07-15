@@ -71,6 +71,14 @@
   .duo .phone img{width:100%;display:block}
   .duo-copy h2{font-size:clamp(24px,3.4vw,34px);font-weight:900;letter-spacing:-.5px;margin-bottom:12px}
   .duo-copy p{color:var(--dim);font-size:16px}
+  .gallery{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:56px}
+  @media(max-width:760px){.gallery{grid-template-columns:1fr}}
+  .shot{border-radius:var(--radius);overflow:hidden;border:1px solid var(--line);
+    background:#000;box-shadow:0 20px 60px rgba(0,0,0,.55);margin:0}
+  .shot img{width:100%;height:auto;display:block}
+  .shot figcaption{padding:15px 18px;color:var(--dim);font-size:14px;
+    border-top:1px solid var(--line);background:var(--panel)}
+  .shot figcaption b{color:var(--text);font-weight:700}
   @media(max-width:760px){.duo{grid-template-columns:1fr;gap:28px}}
 
   /* section */
@@ -145,6 +153,17 @@
         <h2>The whole room, in your pocket</h2>
         <p>Arm the sync, follow your teams, and flip between screens from the Stadiate remote — on any phone or tablet on your network. Miss a moment? Tap <strong>sync to last</strong> and catch the replay in perfect time with your TV.</p>
       </div>
+    </div>
+
+    <div class="gallery">
+      <figure class="shot">
+        <img src="assets/shots/ticker.png" alt="Stadiate widescreen ticker showing live soccer scores" loading="lazy">
+        <figcaption><b>Broadcast-style ticker.</b> Live scores from every league you follow, scrolling across any screen.</figcaption>
+      </figure>
+      <figure class="shot">
+        <img src="assets/shots/roster.png" alt="Stadiate roster spotlight card for an Atlanta Falcons player" loading="lazy">
+        <figcaption><b>Roster spotlight.</b> Rotate through your team's lineup between the big plays.</figcaption>
+      </figure>
     </div>
   </section>
 
