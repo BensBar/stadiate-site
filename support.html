@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Support — Stadiate</title>
+<meta name="description" content="Help with Stadiate: setup, the phone remote, the anti-spoiler hold, hubs, and how to get in touch.">
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="assets/favicon.png" type="image/png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<style>
+  :root{--red2:#ff2a3c;--ink:#05060a;--panel:#0e1017;--line:#1c2030;--text:#eef0f4;--dim:#9aa0b0}
+  *{box-sizing:border-box;margin:0}
+  body{background:var(--ink);color:var(--text);
+    font:16px/1.7 -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  a{color:var(--red2)}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+  header.nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(14px);
+    background:rgba(5,6,10,.72);border-bottom:1px solid var(--line)}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:64px;max-width:1120px;margin:0 auto;padding:0 22px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:800;letter-spacing:.5px;color:var(--text);text-decoration:none}
+  .brand img{width:34px;height:34px;border-radius:22%;object-fit:contain}
+  .nav-inner a.back{color:var(--dim);font-size:14px;text-decoration:none}
+  .nav-inner a.back:hover{color:var(--text)}
+  main{padding:56px 0 90px}
+  h1{font-size:clamp(30px,5vw,44px);font-weight:900;letter-spacing:-.8px}
+  .updated{color:var(--dim);font-size:14px;margin-top:8px}
+  h2{font-size:22px;font-weight:800;margin:38px 0 10px;letter-spacing:-.3px}
+  h3{font-size:17px;font-weight:800;margin:24px 0 6px;color:#eef0f4}
+  p,li{color:#d5d8e0}
+  ul{margin:10px 0 10px 22px}
+  li{margin:6px 0}
+  .lead{font-size:18px;color:#e6e8ee;margin-top:20px}
+  .box{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px;margin-top:22px}
+  footer{border-top:1px solid var(--line);padding:34px 0;color:var(--dim);font-size:14px;text-align:center}
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="/"><img src="assets/icon.png" alt="">STADIATE</a>
+    <a class="back" href="/">← Back to home</a>
+  </div>
+</header>
+
+<main class="wrap">
+  <h1>Support</h1>
+  <div class="updated">Stadiate for Apple TV and iPhone</div>
+
+  <p class="lead">Stadiate turns your Apple TV into a live sports board — and, with an optional self-hosted hub, makes the whole room react to the game.</p>
+
+  <div class="box">
+    <strong>Need a person?</strong> Email <a href="mailto:bss@bensbar.com">bss@bensbar.com</a>. It's a small project, so replies come from a human, usually within a couple of days.
+  </div>
+
+  <h2>Getting started</h2>
+
+  <h3>Do I need anything besides an Apple TV?</h3>
+  <p>No. The Apple TV app is fully standalone — it fetches scores itself and needs no account, no subscription, and no other hardware. Open it, choose the teams you care about under <strong>Follows</strong>, and you have a board.</p>
+
+  <h3>The board says "Waiting for scoreboard data."</h3>
+  <p>Pick at least one league or team under <strong>Follows</strong>. If you follow teams but nothing is playing right now, the board shows upcoming games and the ticker instead of live scores.</p>
+
+  <h3>Why does the app ask for Local Network permission?</h3>
+  <p>Two reasons, both confined to your own Wi-Fi: the phone remote, which lets your iPhone control the Apple TV directly, and finding an optional Stadiate hub if you run one. Nothing leaves your network because of it. If you deny the permission, scores keep working — you lose the remote and hub discovery.</p>
+
+  <h2>The phone remote</h2>
+
+  <h3>Where is it?</h3>
+  <p>On the Apple TV, go to <strong>Settings → Phone Remote</strong>. Scan the QR code with your phone's camera and it pairs itself, or type the address shown on the TV into your phone's browser and enter the 4-digit code.</p>
+
+  <h3>It says the pairing code is wrong.</h3>
+  <p>The code on the TV under Settings → Phone Remote is the only valid one, and it changes only if the app's data is deleted. Re-scanning the QR code re-pairs in a single step and avoids typing it.</p>
+
+  <h2>Scores, spoilers and timing</h2>
+
+  <h3>The scores are ahead of my TV.</h3>
+  <p>They are, and that's the problem Stadiate was built around. Live data runs ahead of a broadcast — sometimes by a minute or more — so a naive scoreboard spoils the game sitting next to it.</p>
+  <p>Stadiate holds every celebration back by about 75 seconds by default. To line it up exactly with your screen, tap <strong>SYNC</strong> on the phone remote the moment you see a big play on TV; Stadiate measures the gap and applies it to that game from then on. If you're watching genuinely live — at the stadium, say — turn the hold off in Settings.</p>
+
+  <h3>A score looks wrong or a game is missing.</h3>
+  <p>Scores come from a public sports data feed, and occasionally a game is listed late or a stat is corrected after the fact. If a game stays missing for more than a few minutes after it should have started, email us with the matchup and the date.</p>
+
+  <h2>Hubs (optional)</h2>
+
+  <h3>What is a hub, and do I need one?</h3>
+  <p>You don't. A hub is a free, optional companion you run yourself — on a Mac, a Linux box, a Docker container, or a Raspberry Pi on your network. It adds smart lighting (Philips Hue, Home Assistant, Govee), horn and crowd sounds, a spoken announcer, and boards across multiple rooms and screens. The Apple TV app works fully without one.</p>
+
+  <h3>My Apple TV can't find the hub.</h3>
+  <p>Both devices need to be on the same network, and Local Network permission must be granted on the Apple TV. If your hub is locked with a PIN, open <strong>Screens → Add a board</strong> on the hub to get a 6-character pairing code and enter it on the TV. You can also type the hub's address in directly.</p>
+
+  <h2>Privacy</h2>
+  <p>Stadiate has no accounts and collects nothing about you. Your settings and any smart-home credentials stay on your own hardware. The full details, including every outside service the app can talk to, are in the <a href="privacy.html">Privacy Policy</a>.</p>
+
+  <h2>Contact</h2>
+  <p>Email <a href="mailto:bss@bensbar.com">bss@bensbar.com</a> with what you were doing, what you expected, and what happened instead. If it's about a specific game, the matchup and rough time help a lot.</p>
+</main>
+
+<footer>© 2026 Stadiate · Any room can be your stadium.</footer>
+</body>
+</html>

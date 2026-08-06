@@ -44,7 +44,7 @@
 
 <main class="wrap">
   <h1>Privacy Policy</h1>
-  <div class="updated">Last updated: July 1, 2026</div>
+  <div class="updated">Last updated: August 6, 2026</div>
 
   <p class="lead">Stadiate is built to be <strong>self-hosted and local-first</strong>. It runs on hardware you control, inside your own home network. We do not operate a cloud service that collects your data, and Stadiate has no user accounts.</p>
 
@@ -64,11 +64,19 @@
   </ul>
   <p>This information never leaves your network unless you explicitly export it yourself.</p>
 
-  <h2>Third-party sports data</h2>
-  <p>Stadiate fetches publicly available live scores and game information from third-party sports data sources (such as ESPN) to know what is happening in the games you follow. These requests are made from your own device. Your interactions with those services are governed by their respective privacy policies.</p>
+  <h2>Services Stadiate connects to</h2>
+  <p>Stadiate makes requests to a small number of outside services, always <em>from your own device</em> and never by way of a server we run. We receive nothing from any of them. Each is listed here so you can see the whole picture:</p>
+  <ul>
+    <li><strong>ESPN</strong> — publicly available scores, schedules, rosters and play-by-play for the games you follow, plus team and player images. This is the only one that is always on; it is how Stadiate knows a touchdown happened.</li>
+    <li><strong>Philips Hue</strong> — if you enable Hue lighting without specifying your bridge's address, Stadiate asks Philips' discovery service which bridges are visible from your network so it can find yours. That request reveals your public IP address to Philips, as any web request does. Set the bridge address yourself and the request is never made.</li>
+    <li><strong>Sleeper</strong> — only if you turn on fantasy features and give Stadiate your Sleeper username, which it sends to Sleeper's public API to read your league and roster. Off unless you enable it.</li>
+    <li><strong>ElevenLabs</strong> — only if you choose it as your announcer voice and supply your own API key. The line to be spoken is sent to ElevenLabs to be turned into audio. Stadiate's default announcer runs entirely on your own machine and sends nothing anywhere.</li>
+    <li><strong>Yahoo Finance</strong> — only if you switch on the optional market ticker, which fetches quotes for the symbols you list. Off by default.</li>
+  </ul>
+  <p>Everything after the first item is something you turn on deliberately. Your use of these services is governed by their own privacy policies.</p>
 
   <h2>Smart-home and network devices</h2>
-  <p>When you connect lights, speakers, a TV board, or a home-automation hub, Stadiate communicates with those devices directly over your local network to trigger the effects you configure. Stadiate does not send your smart-home data to us or to any third party.</p>
+  <p>When you connect lights, speakers, a TV board, or a home-automation hub, Stadiate communicates with those devices directly over your local network to trigger the effects you configure. Your smart-home credentials stay on your own hardware — they are never sent to us, and never to any third party. The one request that leaves your network is the optional Philips bridge lookup described above, which carries no credentials and no device data.</p>
 
   <h2>Children's privacy</h2>
   <p>Stadiate is a general-audience sports companion app and is not directed at children under 13. We do not knowingly collect personal information from children.</p>
@@ -80,7 +88,7 @@
   <p>We may update this policy as Stadiate evolves. Material changes will be reflected on this page with a new "last updated" date.</p>
 
   <h2>Contact</h2>
-  <p>Questions about this policy? Reach out at <a href="mailto:privacy@stadiate.com">privacy@stadiate.com</a>.</p>
+  <p>Questions about this policy? Reach out at <a href="mailto:bss@bensbar.com">bss@bensbar.com</a>. For help using Stadiate, see <a href="support.html">Support</a>.</p>
 </main>
 
 <footer>© 2026 Stadiate · Any room can be your stadium.</footer>
