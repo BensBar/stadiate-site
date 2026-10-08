@@ -1,10 +1,11 @@
 {
   "name": "stadiate-site",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Stadiate's screenshot-led, static product website",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node tools/server.mjs",
+    "test": "node --test tools/site.test.mjs",
+    "screenshots": "node tools/shoot.mjs"
   },
   "keywords": [],
   "author": "",
