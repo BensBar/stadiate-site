@@ -9,6 +9,14 @@ import { scoreboardFromSummary, playersFromSummary } from './capture-data.mjs';
 let server;
 let browser;
 let base;
+const beaconSnippet = `<!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "8c455c544d7e4c3d9ba1a0651cb2ad9a"}'></script><!-- End Cloudflare Web Analytics -->`;
+// Keep tests hermetic: stub the analytics beacon so nothing is sent to Cloudflare.
+async function newPage(options) {
+  const page = await browser.newPage(options);
+  await page.route(/^https:\/\/([a-z.]+\.)?cloudflareinsights\.com\//, (route) =>
+    route.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
+  return page;
+}
 before(async () => {
   server = await startServer();
   base = `http://127.0.0.1:${server.address().port}`;
@@ -21,7 +29,7 @@ after(async () => {
 
 test('responsive page has no overflow, missing images, script errors, or broken anchors', async () => {
   for (const width of [320, 375, 768, 1024, 1440]) {
-    const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+    const page = await newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
     try {
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
@@ -48,7 +56,7 @@ test('responsive page has no overflow, missing images, script errors, or broken 
 });
 
 test('all board and art selectors update screenshots, copy, and full-screen links', async () => {
-  const page = await browser.newPage();
+  const page = await newPage();
   try {
     await page.goto(base);
     for (const [key, file] of [['action', 'live-board'], ['multiview', 'multiview'], ['art', 'art-terrace'], ['ticker', 'command-ticker']]) {
@@ -87,7 +95,7 @@ test('all board and art selectors update screenshots, copy, and full-screen link
 });
 
 test('room demo is local-only, repeatable, and resets; FAQ uses native disclosure', async () => {
-  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  const page = await newPage({ reducedMotion: 'reduce' });
   try {
     await page.goto(base);
     await page.clock.install();
@@ -160,7 +168,7 @@ test('historical normalization preserves source values and rejects incomplete da
 });
 
 test('content and privacy remain accessible without JavaScript', async () => {
-  const page = await browser.newPage({ javaScriptEnabled: false, viewport: { width: 375, height: 812 } });
+  const page = await newPage({ javaScriptEnabled: false, viewport: { width: 375, height: 812 } });
   try {
     await page.goto(base);
     assert.equal(await page.locator('#comparison table').isVisible(), true);
@@ -172,4 +180,25 @@ test('content and privacy remain accessible without JavaScript', async () => {
   } finally {
     await page.close();
   }
+});
+
+test('every HTML page loads the cookieless analytics beacon exactly once', async () => {
+  for (const [file, path] of [['index.html', '/'], ['privacy.html', '/privacy']]) {
+    const html = await readFile(new URL(`../${file}`, import.meta.url), 'utf8');
+    assert.equal(html.split(beaconSnippet).length - 1, 1, file);
+    assert.equal(html.split('cloudflareinsights').length - 1, 1, file);
+    assert.ok(html.indexOf(beaconSnippet) < html.indexOf('</body>'), file);
+    const page = await newPage();
+    try {
+      await page.goto(base + path);
+      assert.equal(await page.locator('script[src="https://static.cloudflareinsights.com/beacon.min.js"]').count(), 1);
+      assert.deepEqual(await page.context().cookies(), [], file);
+    } finally {
+      await page.close();
+    }
+  }
+  const privacy = await readFile(new URL('../privacy.html', import.meta.url), 'utf8');
+  assert.match(privacy, /Cloudflare Web Analytics/);
+  assert.match(privacy, /https:\/\/www\.cloudflare\.com\/privacypolicy\//);
+  assert.match(privacy, /tv\.stadiate\.com/);
 });
