@@ -1,0 +1,555 @@
+{
+  "capturedAt": "2026-10-08T15:39:24.675Z",
+  "displayTimezone": "America/New_York",
+  "renderer": "Current Stadiate web board; Art View shares its theme specification with tvOS.",
+  "data": "Real October 3–4, 2026 final scores and box-score statistics, rendered at capture time. These are not screenshots recorded during live games. No hub settings or real boards were modified.",
+  "sources": [
+    {
+      "game": "nfl:401872971",
+      "date": "2026-10-04T17:00Z",
+      "state": "post",
+      "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event=401872971",
+      "teams": [
+        {
+          "abbrev": "BUF",
+          "score": "26",
+          "homeAway": "home"
+        },
+        {
+          "abbrev": "NE",
+          "score": "29",
+          "homeAway": "away"
+        }
+      ],
+      "players": [
+        {
+          "athlete": {
+            "id": "4431452",
+            "teamId": "17",
+            "name": "Drake Maye",
+            "jersey": "10",
+            "headshot": "https://a.espncdn.com/i/headshots/nfl/players/full/4431452.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "22/37"
+            },
+            {
+              "label": "YDS",
+              "value": "269"
+            },
+            {
+              "label": "TD",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "3918298",
+            "teamId": "2",
+            "name": "Josh Allen",
+            "jersey": "17",
+            "headshot": "https://a.espncdn.com/i/headshots/nfl/players/full/3918298.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "23/33"
+            },
+            {
+              "label": "YDS",
+              "value": "253"
+            },
+            {
+              "label": "TD",
+              "value": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "game": "nfl:401872968",
+      "date": "2026-10-04T17:00Z",
+      "state": "post",
+      "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event=401872968",
+      "teams": [
+        {
+          "abbrev": "TB",
+          "score": "14",
+          "homeAway": "home"
+        },
+        {
+          "abbrev": "GB",
+          "score": "17",
+          "homeAway": "away"
+        }
+      ],
+      "players": [
+        {
+          "athlete": {
+            "id": "4036378",
+            "teamId": "9",
+            "name": "Jordan Love",
+            "jersey": "10",
+            "headshot": "https://a.espncdn.com/i/headshots/nfl/players/full/4036378.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "22/30"
+            },
+            {
+              "label": "YDS",
+              "value": "197"
+            },
+            {
+              "label": "TD",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "4596472",
+            "teamId": "27",
+            "name": "Jalon Daniels",
+            "jersey": "10",
+            "headshot": "https://a.espncdn.com/i/headshots/nfl/players/full/4596472.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "19/27"
+            },
+            {
+              "label": "YDS",
+              "value": "148"
+            },
+            {
+              "label": "TD",
+              "value": "1"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "game": "nfl:401872967",
+      "date": "2026-10-04T17:00Z",
+      "state": "post",
+      "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event=401872967",
+      "teams": [
+        {
+          "abbrev": "HOU",
+          "score": "30",
+          "homeAway": "home"
+        },
+        {
+          "abbrev": "DAL",
+          "score": "34",
+          "homeAway": "away"
+        }
+      ],
+      "players": [
+        {
+          "athlete": {
+            "id": "2577417",
+            "teamId": "6",
+            "name": "Dak Prescott",
+            "jersey": "4",
+            "headshot": "https://a.espncdn.com/i/headshots/nfl/players/full/2577417.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "32/45"
+            },
+            {
+              "label": "YDS",
+              "value": "335"
+            },
+            {
+              "label": "TD",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "4432577",
+            "teamId": "34",
+            "name": "C.J. Stroud",
+            "jersey": "7",
+            "headshot": "https://a.espncdn.com/i/headshots/nfl/players/full/4432577.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "21/31"
+            },
+            {
+              "label": "YDS",
+              "value": "347"
+            },
+            {
+              "label": "TD",
+              "value": "2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "game": "nfl:401872976",
+      "date": "2026-10-04T20:25Z",
+      "state": "post",
+      "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event=401872976",
+      "teams": [
+        {
+          "abbrev": "LV",
+          "score": "27",
+          "homeAway": "home"
+        },
+        {
+          "abbrev": "KC",
+          "score": "30",
+          "homeAway": "away"
+        }
+      ],
+      "players": [
+        {
+          "athlete": {
+            "id": "3139477",
+            "teamId": "12",
+            "name": "Patrick Mahomes",
+            "jersey": "15",
+            "headshot": "https://a.espncdn.com/i/headshots/nfl/players/full/3139477.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "15/30"
+            },
+            {
+              "label": "YDS",
+              "value": "225"
+            },
+            {
+              "label": "TD",
+              "value": "2"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "14880",
+            "teamId": "13",
+            "name": "Kirk Cousins",
+            "jersey": "8",
+            "headshot": "https://a.espncdn.com/i/headshots/nfl/players/full/14880.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "31/52"
+            },
+            {
+              "label": "YDS",
+              "value": "365"
+            },
+            {
+              "label": "TD",
+              "value": "2"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "game": "ncaaf:401856705",
+      "date": "2026-10-03T16:45Z",
+      "state": "post",
+      "url": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/summary?event=401856705",
+      "teams": [
+        {
+          "abbrev": "UGA",
+          "score": "38",
+          "homeAway": "home"
+        },
+        {
+          "abbrev": "VAN",
+          "score": "14",
+          "homeAway": "away"
+        }
+      ],
+      "players": [
+        {
+          "athlete": {
+            "id": "5121691",
+            "teamId": "238",
+            "name": "Blaze Berlowitz",
+            "jersey": "1",
+            "headshot": "https://a.espncdn.com/i/headshots/college-football/players/full/5121691.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "12/23"
+            },
+            {
+              "label": "YDS",
+              "value": "190"
+            },
+            {
+              "label": "TD",
+              "value": "1"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "4685578",
+            "teamId": "61",
+            "name": "Gunner Stockton",
+            "jersey": "14",
+            "headshot": "https://a.espncdn.com/i/headshots/college-football/players/full/4685578.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "25/32"
+            },
+            {
+              "label": "YDS",
+              "value": "295"
+            },
+            {
+              "label": "TD",
+              "value": "3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "game": "ncaaf:401856707",
+      "date": "2026-10-03T16:00Z",
+      "state": "post",
+      "url": "https://site.api.espn.com/apis/site/v2/sports/football/college-football/summary?event=401856707",
+      "teams": [
+        {
+          "abbrev": "MSST",
+          "score": "23",
+          "homeAway": "home"
+        },
+        {
+          "abbrev": "ALA",
+          "score": "56",
+          "homeAway": "away"
+        }
+      ],
+      "players": [
+        {
+          "athlete": {
+            "id": "5141629",
+            "teamId": "333",
+            "name": "Keelon Russell",
+            "jersey": "12",
+            "headshot": "https://a.espncdn.com/i/headshots/college-football/players/full/5141629.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "16/22"
+            },
+            {
+              "label": "YDS",
+              "value": "285"
+            },
+            {
+              "label": "TD",
+              "value": "3"
+            }
+          ]
+        },
+        {
+          "athlete": {
+            "id": "5177084",
+            "teamId": "344",
+            "name": "Kamario Taylor",
+            "jersey": "1",
+            "headshot": "https://a.espncdn.com/i/headshots/college-football/players/full/5177084.png"
+          },
+          "stats": [
+            {
+              "label": "C/ATT",
+              "value": "19/34"
+            },
+            {
+              "label": "YDS",
+              "value": "258"
+            },
+            {
+              "label": "TD",
+              "value": "3"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "game": "mlb:401908014",
+      "date": "2026-10-05T00:00Z",
+      "state": "post",
+      "url": "https://site.api.espn.com/apis/site/v2/sports/baseball/mlb/summary?event=401908014",
+      "teams": [
+        {
+          "abbrev": "LAD",
+          "score": "2",
+          "homeAway": "home"
+        },
+        {
+          "abbrev": "ATL",
+          "score": "3",
+          "homeAway": "away"
+        }
+      ],
+      "players": []
+    }
+  ],
+  "captures": [
+    {
+      "file": "live-board.jpg",
+      "sha256": "14a4994fb409830df493e3536bc40d0e78161c866f27bddd39345d86979a0a20",
+      "games": [
+        "nfl:401872971"
+      ]
+    },
+    {
+      "file": "college-board.jpg",
+      "sha256": "6aa8a613831f937b1c3b533bc8d22ed89eb31f3c01404034ff7d480b5178b7d5",
+      "games": [
+        "ncaaf:401856705"
+      ]
+    },
+    {
+      "file": "multiview.jpg",
+      "sha256": "e0699afbd6922add6ffac8ed128517dbc553ca4aea134bf78f96994306c9085c",
+      "games": [
+        "nfl:401872971",
+        "nfl:401872968",
+        "nfl:401872967",
+        "nfl:401872976"
+      ]
+    },
+    {
+      "file": "command-ticker.jpg",
+      "sha256": "ec64e663e2f020991b382218cac2cdf92fefd82a273a34f524bb23780883f945",
+      "games": [
+        "nfl:401872971",
+        "nfl:401872968",
+        "nfl:401872967",
+        "nfl:401872976"
+      ]
+    },
+    {
+      "file": "art-terrace.jpg",
+      "sha256": "2b46e7eafd9fd7455aba947fdcb69d2102e4aad28e30896e2fbb20e4d072bd77",
+      "games": [
+        "nfl:401872971",
+        "nfl:401872968",
+        "nfl:401872967",
+        "nfl:401872976",
+        "ncaaf:401856705",
+        "ncaaf:401856707",
+        "mlb:401908014"
+      ]
+    },
+    {
+      "file": "art-nocturne.jpg",
+      "sha256": "bce9e02f3238975de8d056d407031be2d65601779f0fa3ef50ef5b195f3015e5",
+      "games": [
+        "nfl:401872971",
+        "nfl:401872968",
+        "nfl:401872967",
+        "nfl:401872976",
+        "ncaaf:401856705",
+        "ncaaf:401856707",
+        "mlb:401908014"
+      ]
+    },
+    {
+      "file": "art-ukiyoe.jpg",
+      "sha256": "6f35b4d6b8c2e00d6311f86161a1e8dab2ffb53801a1b3e9797318da30723f69",
+      "games": [
+        "nfl:401872971",
+        "nfl:401872968",
+        "nfl:401872967",
+        "nfl:401872976",
+        "ncaaf:401856705",
+        "ncaaf:401856707",
+        "mlb:401908014"
+      ]
+    },
+    {
+      "file": "art-italian.jpg",
+      "sha256": "ad19dfd953fed9416572bcd628ba891bc43c6c05429fe3bd2b580b1db7a3f2c3",
+      "games": [
+        "nfl:401872971",
+        "nfl:401872968",
+        "nfl:401872967",
+        "nfl:401872976",
+        "ncaaf:401856705",
+        "ncaaf:401856707",
+        "mlb:401908014"
+      ]
+    },
+    {
+      "file": "art-neon.jpg",
+      "sha256": "5c9a4575399cf238b3e1169f355dae4ec2c51d1b69dea0da76a0e34d98c6e7ff",
+      "games": [
+        "nfl:401872971",
+        "nfl:401872968",
+        "nfl:401872967",
+        "nfl:401872976",
+        "ncaaf:401856705",
+        "ncaaf:401856707",
+        "mlb:401908014"
+      ]
+    },
+    {
+      "file": "art-botanical.jpg",
+      "sha256": "b8677d8fabb538bc04609f79fbaa1d6e6144ea9736e36128d01ce0c9c279ab3d",
+      "games": [
+        "nfl:401872971",
+        "nfl:401872968",
+        "nfl:401872967",
+        "nfl:401872976",
+        "ncaaf:401856705",
+        "ncaaf:401856707",
+        "mlb:401908014"
+      ]
+    }
+  ],
+  "files": [
+    "live-board.jpg",
+    "college-board.jpg",
+    "multiview.jpg",
+    "command-ticker.jpg",
+    "art-terrace.jpg",
+    "art-terrace-thumb.jpg",
+    "art-nocturne.jpg",
+    "art-nocturne-thumb.jpg",
+    "art-ukiyoe.jpg",
+    "art-ukiyoe-thumb.jpg",
+    "art-italian.jpg",
+    "art-italian-thumb.jpg",
+    "art-neon.jpg",
+    "art-neon-thumb.jpg",
+    "art-botanical.jpg",
+    "art-botanical-thumb.jpg"
+  ]
+}
