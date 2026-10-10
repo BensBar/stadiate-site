@@ -92,17 +92,88 @@ lightbox.addEventListener('click', (event) => {
 lightbox.addEventListener('close', () => lightboxTrigger?.focus());
 
 const celebrateButton = document.querySelector('#celebrate-button');
-celebrateButton.hidden = false;
+const stopButton = document.querySelector('#stop-celebration');
+document.querySelector('.room-controls').hidden = false;
 const roomDemo = document.querySelector('#room-demo');
 const demoStatus = document.querySelector('#demo-status');
-let celebrationTimer;
-celebrateButton.addEventListener('click', () => {
-  clearTimeout(celebrationTimer);
+const lightInputs = [...document.querySelectorAll('[data-provider]')];
+const providerNames = { hue: 'Hue', govee: 'Govee LAN', ha: 'Home Assistant' };
+const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
+let celebrationTimers = [];
+let entranceTimer;
+let entrancePlayed = reducedMotion.matches;
+
+function clearCelebrationTimers() {
+  celebrationTimers.forEach(clearTimeout);
+  celebrationTimers = [];
+}
+
+function cancelEntrance() {
+  clearTimeout(entranceTimer);
+  entranceTimer = undefined;
+  entrancePlayed = true;
+}
+
+function describeCelebration() {
+  const names = lightInputs.filter((input) => input.checked).map((input) => providerNames[input.dataset.provider]);
+  demoStatus.textContent = names.length
+    ? `Example touchdown: ${names.join(' + ')}. No devices triggered.`
+    : 'Example touchdown: screen only. All room lights excluded. No devices triggered.';
+}
+
+function stopCelebration() {
+  cancelEntrance();
+  clearCelebrationTimers();
+  roomDemo.classList.remove('celebrating');
+  roomDemo.dataset.phase = 'idle';
+  stopButton.disabled = true;
+  demoStatus.textContent = 'Ready for the next big moment. Silent preview; no devices triggered.';
+}
+
+function celebrate() {
+  cancelEntrance();
+  clearCelebrationTimers();
+  roomDemo.classList.remove('celebrating');
+  roomDemo.dataset.phase = 'idle';
+  // Restart the same finite CSS sequence, including when replay is pressed mid-effect.
+  void roomDemo.offsetWidth;
   roomDemo.classList.add('celebrating');
-  demoStatus.textContent = 'Touchdown! An illustration of team-color lights and a screen takeover, not a recorded event. No devices triggered.';
-  celebrateButton.innerHTML = 'Run it back <span aria-hidden="true">↗</span>';
-  celebrationTimer = setTimeout(() => {
-    roomDemo.classList.remove('celebrating');
-    demoStatus.textContent = 'Ready for the next big moment. This demo is silent and controls no devices.';
-  }, 5500);
+  roomDemo.dataset.phase = reducedMotion.matches ? 'lights' : 'score';
+  stopButton.disabled = false;
+  describeCelebration();
+  celebrateButton.innerHTML = 'Replay the touchdown <span aria-hidden="true">↗</span>';
+  if (!reducedMotion.matches) {
+    celebrationTimers.push(setTimeout(() => { roomDemo.dataset.phase = 'lights'; }, 450));
+    celebrationTimers.push(setTimeout(() => { roomDemo.dataset.phase = 'settle'; }, 3550));
+  }
+  celebrationTimers.push(setTimeout(stopCelebration, 4800));
+}
+
+celebrateButton.addEventListener('click', celebrate);
+stopButton.addEventListener('click', stopCelebration);
+lightInputs.forEach((input) => {
+  input.addEventListener('change', () => {
+    cancelEntrance();
+    roomDemo.dataset[input.dataset.provider] = input.checked ? 'on' : 'off';
+    if (roomDemo.classList.contains('celebrating')) describeCelebration();
+  });
+});
+
+// One short entrance preview, only while the room is visible. Never loop or resume it.
+const roomObserver = new IntersectionObserver(([entry]) => {
+  if (!entry.isIntersecting) {
+    if (entranceTimer !== undefined || roomDemo.classList.contains('celebrating')) stopCelebration();
+    return;
+  }
+  if (entry.intersectionRatio >= .35 && !entrancePlayed && !document.hidden) {
+    entrancePlayed = true;
+    entranceTimer = setTimeout(celebrate, 700);
+  }
+}, { threshold: [0, .35] });
+roomObserver.observe(roomDemo);
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) stopCelebration();
+});
+reducedMotion.addEventListener('change', () => {
+  if (reducedMotion.matches) stopCelebration();
 });

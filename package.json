@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "node tools/server.mjs",
     "test": "node --test tools/site.test.mjs",
-    "screenshots": "node tools/shoot.mjs"
+    "screenshots": "node tools/shoot.mjs",
+    "social-card": "node tools/social-card.mjs"
   },
   "keywords": [],
   "author": "",

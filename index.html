@@ -11,12 +11,16 @@
   <link rel="canonical" href="https://stadiate.com/">
   <meta property="og:title" content="Stadiate — Your game. Your room. Transformed.">
   <meta property="og:description" content="Live boards. Living art. A whole room in on the game. Start with Apple TV; go all out with the Mac server.">
-  <meta property="og:image" content="https://stadiate.com/assets/shots/live-board.jpg">
-  <meta property="og:image:width" content="1920">
-  <meta property="og:image:height" content="1080">
+  <meta property="og:image" content="https://stadiate.com/assets/stadiate-stacked-boards-v1.jpg">
+  <meta property="og:image:type" content="image/jpeg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Stadiate's stacked Action View, multiview scoreboards, and framed Art View beside Your game. Your room. Transformed.">
   <meta property="og:url" content="https://stadiate.com/">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://stadiate.com/assets/stadiate-stacked-boards-v1.jpg">
+  <meta name="twitter:image:alt" content="Stadiate's stacked Action View, multiview scoreboards, and framed Art View beside Your game. Your room. Transformed.">
   <link rel="preload" href="assets/fonts/BebasNeue-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="assets/site.css">
   <script src="assets/site.js" defer></script>
@@ -29,7 +33,7 @@
       <nav class="main-nav" aria-label="Main navigation">
         <a href="#boards">The boards</a>
         <a href="#art">Art View</a>
-        <a href="#setup">Your setup</a>
+        <a href="#room-demo">The room</a>
       </nav>
       <a class="button button-small nav-cta" href="#start">Get game-ready <span aria-hidden="true">↗</span></a>
     </div>
@@ -39,31 +43,129 @@
     <section class="hero">
       <div class="hero-grid wrap">
         <div class="hero-copy">
-          <p class="eyebrow"><span class="status-dot"></span> The home-field advantage</p>
+          <p class="eyebrow"><span class="status-dot"></span> Don't just watch. Feel it.</p>
           <h1>Your game.<br>Your room.<br><span>Transformed.</span></h1>
-          <p class="hero-lede">Live scoreboards. Gallery-worthy art. A room that celebrates with you.</p>
+          <p class="hero-lede">The score hits. The lights take over.<br>Your whole room is in the game.</p>
+        </div>
+        <div class="room-demo" id="room-demo" data-phase="idle" data-hue="on" data-govee="on" data-ha="on">
+          <div class="room-demo-label"><span><span class="status-dot"></span> THE MANCAVE / CONCEPT ROOM</span><span>LIGHTS + MAC SERVER</span></div>
+          <svg class="room-scene" viewBox="0 0 1000 620" role="img" aria-labelledby="room-title room-description">
+            <title id="room-title">A Stadiate mancave with three screens and three lighting systems</title>
+            <desc id="room-description">An illustrated concept, not a photo of an actual room. A large Action View board, a framed Art View, and a multiview board sit above a media console. Hue lamps flank the screens, Govee strips trace the ceiling and console, and Home Assistant-connected downlights illuminate the seating area.</desc>
+            <defs>
+              <linearGradient id="back-wall" x2="0" y2="1"><stop stop-color="#202d37"/><stop offset="1" stop-color="#111920"/></linearGradient>
+              <linearGradient id="side-wall"><stop stop-color="#11191e"/><stop offset="1" stop-color="#29323a"/></linearGradient>
+              <linearGradient id="room-floor" x2="0" y2="1"><stop stop-color="#29303a"/><stop offset="1" stop-color="#10151a"/></linearGradient>
+              <linearGradient id="sofa-leather" x2="0" y2="1"><stop stop-color="#44444a"/><stop offset=".45" stop-color="#262a30"/><stop offset="1" stop-color="#12171d"/></linearGradient>
+              <linearGradient id="cabinet-front" x2="0" y2="1"><stop stop-color="#65513f"/><stop offset="1" stop-color="#2a2927"/></linearGradient>
+              <linearGradient id="strip-color"><stop stop-color="#ff714e"/><stop offset=".45" stop-color="#ff435f"/><stop offset="1" stop-color="#50e1ee"/></linearGradient>
+              <radialGradient id="hue-light"><stop stop-color="#ff7859" stop-opacity=".85"/><stop offset="1" stop-color="#ff7859" stop-opacity="0"/></radialGradient>
+              <radialGradient id="ha-light"><stop stop-color="#65dcf5" stop-opacity=".8"/><stop offset="1" stop-color="#65dcf5" stop-opacity="0"/></radialGradient>
+              <radialGradient id="screen-light"><stop stop-color="#4799b2" stop-opacity=".27"/><stop offset="1" stop-color="#4799b2" stop-opacity="0"/></radialGradient>
+              <filter id="light-soft"><feGaussianBlur stdDeviation="9"/></filter>
+              <pattern id="wall-slats" width="14" height="14" patternUnits="userSpaceOnUse"><path d="M0 0V14" stroke="#03080c" stroke-width="5"/></pattern>
+            </defs>
+            <path d="M0 0H1000V620H0Z" fill="#0e151b"/>
+            <path d="M0 0H1000L876 84H125Z" fill="#242d35"/>
+            <path d="M125 84H876V427H125Z" fill="url(#back-wall)"/>
+            <path d="M0 0L125 84V427L0 620Z" fill="url(#side-wall)"/>
+            <path d="M1000 0L876 84V427L1000 620Z" fill="#151f28"/>
+            <path d="M0 620L125 427H876L1000 620Z" fill="url(#room-floor)"/>
+            <path d="M125 427H876M120 436H882" stroke="#050b11" stroke-width="4"/>
+            <path d="M50 0L156 67H848L950 0M156 67V80M848 67V80" fill="none" stroke="#3c4750" stroke-width="2"/>
+            <path d="M153 100H294V410H153ZM751 100H850V410H751Z" fill="url(#wall-slats)" opacity=".65"/>
+            <ellipse cx="493" cy="275" rx="365" ry="205" fill="url(#screen-light)"/>
+            <g class="light-zone hue-zone">
+              <g class="light-bloom" fill="url(#hue-light)">
+                <ellipse cx="161" cy="305" rx="123" ry="190"/><ellipse cx="841" cy="306" rx="122" ry="190"/>
+              </g>
+              <path d="M157 326V419M844 326V419" stroke="#798089" stroke-width="5"/>
+              <ellipse cx="158" cy="425" rx="26" ry="6" fill="#050a0f"/><ellipse cx="844" cy="425" rx="26" ry="6" fill="#050a0f"/>
+              <path class="lamp-shade" d="M133 281H181L193 332H121ZM820 281H868L880 332H808Z" fill="#c3b8ab"/>
+              <path d="M127 331H188M814 331H875" stroke="#e8dac6" stroke-width="2"/>
+            </g>
+            <g class="light-zone ha-zone">
+              <g class="light-bloom" fill="url(#ha-light)">
+                <ellipse cx="276" cy="349" rx="150" ry="201"/><ellipse cx="733" cy="349" rx="150" ry="201"/>
+                <ellipse cx="500" cy="494" rx="333" ry="66"/>
+              </g>
+              <path class="light-cone" d="M271 55L159 426H395ZM734 55L620 426H850Z" fill="#8ae6f4" opacity=".03"/>
+              <g fill="#080e13" stroke="#68757e" stroke-width="2"><ellipse cx="273" cy="54" rx="22" ry="6"/><ellipse cx="734" cy="54" rx="22" ry="6"/><ellipse cx="114" cy="22" rx="19" ry="5"/><ellipse cx="893" cy="22" rx="19" ry="5"/></g>
+              <g class="downlight-core" fill="#d6d8cf"><ellipse cx="273" cy="54" rx="15" ry="3"/><ellipse cx="734" cy="54" rx="15" ry="3"/><ellipse cx="114" cy="22" rx="12" ry="2"/><ellipse cx="893" cy="22" rx="12" ry="2"/></g>
+            </g>
+            <g class="light-zone govee-zone" fill="none">
+              <path class="strip-bloom light-bloom" d="M6 31L136 102H865L994 31M250 421H756" stroke="url(#strip-color)" stroke-width="22" filter="url(#light-soft)"/>
+              <path class="strip-core" d="M6 31L136 102H865L994 31" stroke="url(#strip-color)" stroke-width="4"/>
+              <path class="strip-flow" d="M6 31L136 102H865L994 31" stroke="#dcffff" stroke-width="4"/>
+            </g>
+            <g class="room-screens">
+              <rect x="293" y="141" width="421" height="242" rx="6" fill="#05090d" stroke="#78828a" stroke-width="2"/>
+              <image href="assets/shots/live-board.jpg" x="299" y="147" width="409" height="230"/>
+              <rect x="177" y="154" width="99" height="148" rx="3" fill="#8b7352" stroke="#c6ae80"/>
+              <rect x="183" y="160" width="87" height="136" fill="#ddd1b9"/>
+              <image href="assets/shots/art-nocturne.jpg" x="186" y="187" width="81" height="81" preserveAspectRatio="xMidYMid slice"/>
+              <text x="226" y="281" text-anchor="middle" fill="#52422d" font-size="6" letter-spacing="1">ART VIEW</text>
+              <rect x="735" y="170" width="101" height="67" rx="3" fill="#04080c" stroke="#5e707c"/>
+              <image href="assets/shots/multiview.jpg" x="739" y="174" width="93" height="59"/>
+              <g class="demo-takeover">
+                <rect x="299" y="147" width="409" height="230" fill="#ad2638"/>
+                <path d="M299 340L708 160V197L299 377Z" fill="#ec594d" opacity=".3"/>
+                <text x="503" y="213" text-anchor="middle" fill="#ffe5ce" font-size="12" letter-spacing="4">THIS IS YOUR MOMENT.</text>
+                <text x="503" y="288" text-anchor="middle" fill="#fff4e9" class="takeover-title">TOUCHDOWN.</text>
+                <text x="503" y="333" text-anchor="middle" fill="#ffe5ce" font-size="10" letter-spacing="1">DEMO EVENT / NOT A LIVE SCORE</text>
+              </g>
+            </g>
+            <g font-family="sans-serif">
+              <text x="787" y="279" text-anchor="middle" fill="#ccebf3" font-size="13" font-weight="700" letter-spacing="2">STADIATE</text>
+              <path d="M754 288H820" stroke="#ff7859" stroke-width="2"/>
+              <text x="786" y="306" text-anchor="middle" fill="#8495a1" font-size="6" letter-spacing="1">HOME FIELD. EVERY GAME.</text>
+            </g>
+            <path d="M236 393H770L789 409H218Z" fill="#786452"/>
+            <path d="M218 409H789V450H218Z" fill="url(#cabinet-front)" stroke="#0b1014" stroke-width="2"/>
+            <path d="M360 411V447M637 411V447" stroke="#282522" stroke-width="3"/>
+            <g fill="#111820"><rect x="245" y="412" width="88" height="26" rx="3"/><rect x="661" y="412" width="100" height="26" rx="3"/></g>
+            <g fill="#525b61"><circle cx="268" cy="425" r="8"/><circle cx="312" cy="425" r="8"/><circle cx="686" cy="425" r="8"/><circle cx="734" cy="425" r="8"/></g>
+            <rect x="457" y="415" width="71" height="14" rx="4" fill="#aeb7b9"/><circle cx="518" cy="422" r="1" fill="#b9f9d5"/>
+            <text x="491" y="442" text-anchor="middle" fill="#bcc4c9" font-family="monospace" font-size="6" letter-spacing="1">MAC / STADIATE HUB</text>
+            <path class="console-strip" d="M231 452H776" stroke="url(#strip-color)" stroke-width="4"/>
+            <path d="M270 461H752L834 578H167Z" fill="#11191f" stroke="#49505a" stroke-width="2"/>
+            <path d="M290 475H731L785 557H214Z" fill="none" stroke="#35414c"/>
+            <ellipse cx="501" cy="572" rx="386" ry="33" fill="#04090e" opacity=".7"/>
+            <path d="M204 513L218 482Q222 474 236 474H754Q770 474 774 488L788 529V610H204Z" fill="url(#sofa-leather)" stroke="#56575c" stroke-width="2"/>
+            <path d="M230 494Q230 486 242 486H386Q398 486 398 498V548H230ZM408 498Q408 486 420 486H574Q586 486 586 498V548H408ZM596 498Q596 486 608 486H750Q762 486 762 498V548H596Z" fill="#32363e" stroke="#55565b"/>
+            <path d="M199 529Q199 519 211 519H782Q795 519 795 532V607H199Z" fill="url(#sofa-leather)" stroke="#505057" stroke-width="2"/>
+            <path d="M216 546H778M401 534V600M592 534V600" stroke="#111820" stroke-width="2"/>
+            <path d="M182 506Q182 496 193 496H221Q233 496 233 508V603H182ZM759 508Q759 496 772 496H800Q812 496 812 508V603H759Z" fill="#393b40" stroke="#55575e"/>
+            <ellipse cx="205" cy="515" rx="12" ry="6" fill="#0e151a"/><ellipse cx="786" cy="515" rx="12" ry="6" fill="#0e151a"/>
+            <g class="room-callouts" fill="#d5e0e6" font-family="monospace" font-size="10" letter-spacing="1">
+              <path d="M64 219H107L137 289M940 138H919L870 105M936 380H907L755 58" fill="none" stroke="#9cafbb" stroke-opacity=".55"/>
+              <text x="32" y="211">HUE</text><text x="907" y="154">GOVEE</text><text x="903" y="395">HOME</text><text x="903" y="410">ASSISTANT</text>
+            </g>
+          </svg>
+          <div class="room-controls" hidden>
+            <fieldset class="light-picker">
+              <legend>Mix your lights. Make it yours.</legend>
+              <label><input type="checkbox" data-provider="hue" checked><span><strong>Hue</strong><small>LAMPS</small></span></label>
+              <label><input type="checkbox" data-provider="govee" checked><span><strong>Govee LAN</strong><small>LIGHT STRIPS</small></span></label>
+              <label><input type="checkbox" data-provider="ha" checked><span><strong>Home Assistant</strong><small>CONNECTED LIGHTS</small></span></label>
+            </fieldset>
+            <div class="demo-actions">
+              <button class="button demo-button" id="celebrate-button" type="button">Test the atmosphere <span aria-hidden="true">↗</span></button>
+              <button class="demo-stop" id="stop-celebration" type="button" disabled>Stop</button>
+            </div>
+            <div class="reaction-sequence" aria-hidden="true"><span data-step="score">01 / THE SCORE</span><i></i><span data-step="lights">02 / THE ROOM</span><i></i><span data-step="settle">03 / THE AFTERGLOW</span></div>
+          </div>
+          <p class="demo-status" id="demo-status" role="status">Choose your lights. Preview the moment.</p>
+          <p class="demo-disclosure">Illustrated concept + historical board captures. Silent; no devices connected.<br>Compatible lights + Mac server required. Color effects need color-capable lights.</p>
+          <noscript><p class="no-script">Enable JavaScript to try the room response. The illustrated room and board galleries are still available.</p></noscript>
+        </div>
+        <div class="hero-followup">
           <p class="hero-detail">Start with your Apple TV. Add a Mac server to bring the whole house into the game.</p>
           <div class="hero-actions">
             <a class="button" href="#boards">Explore the boards <span aria-hidden="true">↗</span></a>
             <a class="text-link" href="#setup">Find your setup <span aria-hidden="true">↓</span></a>
           </div>
-          <p class="micro hero-note">APPLE TV FIRST. MAC SERVER OPTIONAL.</p>
-        </div>
-        <div class="hero-stage" aria-label="A collection of current Stadiate product screens">
-          <div class="stage-orbit" aria-hidden="true"></div>
-          <figure class="hero-screen screen-mini">
-            <img src="assets/shots/multiview.jpg" width="1920" height="1080" alt="Four NFL games together on a Stadiate multiview board">
-            <figcaption><span class="status-dot"></span> Every game in view</figcaption>
-          </figure>
-          <figure class="hero-screen screen-main">
-            <div class="screen-bar"><span><span class="status-dot"></span> STADIATE / ACTION VIEW</span><span>01 — GAME DAY</span></div>
-            <img src="assets/shots/live-board.jpg" width="1920" height="1080" alt="Stadiate's football Action View rendering New England's 29–26 win over Buffalo on October 4, 2026" fetchpriority="high">
-          </figure>
-          <figure class="hero-screen screen-art">
-            <img src="assets/shots/art-nocturne.jpg" width="1920" height="1080" alt="Live scores painted into a star-filled Mediterranean night scene in Art View">
-            <figcaption><span class="art-spark" aria-hidden="true">✳</span> Frame TV art. For sports fans.</figcaption>
-          </figure>
-          <div class="stage-label"><span class="crosshair" aria-hidden="true">+</span> SAME PASSION.<br>ENTIRELY DIFFERENT VIEWS.</div>
+          <p class="micro hero-note">APPLE TV: THE BOARDS. ADD MAC: THE ROOM.</p>
         </div>
       </div>
       <div class="wrap hero-footer">
@@ -117,7 +219,7 @@
         <figure class="art-feature">
           <a class="image-expand art-frame" id="art-expand" href="assets/shots/art-terrace.jpg" data-lightbox data-caption="Terrazza dei Limoni — Stadiate Art View rendering real October 3–4, 2026 final scores." aria-label="Enlarge Terrazza dei Limoni Art View">
             <img id="art-image" src="assets/shots/art-terrace.jpg" alt="Sunlit Mediterranean terrace with game scores inscribed into marble pedestals and a ceramic pot" width="1920" height="1080" loading="lazy">
-            <span class="expand-label" aria-hidden="true">STEP INSIDE ↗</span>
+            <span class="expand-label" aria-hidden="true">ENLARGE ↗</span>
           </a>
           <figcaption><span id="art-title" aria-live="polite">Terrazza dei Limoni</span><span>LIVE SCORES. IN THE ART ITSELF.</span><span id="art-count">01 / 06</span></figcaption>
         </figure>
@@ -146,20 +248,24 @@
         </div>
         <a href="#comparison" class="text-link">See what the Mac server adds <span aria-hidden="true">↗</span></a>
       </div>
-      <div class="room-demo" id="room-demo">
-        <div class="room-demo-label"><span class="status-dot"></span> A LITTLE TASTE OF GAME DAY</div>
-        <div class="room-scene">
-          <div class="light-bar light-left" aria-hidden="true"></div>
-          <div class="light-bar light-right" aria-hidden="true"></div>
-          <div class="demo-tv">
-            <img src="assets/shots/live-board.jpg" alt="A Stadiate board in a diagram of a connected room" width="1920" height="1080" loading="lazy">
-            <div class="demo-takeover" aria-hidden="true"><span>YOUR TEAM</span><strong>TOUCHDOWN.</strong><span>BRING THE HOUSE DOWN.</span></div>
-          </div>
-          <div class="room-console" aria-hidden="true"><span></span><i></i><span></span></div>
-          <div class="room-connections" aria-hidden="true"><span>LIGHTS</span><span>SCREEN</span><span>SOUND</span></div>
+      <div class="room-boards">
+        <div class="hero-stage" aria-label="A collection of current Stadiate product screens">
+          <div class="stage-orbit" aria-hidden="true"></div>
+          <figure class="hero-screen screen-mini">
+            <img src="assets/shots/multiview.jpg" width="1920" height="1080" alt="Four NFL games together on a Stadiate multiview board" loading="lazy">
+            <figcaption><span class="status-dot"></span> Every game in view</figcaption>
+          </figure>
+          <figure class="hero-screen screen-main">
+            <div class="screen-bar"><span><span class="status-dot"></span> STADIATE / ACTION VIEW</span><span>01 — GAME DAY</span></div>
+            <img src="assets/shots/live-board.jpg" width="1920" height="1080" alt="Stadiate's football Action View rendering New England's 29–26 win over Buffalo on October 4, 2026" loading="lazy">
+          </figure>
+          <figure class="hero-screen screen-art">
+            <img src="assets/shots/art-nocturne.jpg" width="1920" height="1080" alt="Scores painted into a star-filled Mediterranean night scene in Art View" loading="lazy">
+            <figcaption><span class="art-spark" aria-hidden="true">✳</span> Frame TV art. For sports fans.</figcaption>
+          </figure>
+          <div class="stage-label"><span class="crosshair" aria-hidden="true">+</span> SAME PASSION.<br>ENTIRELY DIFFERENT VIEWS.</div>
         </div>
-        <button class="button demo-button" id="celebrate-button" type="button" hidden>Test the atmosphere <span aria-hidden="true">↗</span></button>
-        <p class="demo-status" id="demo-status" role="status">Illustrated room response, not a product capture. Silent; no devices connected.</p>
+        <a href="#room-demo" class="text-link">Try the whole-room reaction <span aria-hidden="true">↑</span></a>
       </div>
     </section>
 
