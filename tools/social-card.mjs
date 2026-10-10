@@ -10,6 +10,9 @@ try {
     deviceScaleFactor: 1,
     reducedMotion: 'reduce',
   });
+  // Asset generation must not send analytics for local previews.
+  await page.route(/^https:\/\/([a-z.]+\.)?cloudflareinsights\.com\//, (route) =>
+    route.fulfill({ status: 200, contentType: 'text/javascript', body: '' }));
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(`http://127.0.0.1:${server.address().port}`);

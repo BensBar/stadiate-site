@@ -4,7 +4,12 @@ Marketing site for **Stadiate** — _any room can be your stadium._
 
 Static site (no build step): `index.html` + `privacy.html` + `assets/`.
 The homepage uses self-hosted CSS, JavaScript, fonts, and product captures.
-No analytics, external embeds, runtime product API calls, or CDN dependencies.
+No external embeds, runtime product API calls, or CDN dependencies. The only
+third-party script is the cookieless [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/)
+beacon, added just before `</body>` on every HTML page (DNS isn't proxied, so
+Cloudflare can't inject it automatically). Add it to any new page, and keep the
+"This website" section of `privacy.html` accurate. No cookies, ad/social pixels,
+session replay, or fingerprinting.
 The `/privacy` page satisfies the App Store privacy-policy requirement.
 
 ## Local development
