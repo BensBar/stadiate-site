@@ -21,7 +21,8 @@ after(async () => {
 
 test('responsive page has no overflow, missing images, script errors, or broken anchors', async () => {
   for (const width of [320, 375, 768, 1024, 1440]) {
-    const page = await browser.newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
+    const height = width < 768 ? 812 : 900;
+    const page = await browser.newPage({ viewport: { width, height }, reducedMotion: 'reduce' });
     try {
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
@@ -41,6 +42,17 @@ test('responsive page has no overflow, missing images, script errors, or broken 
       assert.match(await page.locator('#fantasy').textContent(), /Mac server feature/);
       assert.match(await page.locator('#fantasy').textContent(), /EXPERIMENTAL/);
       assert.match(await page.locator('.screen-art figcaption').textContent(), /Frame TV art\. For sports fans\./);
+      assert.equal(await page.locator('.hero #room-demo').count(), 1);
+      assert.equal(await page.locator('.room-scene image').count(), 3);
+      const scene = await page.locator('.room-scene').boundingBox();
+      assert.ok(scene.y + scene.height <= height, `Entire room must be visible on arrival at ${width}px`);
+      const demoButton = await page.locator('#celebrate-button').boundingBox();
+      assert.ok(demoButton.y + demoButton.height <= height, `Demo button must be above the fold at ${width}px`);
+      assert.match(await page.locator('.demo-disclosure').textContent(), /Mac server required/);
+      for (const control of await page.locator('.light-picker label, .demo-actions button').all()) {
+        const bounds = await control.boundingBox();
+        assert.ok(bounds.width >= 44 && bounds.height >= 44, `Room tap targets must be 44px at ${width}px`);
+      }
     } finally {
       await page.close();
     }
@@ -65,6 +77,7 @@ test('all board and art selectors update screenshots, copy, and full-screen link
       assert.ok((await page.locator('#art-image').getAttribute('src')).endsWith(`art-${key}.jpg`));
       assert.ok((await page.locator('#art-expand').getAttribute('href')).endsWith(`art-${key}.jpg`));
       assert.equal(await page.locator('#art-count').textContent(), `0${index + 1} / 06`);
+      assert.equal(await page.locator('#art-expand .expand-label').textContent(), 'ENLARGE ↗');
       await page.locator('#art-image').evaluate((image) => image.decode());
     }
     await page.locator('#art-expand').focus();
@@ -86,13 +99,47 @@ test('all board and art selectors update screenshots, copy, and full-screen link
   }
 });
 
+test('link previews use the stacked-board card without requiring JavaScript', async () => {
+  const page = await browser.newPage({ javaScriptEnabled: false });
+  try {
+    await page.goto(base);
+    const imageUrl = await page.locator('meta[property="og:image"]').getAttribute('content');
+    assert.equal(imageUrl, 'https://stadiate.com/assets/stadiate-stacked-boards-v1.jpg');
+    assert.equal(await page.locator('meta[name="twitter:image"]').getAttribute('content'), imageUrl);
+    assert.equal(await page.locator('meta[name="twitter:card"]').getAttribute('content'), 'summary_large_image');
+    assert.match(await page.locator('meta[property="og:image:alt"]').getAttribute('content'), /stacked.*Art View/);
+    assert.equal(
+      await page.locator('meta[name="twitter:image:alt"]').getAttribute('content'),
+      await page.locator('meta[property="og:image:alt"]').getAttribute('content'),
+    );
+    const localImageUrl = new URL(new URL(imageUrl).pathname, base).href;
+    const response = await page.request.get(localImageUrl);
+    assert.equal(response.status(), 200);
+    assert.equal(response.headers()['content-type'], 'image/jpeg');
+    const dimensions = await page.evaluate(async (url) => {
+      const image = new Image();
+      image.src = url;
+      await image.decode();
+      return [image.naturalWidth, image.naturalHeight];
+    }, localImageUrl);
+    assert.deepEqual(dimensions, [1200, 630]);
+    assert.equal(await page.locator('meta[property="og:image:width"]').getAttribute('content'), '1200');
+    assert.equal(await page.locator('meta[property="og:image:height"]').getAttribute('content'), '630');
+    assert.ok((await response.body()).length < 500_000, 'Keep the share image under 500 KB');
+  } finally {
+    await page.close();
+  }
+});
+
 test('room demo is local-only, repeatable, and resets; FAQ uses native disclosure', async () => {
   const page = await browser.newPage({ reducedMotion: 'reduce' });
   try {
     await page.goto(base);
     await page.clock.install();
-    const mutations = [];
-    page.on('request', (request) => { if (request.method() !== 'GET') mutations.push(request.url()); });
+    const requests = [];
+    const sockets = [];
+    page.on('request', (request) => requests.push(request.url()));
+    page.on('websocket', (socket) => sockets.push(socket.url()));
     await page.locator('#celebrate-button').click();
     assert.equal(await page.locator('#room-demo').evaluate((element) => element.classList.contains('celebrating')), true);
     assert.match(await page.locator('#demo-status').textContent(), /No devices triggered/);
@@ -102,11 +149,107 @@ test('room demo is local-only, repeatable, and resets; FAQ uses native disclosur
     assert.equal(await page.locator('#room-demo').evaluate((element) => element.classList.contains('celebrating')), true);
     await page.clock.fastForward(2600);
     assert.equal(await page.locator('#room-demo').evaluate((element) => element.classList.contains('celebrating')), false);
-    assert.deepEqual(mutations, []);
+    assert.deepEqual(requests, [], 'The room demo must not request any network resources');
+    assert.deepEqual(sockets, []);
     const question = page.locator('details').filter({ hasText: 'Does Stadiate stream the actual game?' });
     await question.locator('summary').click();
     assert.equal(await question.evaluate((element) => element.open), true);
     assert.match(await question.locator('p').textContent(), /does not include broadcast rights/);
+  } finally {
+    await page.close();
+  }
+});
+
+test('all eight lighting combinations affect only the selected fixture zones', async () => {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  try {
+    await page.goto(base);
+    await page.clock.install();
+    const providers = ['hue', 'govee', 'ha'];
+    for (let combination = 0; combination < 8; combination += 1) {
+      for (const [index, provider] of providers.entries()) {
+        const enabled = Boolean(combination & (1 << index));
+        await page.locator(`[data-provider="${provider}"]`).setChecked(enabled);
+      }
+      await page.locator('#celebrate-button').click();
+      assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'lights');
+      for (const [index, provider] of providers.entries()) {
+        const enabled = Boolean(combination & (1 << index));
+        assert.equal(await page.locator('#room-demo').getAttribute(`data-${provider}`), enabled ? 'on' : 'off');
+        const opacity = await page.locator(`.${provider}-zone .light-bloom`).first()
+          .evaluate((element) => Number(getComputedStyle(element).opacity));
+        assert.equal(opacity, enabled ? .85 : 0, `${provider} combination ${combination}`);
+      }
+      if (combination === 0) assert.match(await page.locator('#demo-status').textContent(), /screen only/);
+      await page.locator('#stop-celebration').click();
+      assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'idle');
+      assert.equal(await page.locator('#stop-celebration').isDisabled(), true);
+      await page.clock.fastForward(5000);
+      assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'idle', 'Stop cancels pending phases');
+    }
+    await page.locator('[data-provider="hue"]').focus();
+    await page.keyboard.press('Space');
+    assert.equal(await page.locator('[data-provider="hue"]').isChecked(), false);
+    assert.equal(await page.locator('#room-demo').getAttribute('data-hue'), 'off');
+    await page.locator('#celebrate-button').click();
+    await page.locator('[data-provider="hue"]').check();
+    assert.match(await page.locator('#demo-status').textContent(), /Hue/);
+    assert.equal(await page.locator('.hue-zone .light-bloom').evaluate((element) => getComputedStyle(element).opacity), '0.85');
+  } finally {
+    await page.close();
+  }
+});
+
+test('entrance runs once, sequences the reaction, and stops when scrolled away', async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 }, reducedMotion: 'no-preference' });
+  try {
+    await page.clock.install();
+    await page.goto(base);
+    await page.waitForFunction(() => document.querySelector('#room-demo').dataset.phase === 'score');
+    await page.clock.fastForward(500);
+    assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'lights');
+    assert.equal(await page.locator('.strip-flow').evaluate((element) => getComputedStyle(element).animationName), 'strip-sweep');
+    assert.equal(await page.locator('.strip-flow').evaluate((element) => getComputedStyle(element).animationIterationCount), '2');
+    await page.clock.fastForward(3150);
+    assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'settle');
+    await page.clock.fastForward(1300);
+    assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'idle');
+    await page.clock.fastForward(10_000);
+    assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'idle', 'Entrance does not loop');
+    await page.locator('#celebrate-button').click();
+    await page.locator('#setup').evaluate((element) => element.scrollIntoView({ behavior: 'instant' }));
+    await page.waitForFunction(() => document.querySelector('#room-demo').dataset.phase === 'idle');
+    await page.locator('#room-demo').evaluate((element) => element.scrollIntoView({ behavior: 'instant' }));
+    await page.clock.fastForward(2000);
+    assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'idle', 'Returning does not restart the effect');
+    await page.locator('#celebrate-button').click();
+    await page.emulateMedia({ reducedMotion: 'reduce' });
+    await page.waitForFunction(() => document.querySelector('#room-demo').dataset.phase === 'idle');
+  } finally {
+    await page.close();
+  }
+});
+
+test('reduced motion skips autoplay and animations; hiding the page stops manual previews', async () => {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  try {
+    await page.clock.install();
+    await page.goto(base);
+    await page.clock.fastForward(6000);
+    assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'idle');
+    await page.locator('#celebrate-button').click();
+    assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'lights');
+    assert.deepEqual(await page.locator('.strip-flow').evaluate((element) => {
+      const style = getComputedStyle(element);
+      return [style.animationName, style.transitionDuration];
+    }), ['none', '0s']);
+    await page.evaluate(() => {
+      Object.defineProperty(document, 'hidden', { configurable: true, value: true });
+      document.dispatchEvent(new Event('visibilitychange'));
+    });
+    assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'idle');
+    await page.clock.fastForward(6000);
+    assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'idle');
   } finally {
     await page.close();
   }
@@ -165,6 +308,10 @@ test('content and privacy remain accessible without JavaScript', async () => {
     await page.goto(base);
     assert.equal(await page.locator('#comparison table').isVisible(), true);
     assert.equal(await page.locator('.no-script').first().isVisible(), true);
+    assert.equal(await page.locator('.room-scene').isVisible(), true);
+    assert.equal(await page.locator('.room-controls').isVisible(), false);
+    assert.equal(await page.locator('#room-demo').getAttribute('data-phase'), 'idle');
+    assert.match(await page.locator('.demo-disclosure').textContent(), /Silent; no devices connected/);
     await page.locator('a[href="privacy.html"]').last().click();
     assert.equal(await page.locator('h1').textContent(), 'Privacy Policy');
     assert.equal((await page.request.get(`${base}/privacy`)).status(), 200);
