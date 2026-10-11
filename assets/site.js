@@ -3,7 +3,7 @@ const views = {
     file: 'live-board', title: 'Feel every down.',
     description: 'The field. The possession. The play that changes everything. A live game visualization, not a video broadcast.',
     alt: 'Football Action View rendering New England 29, Buffalo 26, with real final player stats and recent plays from October 4, 2026',
-    platform: 'MAC SERVER · WEB BOARD', name: 'Action View',
+    platform: 'MAC SERVER · WEB BOARD', name: 'Game view',
   },
   multiview: {
     file: 'multiview', title: 'One screen. All your games.',
@@ -91,18 +91,274 @@ lightbox.addEventListener('click', (event) => {
 });
 lightbox.addEventListener('close', () => lightboxTrigger?.focus());
 
-const celebrateButton = document.querySelector('#celebrate-button');
-celebrateButton.hidden = false;
-const roomDemo = document.querySelector('#room-demo');
-const demoStatus = document.querySelector('#demo-status');
-let celebrationTimer;
-celebrateButton.addEventListener('click', () => {
-  clearTimeout(celebrationTimer);
-  roomDemo.classList.add('celebrating');
-  demoStatus.textContent = 'Touchdown! An illustration of team-color lights and a screen takeover, not a recorded event. No devices triggered.';
-  celebrateButton.innerHTML = 'Run it back <span aria-hidden="true">↗</span>';
-  celebrationTimer = setTimeout(() => {
-    roomDemo.classList.remove('celebrating');
-    demoStatus.textContent = 'Ready for the next big moment. This demo is silent and controls no devices.';
-  }, 5500);
-});
+(() => {
+  const T = window.STADIATE_TEAMS;
+  if (!T) return;
+  const ALL = [...T.nfl.map(t => ({ ...t, lg: 'nfl' })), ...T.ncaaf.map(t => ({ ...t, lg: 'ncaaf' }))];
+  const find = (name) => ALL.find(t => t.n === name);
+  const $ = (s, r = document) => r.querySelector(s);
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const up = (s) => s.toUpperCase();
+  const nick = (t) => t.lg === 'nfl' ? t.n.split(' ').slice(-1)[0] : t.n;
+
+  /* ---------- hero: cycling stained-glass board ---------- */
+  const SCENES = [
+    { a: 'Atlanta Falcons', b: 'Baltimore Ravens', ctr: 'SUNDAY NIGHT', s: [24, 20], t: '4TH QTR · 0:42 · FALCONS BALL', v: 'MERCEDES-BENZ STADIUM', who: 0 },
+    { a: 'Georgia', b: 'Alabama', ctr: 'SATURDAY NIGHT', s: [17, 21], t: '3RD QTR · 6:15 · 2ND & 4', v: 'SANFORD STADIUM', who: 0 },
+    { a: 'Detroit Lions', b: 'Green Bay Packers', ctr: 'THANKSGIVING', s: [13, 17], t: '2ND QTR · 1:58 · 1ST & GOAL', v: 'FORD FIELD', who: 0 },
+    { a: 'Texas', b: 'Oklahoma', ctr: 'RED RIVER RIVALRY', s: [28, 24], t: '4TH QTR · 3:30 · 3RD & 2', v: 'COTTON BOWL', who: 1 },
+    { a: 'Kansas City Chiefs', b: 'Buffalo Bills', ctr: 'AFC SHOWDOWN', s: [23, 23], t: 'OVERTIME · 7:12 · BILLS BALL', v: 'ARROWHEAD STADIUM', who: 1 },
+    { a: 'Ohio State', b: 'Oregon', ctr: 'PRIMETIME', s: [14, 10], t: '2ND QTR · 1:04 · 1ST & 10', v: 'OHIO STADIUM', who: 1 },
+  ];
+  const hb = $('#hero-board'), stage = $('#stage');
+  const hl = $('.b-logo.l', hb), hr = $('.b-logo.r', hb);
+  const dotsEl = $('#dots');
+  let scene = 0, sceneTimer, scoreTimer;
+  SCENES.forEach((_, i) => {
+    const b = document.createElement('button');
+    b.setAttribute('aria-label', `Show matchup ${i + 1}`);
+    b.onclick = () => showScene(i, true);
+    dotsEl.appendChild(b);
+  });
+  function setMatch(sc, s) {
+    const A = find(sc.a), B = find(sc.b);
+    $('.b-match', hb).innerHTML = `${up(nick(B))} <b data-i="1">${s[1]}</b> &nbsp;·&nbsp; ${up(nick(A))} <b data-i="0">${s[0]}</b>`;
+  }
+  function showScene(i, manual) {
+    clearTimeout(sceneTimer); clearTimeout(scoreTimer);
+    scene = (i + SCENES.length) % SCENES.length;
+    const sc = SCENES[scene], A = find(sc.a), B = find(sc.b);
+    [...dotsEl.children].forEach((d, j) => d.classList.toggle('on', j === scene));
+    hl.classList.add('out'); hr.classList.add('out');
+    hb.querySelectorAll('.b-lbl').forEach(e => (e.style.opacity = 0));
+    setTimeout(() => {
+      hl.src = A.img; hl.alt = A.n; hr.src = B.img; hr.alt = B.n;
+      $('.ln', hb).textContent = up(A.n); $('.rn', hb).textContent = up(B.n); $('.ctr', hb).textContent = sc.ctr;
+      setMatch(sc, sc.s);
+      $('.b-time .t', hb).textContent = sc.t; $('.b-venue', hb).textContent = sc.v;
+      hb.querySelectorAll('.b-lbl').forEach(e => (e.style.opacity = 1));
+      hl.classList.remove('out'); hr.classList.remove('out');
+      stage.style.setProperty('--gl', A.c1); stage.style.setProperty('--gr', B.c1);
+    }, manual ? 250 : 450);
+    if (reduced) return;
+    scoreTimer = setTimeout(() => heroScore(sc), 3400);
+    sceneTimer = setTimeout(() => showScene(scene + 1), 7200);
+  }
+  function heroScore(sc) {
+    const T2 = find(sc.who ? sc.b : sc.a);
+    const s = [...sc.s]; s[sc.who] += 7;
+    setMatch(sc, s);
+    $(`.b-match b[data-i="${sc.who}"]`, hb).classList.add('bump');
+    $('.b-time .t', hb).textContent = `TOUCHDOWN ${up(nick(T2))}!`;
+    const f = $('.b-flash', hb);
+    f.style.setProperty('--fx', sc.who ? '82%' : '17%'); f.style.setProperty('--fc', T2.c1);
+    f.classList.remove('go'); void f.offsetWidth; f.classList.add('go');
+    stage.style.setProperty(sc.who ? '--gl' : '--gr', T2.c2);
+    stage.classList.add('flash'); setTimeout(() => stage.classList.remove('flash'), 1300);
+  }
+  showScene(0);
+
+  /* ---------- ribbon ---------- */
+  const rib = $('#ribbon');
+  const mix = ALL.slice().sort((x, y) => (x.c1 > y.c1 ? 1 : -1));
+  for (let k = 0; k < 2; k++) mix.forEach(t => {
+    const im = new Image(); im.src = t.img; im.alt = ''; im.loading = 'lazy'; im.width = 72; im.height = 72; rib.appendChild(im);
+  });
+
+  /* ---------- audio (synthesized, no files) ---------- */
+  let ac, master, noise, soundOn = true;
+  function audio() {
+    if (!soundOn) return null;
+    if (!ac) {
+      const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return null;
+      ac = new AC();
+      master = ac.createGain(); master.gain.value = 0.3;
+      const comp = ac.createDynamicsCompressor();
+      master.connect(comp).connect(ac.destination);
+      noise = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate);
+      const d = noise.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    }
+    if (ac.state === 'suspended') ac.resume();
+    return ac;
+  }
+  function crowd(dur = 2.8, peak = 0.9) {
+    const a = audio(); if (!a) return;
+    const t = a.currentTime, src = a.createBufferSource(); src.buffer = noise; src.loop = true;
+    const bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1000; bp.Q.value = 0.5;
+    const g = a.createGain(); g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(peak, t + 0.25); g.gain.setTargetAtTime(peak * 0.55, t + 0.7, 0.6); g.gain.setTargetAtTime(0, t + dur - 0.9, 0.35);
+    const lfo = a.createOscillator(), lg = a.createGain(); lfo.frequency.value = 4.7; lg.gain.value = 0.12; lfo.connect(lg).connect(g.gain);
+    src.connect(bp).connect(g).connect(master); src.start(t); lfo.start(t); src.stop(t + dur + 0.6); lfo.stop(t + dur + 0.6);
+  }
+  function tone(freqs, start, dur, type = 'sawtooth', vol = 0.18, cutoff = 1300, vib = 0) {
+    const a = audio(); if (!a) return;
+    const t = a.currentTime + start, lp = a.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = cutoff; lp.Q.value = 2;
+    const g = a.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(vol, t + 0.05);
+    g.gain.setValueAtTime(vol, t + dur - 0.15); g.gain.linearRampToValueAtTime(0, t + dur);
+    lp.connect(g).connect(master);
+    freqs.forEach(f => {
+      const o = a.createOscillator(); o.type = type; o.frequency.value = f; o.detune.value = (Math.random() - 0.5) * 12;
+      if (vib) { const l = a.createOscillator(), lg = a.createGain(); l.frequency.value = 6; lg.gain.value = vib; l.connect(lg).connect(o.frequency); l.start(t); l.stop(t + dur); }
+      o.connect(lp); o.start(t); o.stop(t + dur + 0.05);
+    });
+  }
+  const SND = {
+    horn() { tone([110, 138.6, 164.8], 0, 1.9, 'sawtooth', 0.2, 900); tone([220], 0, 1.9, 'square', 0.04, 1600); },
+    fanfare() { [[523.25, 0, .16], [659.25, .16, .16], [783.99, .32, .16], [1046.5, .48, .7]].forEach(([f, s, d]) => tone([f, f / 2], s, d, 'square', 0.07, 2600)); },
+    chime() { tone([659.25, 987.77], 0, 0.5, 'triangle', 0.16, 4000); tone([783.99, 1174.66], 0.18, 0.8, 'triangle', 0.16, 4000); },
+    trombone() { [[233.08, 0, .5], [220, .5, .5], [207.65, 1, .5], [196, 1.5, 1.4]].forEach(([f, s, d], i) => tone([f], s, d, 'sawtooth', 0.14, 1100, i === 3 ? 5 : 0)); },
+  };
+  const sndBtn = $('#snd');
+  sndBtn.onclick = () => {
+    soundOn = !soundOn; sndBtn.setAttribute('aria-pressed', soundOn);
+    sndBtn.textContent = soundOn ? '🔊 Sound on' : '🔇 Sound off';
+    if (!soundOn && ac) ac.suspend();
+  };
+
+  /* ---------- confetti ---------- */
+  const cv = $('#confetti'), cx = cv.getContext('2d');
+  let parts = [], raf = 0;
+  function burst(n, colors, power = 1) {
+    if (reduced) return;
+    const r = cv.getBoundingClientRect(), dpr = Math.min(devicePixelRatio || 1, 2);
+    cv.width = r.width * dpr; cv.height = r.height * dpr; cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const k = r.width / 900;
+    for (let i = 0; i < n; i++) {
+      const fromSide = i % 3 === 0, left = i % 2;
+      parts.push({
+        x: fromSide ? (left ? 0 : r.width) : r.width * (0.35 + Math.random() * 0.3), y: fromSide ? r.height * 0.7 : r.height * 0.32,
+        vx: fromSide ? (left ? 1 : -1) * (4 + Math.random() * 8) * k * power : (Math.random() - 0.5) * 14 * k * power,
+        vy: -(5 + Math.random() * 9) * k * power, w: (5 + Math.random() * 6) * k + 2, h: (9 + Math.random() * 8) * k + 3,
+        r: Math.random() * 6, vr: (Math.random() - 0.5) * 0.4, ph: Math.random() * 6, c: colors[i % colors.length], life: 0,
+      });
+    }
+    const H = r.height, W = r.width;
+    if (!raf) raf = requestAnimationFrame(function loop() {
+      cx.clearRect(0, 0, W, H);
+      parts = parts.filter(p => p.y < H + 30 && p.life < 420);
+      for (const p of parts) {
+        p.life++; p.vy += 0.22 * k; p.vx *= 0.985; p.vy *= 0.985;
+        p.x += p.vx + Math.sin(p.life / 9 + p.ph) * 0.8; p.y += p.vy; p.r += p.vr;
+        cx.save(); cx.translate(p.x, p.y); cx.rotate(p.r); cx.scale(1, Math.abs(Math.cos(p.life / 7 + p.ph)) + 0.15);
+        cx.fillStyle = p.c; cx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h); cx.restore();
+      }
+      raf = parts.length ? requestAnimationFrame(loop) : 0;
+      if (!raf) cx.clearRect(0, 0, W, H);
+    });
+  }
+
+  /* ---------- the room ---------- */
+  $('#room-demo').hidden = false;
+  const room = $('#room-scene'), sel = $('#team'), cap = $('#demo-status');
+  const chips = [...document.querySelectorAll('#timeline li')];
+  const groups = [['NFL', T.nfl.map(t => ({ ...t, lg: 'nfl' }))], ['College football', T.ncaaf.map(t => ({ ...t, lg: 'ncaaf' }))]];
+  groups.forEach(([label, list]) => {
+    const og = document.createElement('optgroup'); og.label = label;
+    list.forEach(t => { const o = document.createElement('option'); o.value = t.n; o.textContent = t.n; og.appendChild(o); });
+    sel.appendChild(og);
+  });
+  let team, rival, timers = [];
+  const later = (ms, fn) => timers.push(setTimeout(fn, ms));
+  function setTeam(name) {
+    team = find(name); sel.value = team.n;
+    const pool = ALL.filter(t => t.lg === team.lg && t.n !== team.n);
+    rival = pool[Math.floor(Math.random() * pool.length)];
+    room.style.setProperty('--c1', team.c1); room.style.setProperty('--c2', team.c2);
+    document.querySelectorAll('.ev:not(.rival)').forEach(b => { b.style.setProperty('--c1', team.c1); b.style.setProperty('--c2', team.c2); });
+    timeline.style.setProperty('--c1', team.c1);
+    $('#tv-l').src = team.img; $('#tv-l').alt = team.n; $('#tv-r').src = rival.img; $('#tv-r').alt = rival.n;
+    $('#badge-img').src = team.img; $('#badge-txt').textContent = `Following ${team.n} vs ${rival.n}`;
+  }
+  const timeline = $('#timeline');
+  sel.onchange = () => { setTeam(sel.value); play('td'); };
+
+  const EV = {
+    td: { word: 'TOUCHDOWN', flashes: 10, sound: () => { SND.horn(); crowd(3.2, 1); }, confetti: 200, cheer: true,
+      cap: t => `<strong>${t.n} touchdown.</strong> Lamps flashed in team colors, the goal horn sounded, the framed art TV on the wall lit up with a celebration (your main game stayed on), and the couch jumped up. That’s the whole room reacting.` },
+    fg: { word: 'FIELD GOAL', flashes: 4, sound: () => { SND.chime(); crowd(1.8, 0.6); }, confetti: 70, cheer: true,
+      cap: t => `<strong>Three points for ${t.n}.</strong> A smaller moment can get a smaller celebration: a quick pulse and a cheer.` },
+    win: { word: 'VICTORY', flashes: 16, sound: () => { SND.fanfare(); SND.horn(); crowd(4.2, 1); }, confetti: 360, cheer: true,
+      cap: t => `<strong>${t.n} win!</strong> Full stadium mode: a long light show, the fanfare, and confetti, with the framed art TV celebrating on the side wall.` },
+    rival: { word: 'UGH.', flashes: 0, sound: () => SND.trombone(), confetti: 0, sad: true,
+      cap: t => `<strong>${t.n} scored on you.</strong> Not every score is a party. With custom rules, the room can react to the other team too, like dimming for a moment of silence.` },
+  };
+  function reset() {
+    timers.forEach(clearTimeout); timers = [];
+    room.classList.remove('tko-on', 'cheer', 'boom', 'sad', 'shake');
+    chips.forEach(c => c.classList.remove('on'));
+    room.style.setProperty('--c1', team.c1); room.style.setProperty('--c2', team.c2);
+  }
+  function play(kind, silent) {
+    reset();
+    const e = EV[kind], who = e.sad ? rival : team;
+    $('#tko-img').src = who.img; $('#tko-txt').textContent = e.word;
+    cap.innerHTML = e.cap(who);
+    chips[0].classList.add('on');
+    if (e.sad) {
+      room.classList.add('sad');
+      room.style.setProperty('--c1', '#3a4466'); room.style.setProperty('--c2', '#222838');
+      room.style.setProperty('--lit', 0.08);
+      later(100, () => chips[1].classList.add('on'));
+      later(150, () => { if (!silent) e.sound(); chips[2].classList.add('on'); });
+      later(300, () => { room.classList.add('tko-on'); chips[3].classList.add('on'); });
+      later(3400, () => { room.classList.remove('tko-on', 'sad'); room.style.setProperty('--lit', 0.3); room.style.setProperty('--c1', team.c1); room.style.setProperty('--c2', team.c2); });
+      later(5200, () => chips.forEach(c => c.classList.remove('on')));
+      return;
+    }
+    later(90, () => chips[1].classList.add('on'));
+    for (let i = 0; i < e.flashes; i++) later(90 + i * 230, () => {
+      const odd = i % 2;
+      room.style.setProperty('--c1', odd ? team.c2 : team.c1); room.style.setProperty('--c2', odd ? team.c1 : team.c2);
+      room.style.setProperty('--lit', odd ? 0.55 : 1);
+    });
+    later(180, () => { if (!silent) e.sound(); room.classList.add('boom'); chips[2].classList.add('on'); });
+    later(280, () => { room.classList.add('tko-on'); chips[3].classList.add('on'); });
+    later(380, () => {
+      if (e.cheer) room.classList.add('cheer');
+      if (!reduced) room.classList.add('shake');
+      burst(e.confetti, [team.c1, team.c2, '#f7dc95', '#ffffff'], kind === 'win' ? 1.25 : 1);
+      chips[4].classList.add('on');
+    });
+    const end = 90 + e.flashes * 230;
+    later(end + 100, () => { room.style.setProperty('--c1', team.c1); room.style.setProperty('--c2', team.c2); room.style.setProperty('--lit', 0.6); room.classList.remove('shake'); });
+    later(end + 1400, () => { room.classList.remove('boom', 'cheer'); room.style.setProperty('--lit', 0.4); });
+    later(end + 2000, () => room.classList.remove('tko-on'));
+    later(end + 3600, () => { room.style.setProperty('--lit', 0.3); chips.forEach(c => c.classList.remove('on')); });
+  }
+  document.querySelectorAll('.ev').forEach(b => (b.onclick = () => play(b.dataset.ev)));
+  setTeam('Atlanta Falcons');
+
+  // Silent preview the first time the room scrolls into view.
+  let previewed = false;
+  new IntersectionObserver((ents, io) => {
+    if (ents[0].isIntersecting && !previewed && !reduced) { previewed = true; io.disconnect(); setTimeout(() => play('td', true), 500); }
+  }, { threshold: 0.6 }).observe(room);
+
+  /* ---------- gallery ---------- */
+  const gal = $('#gallery');
+  function renderGallery(tab) {
+    gal.innerHTML = '';
+    const list = tab === 'nfl' ? T.nfl.map(t => ({ ...t, lg: 'nfl' })) : T.ncaaf.map(t => ({ ...t, lg: 'ncaaf' })).filter(t => tab !== 'sec' || t.conf === 'SEC');
+    list.forEach((t, i) => {
+      const b = document.createElement('button');
+      b.className = 'tile'; b.style.setProperty('--c', t.c1); b.style.animationDelay = `${Math.min(i * 18, 500)}ms`;
+      b.innerHTML = `${t.rank ? `<span class="rk">#${t.rank}</span>` : ''}<img src="${t.img}" alt="" loading="lazy" width="384" height="384"><b>${t.lg === 'nfl' ? t.s : t.n}</b><small>${t.lg === 'nfl' ? t.n.replace(' ' + t.s, '') : t.m}</small>`;
+      b.setAttribute('aria-label', `Light the room for ${t.n}`);
+      b.onclick = () => {
+        setTeam(t.n);
+        room.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+        setTimeout(() => play('td'), reduced ? 0 : 650);
+      };
+      gal.appendChild(b);
+    });
+  }
+  document.querySelectorAll('.tabs button').forEach(b => (b.onclick = () => {
+    document.querySelectorAll('.tabs button').forEach(x => { x.classList.toggle('on', x === b); x.setAttribute('aria-pressed', String(x === b)); });
+    renderGallery(b.dataset.tab);
+  }));
+  renderGallery('nfl');
+
+  /* ---------- scroll reveals ---------- */
+  const rio = new IntersectionObserver(ents => ents.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); } }), { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(el => rio.observe(el));
+})();
