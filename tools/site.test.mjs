@@ -48,7 +48,8 @@ test('responsive page has no overflow, missing images, script errors, or broken 
       assert.equal(await page.locator('#comparison tbody tr').count(), 12);
       assert.match(await page.locator('#fantasy').textContent(), /Mac server feature/);
       assert.match(await page.locator('#fantasy').textContent(), /EXPERIMENTAL/);
-      assert.match(await page.locator('.screen-art figcaption').textContent(), /Frame TV art\. For sports fans\./);
+      assert.match(await page.locator('#how').textContent(), /plain English/i);
+      assert.equal(await page.locator('#teams .tile').count() >= 32, true);
     } finally {
       await page.close();
     }
@@ -101,15 +102,21 @@ test('room demo is local-only, repeatable, and resets; FAQ uses native disclosur
     await page.clock.install();
     const mutations = [];
     page.on('request', (request) => { if (request.method() !== 'GET') mutations.push(request.url()); });
+    const room = page.locator('#room-scene');
+    const on = () => room.evaluate((element) => element.classList.contains('tko-on'));
     await page.locator('#celebrate-button').click();
-    assert.equal(await page.locator('#room-demo').evaluate((element) => element.classList.contains('celebrating')), true);
-    assert.match(await page.locator('#demo-status').textContent(), /No devices triggered/);
-    await page.clock.fastForward(3000);
+    await page.clock.fastForward(600);
+    assert.equal(await on(), true);
+    assert.equal(await page.locator('.r-art #tko-img').count(), 1);
+    assert.equal(await page.locator('.r-tv .tko').count(), 0);
+    assert.match(await page.locator('#demo-status').textContent(), /framed art TV/);
+    await page.clock.fastForward(8000);
+    assert.equal(await on(), false);
     await page.locator('#celebrate-button').click();
-    await page.clock.fastForward(3000);
-    assert.equal(await page.locator('#room-demo').evaluate((element) => element.classList.contains('celebrating')), true);
-    await page.clock.fastForward(2600);
-    assert.equal(await page.locator('#room-demo').evaluate((element) => element.classList.contains('celebrating')), false);
+    await page.clock.fastForward(600);
+    assert.equal(await on(), true);
+    await page.clock.fastForward(8000);
+    assert.equal(await on(), false);
     assert.deepEqual(mutations, []);
     const question = page.locator('details').filter({ hasText: 'Does Stadiate stream the actual game?' });
     await question.locator('summary').click();

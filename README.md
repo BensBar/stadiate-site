@@ -95,7 +95,12 @@ app documentation on `main`.
   The Mac app currently has private builds, not a public signed download.
   Do not link visitors to the private product repository or invent store URLs.
 
-The room demo is a silent CSS illustration, labeled as such. It makes no
-device-control requests. Galleries remain static image links without JavaScript;
+The room demo is a CSS/WebAudio illustration, labeled as such. It makes no
+device-control requests and synthesizes its sounds in the browser. The main TV
+keeps showing the game; the touchdown celebration plays on a separate framed art
+screen on a side wall, so the broadcast is never "taken over". Galleries remain static image links without JavaScript;
 with JavaScript they gain scene selection and a keyboard-accessible native dialog.
-The Bebas Neue display font is self-hosted with its OFL license in `assets/fonts/`.
+The Cinzel display font is self-hosted with its OFL license in `assets/fonts/`.
+Stained-glass team crests live in `assets/glass/` and are indexed by
+`assets/teams.js`; they are artistic interpretations, so confirm trademark
+clearance for team marks before public launch.

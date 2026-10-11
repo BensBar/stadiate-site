@@ -3,22 +3,24 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Stadiate — Your game. Your room. Transformed.</title>
-  <meta name="description" content="Turn your Apple TV into a live scoreboard, a sports arena, or a work of art. Add the Stadiate Mac server for smart lights, room-filling sound, and coordinated screens.">
-  <meta name="theme-color" content="#101110">
+  <title>Stadiate — Any room can be your stadium</title>
+  <meta name="description" content="Stadiate turns your Apple TV into a live sports scoreboard. Add a Mac and your smart lights and speakers celebrate with you the moment your team scores.">
+  <meta name="theme-color" content="#05060b">
   <link rel="icon" href="assets/favicon.png" type="image/png">
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
   <link rel="canonical" href="https://stadiate.com/">
-  <meta property="og:title" content="Stadiate — Your game. Your room. Transformed.">
-  <meta property="og:description" content="Live boards. Living art. A whole room in on the game. Start with Apple TV; go all out with the Mac server.">
-  <meta property="og:image" content="https://stadiate.com/assets/shots/live-board.jpg">
-  <meta property="og:image:width" content="1920">
-  <meta property="og:image:height" content="1080">
+  <meta property="og:title" content="Stadiate — Any room can be your stadium">
+  <meta property="og:description" content="Live scores on your TV. Lights, sound, and screens that celebrate when your team scores.">
+  <meta property="og:image" content="https://stadiate.com/assets/glass/og.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="675">
   <meta property="og:url" content="https://stadiate.com/">
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
-  <link rel="preload" href="assets/fonts/BebasNeue-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/Cinzel-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" as="image" href="assets/glass/window-1280.webp" imagesrcset="assets/glass/window-1280.webp 1280w, assets/glass/window-2560.webp 2560w" imagesizes="(max-width: 1100px) 100vw, 1060px">
   <link rel="stylesheet" href="assets/site.css">
+  <script src="assets/teams.js" defer></script>
   <script src="assets/site.js" defer></script>
 </head>
 <body>
@@ -27,72 +29,157 @@
     <div class="wrap nav-inner">
       <a class="brand" href="./" aria-label="Stadiate home"><img src="assets/icon.png" alt="" width="38" height="38"><span>STADIATE<span class="brand-dot">.</span></span></a>
       <nav class="main-nav" aria-label="Main navigation">
-        <a href="#boards">The boards</a>
-        <a href="#art">Art View</a>
-        <a href="#setup">Your setup</a>
+        <a href="#how">How it works</a>
+        <a href="#room">Feel the room</a>
+        <a href="#boards">The screens</a>
+        <a href="#setup">What you need</a>
       </nav>
-      <a class="button button-small nav-cta" href="#start">Get game-ready <span aria-hidden="true">↗</span></a>
+      <a class="button button-small nav-cta" href="#start">Get game-ready</a>
     </div>
   </header>
 
   <main id="main">
-    <section class="hero">
-      <div class="hero-grid wrap">
-        <div class="hero-copy">
-          <p class="eyebrow"><span class="status-dot"></span> The home-field advantage</p>
-          <h1>Your game.<br>Your room.<br><span>Transformed.</span></h1>
-          <p class="hero-lede">Live scoreboards. Gallery-worthy art. A room that celebrates with you.</p>
-          <p class="hero-detail">Start with your Apple TV. Add a Mac server to bring the whole house into the game.</p>
-          <div class="hero-actions">
-            <a class="button" href="#boards">Explore the boards <span aria-hidden="true">↗</span></a>
-            <a class="text-link" href="#setup">Find your setup <span aria-hidden="true">↓</span></a>
-          </div>
-          <p class="micro hero-note">APPLE TV FIRST. MAC SERVER OPTIONAL.</p>
-        </div>
-        <div class="hero-stage" aria-label="A collection of current Stadiate product screens">
-          <div class="stage-orbit" aria-hidden="true"></div>
-          <figure class="hero-screen screen-mini">
-            <img src="assets/shots/multiview.jpg" width="1920" height="1080" alt="Four NFL games together on a Stadiate multiview board">
-            <figcaption><span class="status-dot"></span> Every game in view</figcaption>
-          </figure>
-          <figure class="hero-screen screen-main">
-            <div class="screen-bar"><span><span class="status-dot"></span> STADIATE / ACTION VIEW</span><span>01 — GAME DAY</span></div>
-            <img src="assets/shots/live-board.jpg" width="1920" height="1080" alt="Stadiate's football Action View rendering New England's 29–26 win over Buffalo on October 4, 2026" fetchpriority="high">
-          </figure>
-          <figure class="hero-screen screen-art">
-            <img src="assets/shots/art-nocturne.jpg" width="1920" height="1080" alt="Live scores painted into a star-filled Mediterranean night scene in Art View">
-            <figcaption><span class="art-spark" aria-hidden="true">✳</span> Frame TV art. For sports fans.</figcaption>
-          </figure>
-          <div class="stage-label"><span class="crosshair" aria-hidden="true">+</span> SAME PASSION.<br>ENTIRELY DIFFERENT VIEWS.</div>
-        </div>
+    <section class="hero" id="top">
+      <div class="rays" aria-hidden="true"></div>
+      <div class="shards" aria-hidden="true">
+        <i class="shard" style="--x:6%;--y:14%;--s:90px;--c:var(--ruby);--d:13s"></i>
+        <i class="shard" style="--x:86%;--y:10%;--s:120px;--c:var(--sapphire);--d:17s"></i>
+        <i class="shard" style="--x:14%;--y:58%;--s:70px;--c:var(--emerald);--d:11s"></i>
+        <i class="shard" style="--x:90%;--y:52%;--s:80px;--c:var(--amber);--d:15s"></i>
+        <i class="shard" style="--x:26%;--y:6%;--s:46px;--c:var(--amethyst);--d:12s"></i>
+        <i class="shard" style="--x:70%;--y:30%;--s:52px;--c:var(--teal);--d:14s"></i>
       </div>
-      <div class="wrap hero-footer">
-        <p>ANY ROOM CAN BE YOUR STADIUM.</p>
-        <p>REAL PRODUCT SCREENS <span aria-hidden="true">/</span> REAL WEEKEND RESULTS</p>
-        <a href="#boards" aria-label="Scroll to explore the boards">SCROLL TO EXPLORE <span aria-hidden="true">↓</span></a>
+      <div class="wrap hero-inner">
+        <p class="tag">Live sports · rooms that react</p>
+        <h1>Any room can be<br><span class="jewel">your stadium.</span></h1>
+        <p class="lede">Stadiate turns your Apple TV into a live sports scoreboard. Add a Mac and your smart lights and speakers join in. The moment your team scores, your whole room celebrates.</p>
+        <div class="cta">
+          <a class="button button-primary" href="#room">See it in action <span aria-hidden="true">→</span></a>
+          <a class="button button-ghost" href="#how">How does it work?</a>
+        </div>
+
+        <div class="stage" id="stage">
+          <div class="frame">
+            <div class="board" id="hero-board">
+              <img class="b-bg" src="assets/glass/window-1280.webp" srcset="assets/glass/window-1280.webp 1280w, assets/glass/window-2560.webp 2560w" sizes="(max-width: 1100px) 100vw, 1060px" width="2560" height="1440" alt="A stained-glass Stadiate scoreboard: a rose window over a glowing stadium, with team crests on either side" fetchpriority="high">
+              <img class="b-logo l" alt="">
+              <img class="b-logo r" alt="">
+              <div class="b-lbl ln"></div><div class="b-lbl rn"></div><div class="b-lbl ctr"></div>
+              <div class="b-ins"><div class="b-match"></div><div class="b-time"><span class="live-dot"></span><span class="t"></span></div><div class="b-venue"></div></div>
+              <div class="gleam"></div>
+              <div class="b-flash"></div>
+            </div>
+          </div>
+          <div class="stage-cap"><span>A stained-glass game board for your TV. Illustrative matchups.</span><div class="dots" id="dots"></div></div>
+        </div>
       </div>
     </section>
 
-    <div class="feature-strip" aria-label="Stadiate highlights">
-      <div class="wrap"><span>LIVE BOARDS</span><i aria-hidden="true">✳</i><span>LIVING ART</span><i aria-hidden="true">✳</i><span>SPOILER-SAFE SYNC</span><i aria-hidden="true">✳</i><span>ROOM-WIDE REACTIONS</span></div>
-    </div>
+    <div class="ribbon" aria-hidden="true"><div class="ribbon-track" id="ribbon"></div></div>
+
+    <section class="section wrap center" id="how">
+      <p class="eyebrow">New here? Start here</p>
+      <h2 class="title">Stadiate in <span class="jewel">plain English</span></h2>
+      <p class="sub">It’s an app for your TV that shows your team’s game as a beautiful live scoreboard. If you want more, it can also flash your lights and play the goal horn when your team scores.</p>
+      <div class="steps">
+        <div class="step reveal" style="--k:var(--sapphire)">
+          <div class="medal" aria-hidden="true">1</div>
+          <h3>Put it on your TV</h3>
+          <p>Open Stadiate on your Apple TV and pick your teams. Your TV becomes a live scoreboard, or a piece of art that shows the score.</p>
+          <span class="need need-required">Needs: Apple TV</span>
+        </div>
+        <div class="step reveal" style="--k:var(--emerald)">
+          <div class="medal" aria-hidden="true">2</div>
+          <h3>Connect your room <em>(optional)</em></h3>
+          <p>Run the Stadiate Mac server on a Mac. It links Stadiate to your smart lights and speakers, so the room can join in.</p>
+          <span class="need">Needs: a Mac + smart lights or speakers</span>
+        </div>
+        <div class="step reveal" style="--k:var(--ruby)">
+          <div class="medal" aria-hidden="true">3</div>
+          <h3>Your team scores. Everything reacts.</h3>
+          <p>The lights flash your team’s colors, the horn sounds, and a framed art screen on another wall lights up with your touchdown. Your main game is never interrupted. That’s what we mean by <em>feel the game</em>.</p>
+          <span class="need">Lights and sound need step 2</span>
+        </div>
+      </div>
+      <p class="gloss"><strong>New word?</strong> The <em>Mac server</em> (also called the <em>hub</em>) is a small Stadiate program that runs on a Mac while you watch. It’s the part that talks to your lights and speakers.</p>
+    </section>
+
+    <section id="room" class="section wrap center room-wrap-section">
+      <p class="eyebrow">Feel the room</p>
+      <h2 class="title">Your team scores.<br><span class="jewel">Your whole room reacts.</span></h2>
+      <p class="sub">Here’s the idea. Stadiate watches the game with you. The instant your team scores, your lamps flash in team colors, the goal horn sounds, and a framed art TV on the side wall bursts into a touchdown celebration. Your main broadcast is never touched. <strong>Pick a team below and press Touchdown to see it.</strong></p>
+
+      <div class="room-wrap">
+        <div class="room" id="room-scene">
+          <div class="r-wall"></div>
+          <div class="r-floor"></div>
+          <div class="r-mantel"><div class="shelf"></div><div class="legs"></div><div class="fire"></div></div>
+          <div class="r-wash"></div>
+          <div class="lamp l"><div class="cone"></div><div class="shade"></div><div class="pole"></div><div class="base"></div><div class="bulb"></div></div>
+          <div class="lamp r"><div class="cone"></div><div class="shade"></div><div class="pole"></div><div class="base"></div><div class="bulb"></div></div>
+          <div class="spk l"><i></i><i></i><i></i></div>
+          <div class="spk r"><i></i><i></i><i></i></div>
+          <div class="r-tv frame">
+            <div class="board">
+              <div class="b-field"></div>
+              <img class="b-logo l" id="tv-l" alt="">
+              <img class="b-logo r" id="tv-r" alt="">
+              <span class="b-live">Your game, uninterrupted</span>
+            </div>
+          </div>
+          <div class="r-art"><div class="art-frame"><div class="art-screen">
+            <img class="art-pic" src="assets/shots/art-terrace.jpg" alt="" width="1280" height="720" loading="lazy">
+            <div class="tko"><img id="tko-img" alt=""><span id="tko-txt">TOUCHDOWN</span></div>
+          </div></div><span class="art-label">Framed TV</span></div>
+          <svg class="sofa" viewBox="0 0 1600 330" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><g fill="#05060b"><g class="fan f1"><g class="arm" style="transform-origin:502px 218px;transform:rotate(var(--r));--r:-165deg;--u:-30deg"><rect x="488" y="66" width="28" height="154" rx="14"/><circle cx="502" cy="64" r="20"/></g><g class="arm" style="transform-origin:618px 218px;transform:rotate(var(--r));--r:165deg;--u:30deg"><rect x="604" y="66" width="28" height="154" rx="14"/><circle cx="618" cy="64" r="20"/></g><ellipse cx="560" cy="244" rx="84" ry="54"/><rect x="542" y="190" width="36" height="44" rx="10"/><circle cx="560" cy="160" r="48"/></g><g class="fan f2"><g class="arm" style="transform-origin:742px 218px;transform:rotate(var(--r));--r:-165deg;--u:-30deg"><rect x="728" y="66" width="28" height="154" rx="14"/><circle cx="742" cy="64" r="20"/></g><g class="arm" style="transform-origin:858px 218px;transform:rotate(var(--r));--r:165deg;--u:30deg"><rect x="844" y="66" width="28" height="154" rx="14"/><circle cx="858" cy="64" r="20"/></g><ellipse cx="800" cy="244" rx="84" ry="54"/><rect x="782" y="176" width="36" height="44" rx="10"/><circle cx="800" cy="146" r="48"/></g><g class="fan f3"><g class="arm" style="transform-origin:982px 218px;transform:rotate(var(--r));--r:-165deg;--u:-30deg"><rect x="968" y="66" width="28" height="154" rx="14"/><circle cx="982" cy="64" r="20"/></g><g class="arm" style="transform-origin:1098px 218px;transform:rotate(var(--r));--r:165deg;--u:30deg"><rect x="1084" y="66" width="28" height="154" rx="14"/><circle cx="1098" cy="64" r="20"/></g><ellipse cx="1040" cy="244" rx="84" ry="54"/><rect x="1022" y="194" width="36" height="44" rx="10"/><circle cx="1040" cy="164" r="48"/></g><path d="M290 236q0-14 14-14h992q14 0 14 14v94H290z"/><rect x="200" y="200" width="130" height="130" rx="40"/><rect x="1270" y="200" width="130" height="130" rx="40"/></g></svg>
+          <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+          <div class="r-badge"><img id="badge-img" alt=""><span id="badge-txt">Following</span></div>
+          <div class="r-tag" aria-hidden="true"><span>Lamps</span><span>Main TV</span><span>Speakers</span></div>
+        </div>
+
+        <div class="console" id="room-demo" hidden>
+          <div class="row">
+            <label for="team">Your team</label>
+            <select id="team" aria-label="Choose your team"></select>
+            <button class="snd" id="snd" type="button" aria-pressed="true">🔊 Sound on</button>
+          </div>
+          <div class="row">
+            <button class="ev big" id="celebrate-button" type="button" data-ev="td">🏈 Touchdown!</button>
+            <button class="ev" type="button" data-ev="fg">Field goal</button>
+            <button class="ev" type="button" data-ev="win">🏆 Win</button>
+            <button class="ev rival" type="button" data-ev="rival">😩 They scored</button>
+          </div>
+        </div>
+        <ol class="timeline" id="timeline" aria-label="What happens when your team scores">
+          <li>⚡ Score detected</li><li>💡 Lights go team colors</li><li>🔊 Goal horn</li><li>🖼️ Art TV celebrates</li><li>🙌 Room erupts</li>
+        </ol>
+        <p class="room-cap" id="demo-status" role="status" aria-live="polite">Pick a team, then press <strong>Touchdown</strong>.</p>
+        <p class="fine">This is an illustration of what Stadiate does, not a recording. The sound is generated in your browser and nothing is sent to any lights or speakers. In real life, lights and speakers need the Mac server and compatible devices; colored effects need color-capable lights.</p>
+      </div>
+
+      <div class="senses">
+        <div class="sense reveal" style="--k:var(--amber)"><b>See it</b><p>Philips Hue, Govee, and Home Assistant lights flash in your team’s colors, then settle into a warm glow.</p></div>
+        <div class="sense reveal" style="--k:var(--sapphire)"><b>Hear it</b><p>Add Sonos or local sound effects for the goal horn, spoken calls, and stadium ambience.</p></div>
+        <div class="sense reveal" style="--k:var(--ruby)"><b>Feel it</b><p>When lights, sound, and every connected screen react at once, you’re not just watching a game. You’re in it.</p></div>
+      </div>
+    </section>
 
     <section class="section boards-section wrap" id="boards">
       <div class="section-heading">
-        <div><p class="eyebrow"><span class="section-number">01 /</span> Built for the big screen</p><h2>Not background noise.<br><span class="muted">The main attraction.</span></h2></div>
-        <p class="section-intro">Give the game a screen of its own. From a broadcast-style stadium to an all-games command center, find your kind of front row.</p>
+        <div><p class="eyebrow">The screens</p><h2 class="title">Not background noise.<br><span class="jewel">The main attraction.</span></h2></div>
+        <p class="section-intro">Give the game a screen of its own. Pick the look you like: a stadium view, every game at once, a scrolling ticker, or a painting that keeps score. These are real screens from the app.</p>
       </div>
       <div class="board-showcase" data-tabs>
         <div class="view-picker" aria-label="Choose a board to preview" hidden>
-          <button class="view-choice" type="button" aria-pressed="true" data-view="action"><span class="choice-number">01</span> Action View <span class="choice-tag">IN THE GAME</span></button>
-          <button class="view-choice" type="button" aria-pressed="false" data-view="multiview"><span class="choice-number">02</span> Multiview <span class="choice-tag">ALL AT ONCE</span></button>
-          <button class="view-choice" type="button" aria-pressed="false" data-view="art"><span class="choice-number">03</span> Art View <span class="choice-tag">A NEW PERSPECTIVE</span></button>
-          <button class="view-choice" type="button" aria-pressed="false" data-view="ticker"><span class="choice-number">04</span> Ticker <span class="choice-tag">KEEP IT ROLLING</span></button>
+          <button class="view-choice" type="button" aria-pressed="true" data-view="action" style="--k:var(--ruby)"><span class="choice-number">1</span> Game view <span class="choice-tag">Follow one game</span></button>
+          <button class="view-choice" type="button" aria-pressed="false" data-view="multiview" style="--k:var(--sapphire)"><span class="choice-number">2</span> Multiview <span class="choice-tag">Every game at once</span></button>
+          <button class="view-choice" type="button" aria-pressed="false" data-view="art" style="--k:var(--amber)"><span class="choice-number">3</span> Art View <span class="choice-tag">Scores as art</span></button>
+          <button class="view-choice" type="button" aria-pressed="false" data-view="ticker" style="--k:var(--emerald)"><span class="choice-number">4</span> Ticker <span class="choice-tag">Scores that scroll</span></button>
         </div>
         <figure class="board-display">
-          <a class="image-expand" id="board-expand" href="assets/shots/live-board.jpg" data-lightbox data-caption="Action View — New England 29, Buffalo 26 · October 4, 2026. Real final scores and stats rendered in the current Stadiate web board, not recorded live." aria-label="Enlarge Action View screenshot">
+          <a class="image-expand" id="board-expand" href="assets/shots/live-board.jpg" data-lightbox data-caption="Game view — New England 29, Buffalo 26 · October 4, 2026. Real final scores and stats rendered in the current Stadiate web board, not recorded live." aria-label="Enlarge Game view screenshot">
             <img id="board-image" src="assets/shots/live-board.jpg" width="1920" height="1080" alt="Football Action View showing a stadium field, team scores, down and distance, and recent plays" loading="lazy">
-            <span class="expand-label" aria-hidden="true">VIEW FULL SCREEN ↗</span>
+            <span class="expand-label" aria-hidden="true">Full screen ↗</span>
           </a>
           <figcaption class="board-caption">
             <div aria-live="polite" aria-atomic="true"><h3 id="board-title">Feel every down.</h3><p id="board-description">The field. The possession. The play that changes everything. A live game visualization, not a video broadcast.</p></div>
@@ -100,10 +187,10 @@
           </figcaption>
         </figure>
       </div>
-      <p class="capture-note">Real results from October 3–4, 2026 (Eastern time), freshly rendered in Stadiate—not screenshots recorded during those games. Final scores, player stats, and play-by-play come from ESPN. Native Apple TV layouts may differ. <a href="assets/shots/capture.json">Capture sources ↗</a></p>
+      <p class="capture-note">Real results from October 3–4, 2026 (Eastern time), freshly rendered in Stadiate, not recorded during those games. Final scores, player stats, and play-by-play come from ESPN. Native Apple TV layouts may differ. <a href="assets/shots/capture.json">Capture sources ↗</a></p>
       <a class="college-preview" href="assets/shots/college-board.jpg" data-lightbox data-caption="College Action View — Georgia 38, Vanderbilt 14 · October 3, 2026. Real final scores and stats rendered in the current Stadiate web board, not recorded live.">
-        <img src="assets/shots/college-board.jpg" width="1920" height="1080" alt="Stadiate Action View rendering Georgia's 38–14 win over Vanderbilt" loading="lazy">
-        <span><span class="micro">SATURDAY, TOO.</span><strong>Georgia 38. Vanderbilt 14.</strong><span>Explore the college football board ↗</span></span>
+        <img src="assets/shots/college-board.jpg" width="1920" height="1080" alt="Stadiate Action View rendering Georgia’s 38–14 win over Vanderbilt" loading="lazy">
+        <span><span class="micro">Saturday, too</span><strong>Georgia 38. Vanderbilt 14.</strong><span>Explore the college football board ↗</span></span>
       </a>
       <noscript><p class="no-script">Preview more boards: <a href="assets/shots/multiview.jpg">Multiview</a> · <a href="assets/shots/art-terrace.jpg">Art View</a> · <a href="assets/shots/command-ticker.jpg">Ticker</a>.</p></noscript>
     </section>
@@ -111,13 +198,13 @@
     <section class="art-section" id="art">
       <div class="wrap">
         <div class="section-heading">
-          <div><p class="eyebrow"><span class="section-number">02 /</span> Art View</p><h2>A little less scoreboard.<br><em>A lot more atmosphere.</em></h2></div>
-          <div class="section-intro"><p>Scores carved into marble. Lettered on a café chalkboard. Painted into a Japanese print. This isn’t a picture behind a scoreboard. The scores are part of the art.</p><span class="outline-label light-label">ON APPLE TV. NO MAC REQUIRED.</span><p class="art-hardware-note">Bring the gallery look to a Frame TV—or any TV connected to your Apple TV. No separate Samsung TV app required.</p></div>
+          <div><p class="eyebrow">Art View</p><h2 class="title">A little less scoreboard.<br><span class="jewel">A lot more atmosphere.</span></h2></div>
+          <div class="section-intro"><p>Scores carved into marble. Lettered on a café chalkboard. Painted into a Japanese print. The scores are part of the art, so your TV looks great even when you aren’t watching the game.</p><span class="outline-label">ON APPLE TV. NO MAC REQUIRED.</span><p class="art-hardware-note">Bring the gallery look to a Frame TV, or any TV connected to your Apple TV. No separate Samsung TV app required.</p></div>
         </div>
         <figure class="art-feature">
           <a class="image-expand art-frame" id="art-expand" href="assets/shots/art-terrace.jpg" data-lightbox data-caption="Terrazza dei Limoni — Stadiate Art View rendering real October 3–4, 2026 final scores." aria-label="Enlarge Terrazza dei Limoni Art View">
             <img id="art-image" src="assets/shots/art-terrace.jpg" alt="Sunlit Mediterranean terrace with game scores inscribed into marble pedestals and a ceramic pot" width="1920" height="1080" loading="lazy">
-            <span class="expand-label" aria-hidden="true">STEP INSIDE ↗</span>
+            <span class="expand-label" aria-hidden="true">Step inside ↗</span>
           </a>
           <figcaption><span id="art-title" aria-live="polite">Terrazza dei Limoni</span><span>LIVE SCORES. IN THE ART ITSELF.</span><span id="art-count">01 / 06</span></figcaption>
         </figure>
@@ -134,39 +221,24 @@
       </div>
     </section>
 
-    <section class="section room-section wrap" id="room">
-      <div class="room-copy">
-        <p class="eyebrow"><span class="section-number">03 /</span> Add the Mac. Feel the moment.</p>
-        <h2>They score.<br><span class="red">Your room erupts.</span></h2>
-        <p class="section-intro">The optional Mac server takes Stadiate beyond the screen. Team-colored lights. The horn. A celebration on every connected board. One big moment, all around you.</p>
-        <div class="room-features">
-          <div><span aria-hidden="true">↗</span><p><strong>Lights that join the celebration</strong>Connect compatible Hue, Govee LAN, and Home Assistant devices.</p></div>
-          <div><span aria-hidden="true">♫</span><p><strong>Give the moment a voice</strong>Add Sonos, local sound effects, spoken calls, and stadium ambience.</p></div>
-          <div><span aria-hidden="true">⊞</span><p><strong>Every screen has a role</strong>Coordinate takeovers while each room keeps its own board layout.</p></div>
-        </div>
-        <a href="#comparison" class="text-link">See what the Mac server adds <span aria-hidden="true">↗</span></a>
+    <section id="teams" class="section wrap center">
+      <p class="eyebrow">The glass collection</p>
+      <h2 class="title">Every team, <span class="jewel">in stained glass.</span></h2>
+      <p class="sub">Every NFL team and 36 college programs, including the entire SEC, designed as glowing stained-glass crests. Tap any team to light up the room above in its colors.</p>
+      <div class="tabs" role="group" aria-label="Choose a league">
+        <button type="button" class="on" aria-pressed="true" data-tab="nfl">NFL · 32</button>
+        <button type="button" aria-pressed="false" data-tab="ncaaf">College · 36</button>
+        <button type="button" aria-pressed="false" data-tab="sec">SEC · 16</button>
       </div>
-      <div class="room-demo" id="room-demo">
-        <div class="room-demo-label"><span class="status-dot"></span> A LITTLE TASTE OF GAME DAY</div>
-        <div class="room-scene">
-          <div class="light-bar light-left" aria-hidden="true"></div>
-          <div class="light-bar light-right" aria-hidden="true"></div>
-          <div class="demo-tv">
-            <img src="assets/shots/live-board.jpg" alt="A Stadiate board in a diagram of a connected room" width="1920" height="1080" loading="lazy">
-            <div class="demo-takeover" aria-hidden="true"><span>YOUR TEAM</span><strong>TOUCHDOWN.</strong><span>BRING THE HOUSE DOWN.</span></div>
-          </div>
-          <div class="room-console" aria-hidden="true"><span></span><i></i><span></span></div>
-          <div class="room-connections" aria-hidden="true"><span>LIGHTS</span><span>SCREEN</span><span>SOUND</span></div>
-        </div>
-        <button class="button demo-button" id="celebrate-button" type="button" hidden>Test the atmosphere <span aria-hidden="true">↗</span></button>
-        <p class="demo-status" id="demo-status" role="status">Illustrated room response, not a product capture. Silent; no devices connected.</p>
-      </div>
+      <div class="gallery" id="gallery"></div>
+      <noscript><p class="no-script">Team crests appear here when JavaScript is on.</p></noscript>
+      <p class="fine">Artistic stained-glass interpretations, in development. More leagues are being glazed now.</p>
     </section>
 
     <section class="sync-section">
       <div class="wrap sync-inner">
-        <div class="sync-mark" aria-hidden="true"><span>IN</span>SYNC<span class="status-dot"></span></div>
-        <div><p class="eyebrow">Big reactions. Not big spoilers.</p><h2>The celebration should never<br>beat the play to your screen.</h2><p>Sports data can run ahead of your stream. Stadiate holds moments, then lets you align them with your TV using SYNC on your phone. The default hold is about 75 seconds; calibrate it to your broadcast.</p></div>
+        <div class="sync-mark" aria-hidden="true"><span>NO</span>SPOILERS</div>
+        <div><p class="eyebrow">Big reactions. Not big spoilers.</p><h2>The celebration should never<br>beat the play to your screen.</h2><p>Live sports data usually arrives a few seconds ahead of your stream. Stadiate holds each moment, then lets you line it up with your TV using SYNC on your phone. The default hold is about 75 seconds; adjust it to match your broadcast.</p></div>
         <span class="outline-label">APPLE TV + MAC SERVER</span>
       </div>
     </section>
@@ -174,29 +246,29 @@
     <section class="fantasy-section wrap" id="fantasy">
       <div class="fantasy-copy">
         <p class="eyebrow">Fantasy football · Mac server feature</p>
-        <h2>Your roster.<br><span class="muted">Your reasons to roar.</span></h2>
-        <p>Celebrate your fantasy players’ scoring moments—even when their NFL teams aren’t in your follows. Choose starters only or your whole roster, then let their big plays join your room’s celebrations.</p>
+        <h2 class="title">Your roster.<br><span class="jewel">Your reasons to roar.</span></h2>
+        <p>Celebrate your fantasy players’ scoring moments, even when their NFL teams aren’t in your follows. Choose starters only or your whole roster, then let their big plays join your room’s celebrations.</p>
         <div class="fantasy-providers"><span>Sleeper</span><span>Manual roster</span><span>CBS <small>EXPERIMENTAL</small></span></div>
         <p class="fantasy-caveat">Player-event celebrations, not a fantasy-points dashboard. CBS is a best-effort connection; its embedded sign-in still needs live validation and may be blocked by CBS.</p>
       </div>
       <ol class="fantasy-steps">
-        <li><span>01</span><div><strong>Pick your players.</strong><p>Connect a supported roster or add players manually. Review the player mappings and any sync warnings.</p></div></li>
-        <li><span>02</span><div><strong>Keep the moment spoiler-safe.</strong><p>Fantasy scoring events use the same game delay and SYNC calibration as team celebrations.</p></div></li>
-        <li><span>03</span><div><strong>Make it personal.</strong><p>Use the hub’s player celebrations with your connected boards and configured room effects.</p></div></li>
+        <li><span>1</span><div><strong>Pick your players.</strong><p>Connect a supported roster or add players manually. Review the player mappings and any sync warnings.</p></div></li>
+        <li><span>2</span><div><strong>Keep the moment spoiler-safe.</strong><p>Fantasy scoring events use the same game delay and SYNC calibration as team celebrations.</p></div></li>
+        <li><span>3</span><div><strong>Make it personal.</strong><p>Use the hub’s player celebrations with your connected boards and configured room effects.</p></div></li>
       </ol>
     </section>
 
     <section class="section setup-section wrap" id="setup">
       <div class="section-heading">
-        <div><p class="eyebrow"><span class="section-number">04 /</span> Two ways to Stadiate</p><h2>Start with a screen.<br><span class="muted">Go all out when you’re ready.</span></h2></div>
-        <p class="section-intro">The Mac isn’t a requirement. It’s the next level. Here’s exactly where Apple TV stands on its own—and what changes when you add a server.</p>
+        <div><p class="eyebrow">What you need</p><h2 class="title">Start with a screen.<br><span class="jewel">Go all out when you’re ready.</span></h2></div>
+        <p class="section-intro">You don’t need a Mac to use Stadiate. It’s the next level. Here’s what Apple TV does on its own, and what changes when you add the Mac server.</p>
       </div>
       <div class="setup-cards">
-        <article class="setup-card">
-          <div class="setup-card-top"><span class="micro">THE STANDALONE SETUP</span><span class="device-symbol tv-symbol" aria-hidden="true"></span></div>
+        <article class="setup-card" style="--k:var(--sapphire)">
+          <div class="setup-card-top"><span class="micro">Level 1 · The simple setup</span><span class="device-symbol tv-symbol" aria-hidden="true"></span></div>
           <h3>Just Apple TV.</h3>
-          <p class="setup-tagline">One app. A whole new view.</p>
-          <p>Stadiate gets sports data directly on your Apple TV. No Mac running in the background. No separate hub to set up.</p>
+          <p class="setup-tagline">One app. A whole new way to watch.</p>
+          <p>Stadiate gets sports data directly on your Apple TV. No Mac running in the background and nothing else to set up.</p>
           <ul class="check-list">
             <li>Live scores, team follows, and multiview boards</li>
             <li>Arena, full-screen ticker, and 14 Art View themes</li>
@@ -207,11 +279,11 @@
           <p class="setup-limit">Keep Stadiate open on the Apple TV. tvOS does not keep it polling or serving its remote in the background.</p>
           <a class="text-link" href="#start">Apple TV setup <span aria-hidden="true">↗</span></a>
         </article>
-        <article class="setup-card server-card">
-          <div class="setup-card-top"><span class="micro">THE WHOLE-ROOM SETUP</span><span class="device-symbol mac-symbol" aria-hidden="true"></span></div>
+        <article class="setup-card server-card" style="--k:var(--ruby)">
+          <div class="setup-card-top"><span class="micro">Level 2 · The whole-room setup</span><span class="device-symbol mac-symbol" aria-hidden="true"></span></div>
           <h3>Add the Mac server.</h3>
           <p class="setup-tagline">From a great screen to a great room.</p>
-          <p>Run the Stadiate hub on a Mac that stays on during games. Pair your Apple TV or use browser boards on other screens.</p>
+          <p>Run the Stadiate hub on a Mac that stays on during games. Pair your Apple TV, or open browser boards on other screens.</p>
           <ul class="check-list">
             <li>Hue, Govee LAN, Home Assistant, and Sonos</li>
             <li>Custom rules, sound effects, and spoken calls</li>
@@ -226,32 +298,36 @@
       </div>
 
       <div class="comparison" id="comparison">
-        <div class="comparison-heading"><h3>The side-by-side.</h3><span class="micro">NO GUESSWORK REQUIRED.</span></div>
+        <div class="comparison-heading"><h3>The side-by-side.</h3><span class="micro">No guesswork required</span></div>
+        <div class="table-scroll">
         <table>
           <caption class="sr-only">Stadiate capabilities with Apple TV alone and with the optional Mac server</caption>
           <thead><tr><th scope="col">What you can do</th><th scope="col">Apple TV only</th><th scope="col">With a Mac server</th></tr></thead>
           <tbody>
-            <tr><th scope="row">Follow teams &amp; see live scores</th><td><span class="yes">✓</span> On-device</td><td><span class="yes">✓</span> Hub-managed feeds</td></tr>
-            <tr><th scope="row">Multiview, Arena &amp; ticker</th><td><span class="yes">✓</span> Native TV views</td><td><span class="yes">✓</span> Configurable board layouts</td></tr>
-            <tr><th scope="row">Art View</th><td><span class="yes">✓</span> 14 themes, no hub</td><td><span class="yes">✓</span> Art on connected boards</td></tr>
+            <tr><th scope="row">Follow teams &amp; see live scores</th><td><span class="yes">✓</span> On the Apple TV</td><td><span class="yes">✓</span> Managed by the Mac</td></tr>
+            <tr><th scope="row">Multiview, Arena &amp; ticker</th><td><span class="yes">✓</span> Built-in TV views</td><td><span class="yes">✓</span> Configurable board layouts</td></tr>
+            <tr><th scope="row">Art View</th><td><span class="yes">✓</span> 14 themes, no Mac</td><td><span class="yes">✓</span> Art on connected boards</td></tr>
             <tr><th scope="row">Celebrations &amp; spoiler-safe SYNC</th><td><span class="yes">✓</span> On this Apple TV</td><td><span class="yes">✓</span> Across the connected room</td></tr>
-            <tr><th scope="row">Phone control</th><td><span class="yes">✓</span> Pair to this TV via QR</td><td><span class="yes">✓</span> Full hub remote &amp; settings</td></tr>
+            <tr><th scope="row">Phone control</th><td><span class="yes">✓</span> Pair to this TV via QR</td><td><span class="yes">✓</span> Full remote &amp; settings</td></tr>
             <tr><th scope="row">Smart lights &amp; Sonos</th><td><span class="not-included">Not standalone</span></td><td><span class="yes">✓</span> Compatible devices required</td></tr>
             <tr><th scope="row">Spoken calls &amp; stadium ambience</th><td><span class="not-included">Native horns only</span></td><td><span class="yes">✓</span> Configure audio &amp; voice</td></tr>
             <tr><th scope="row">Coordinate multiple screens</th><td><span class="not-included">Each TV is independent</span></td><td><span class="yes">✓</span> Shared events, individual layouts</td></tr>
             <tr><th scope="row">Live video capture &amp; PiP</th><td><span class="not-included">No video capture</span></td><td><span class="yes">✓</span> Capture source + ffmpeg</td></tr>
-            <tr><th scope="row">Custom automation &amp; webhooks</th><td><span class="not-included">Not standalone</span></td><td><span class="yes">✓</span> Hub rules &amp; integrations</td></tr>
-            <tr><th scope="row">Fantasy-player celebrations</th><td><span class="not-included">Requires a hub</span></td><td><span class="yes">✓</span> Sleeper, manual, experimental CBS</td></tr>
-            <tr><th scope="row">Run while the TV app is closed</th><td><span class="not-included">No · foreground only</span></td><td><span class="yes">✓</span> Hub runs while Mac is awake</td></tr>
+            <tr><th scope="row">Custom automation &amp; webhooks</th><td><span class="not-included">Not standalone</span></td><td><span class="yes">✓</span> Rules &amp; integrations</td></tr>
+            <tr><th scope="row">Fantasy-player celebrations</th><td><span class="not-included">Requires the Mac server</span></td><td><span class="yes">✓</span> Sleeper, manual, experimental CBS</td></tr>
+            <tr><th scope="row">Run while the TV app is closed</th><td><span class="not-included">No · foreground only</span></td><td><span class="yes">✓</span> Runs while the Mac is awake</td></tr>
           </tbody>
         </table>
+        </div>
         <p class="capture-note">“With a Mac server” describes a configured hub and compatible connected devices, not features unlocked by installation alone. Live video requires your own source and permissions; protected content may not be capturable.</p>
       </div>
     </section>
 
     <section class="faq-section wrap" aria-labelledby="faq-heading">
-      <div><p class="eyebrow">Before kickoff</p><h2 id="faq-heading">Good questions.<br>Straight answers.</h2></div>
+      <div><p class="eyebrow">Before kickoff</p><h2 class="title" id="faq-heading">Good questions.<br><span class="jewel">Straight answers.</span></h2></div>
       <div class="faq-list">
+        <details open><summary>So what actually is Stadiate?<span aria-hidden="true">+</span></summary><p>Stadiate is an app for Apple TV that shows live sports scores as a big, beautiful scoreboard or as living art. If you add the optional Mac server, it can also flash your smart lights, play sounds, and light up a second screen (like a framed art TV) when your team scores, while your main game keeps playing. It doesn’t stream the game itself.</p></details>
+        <details><summary>What is the “Mac server”?<span aria-hidden="true">+</span></summary><p>A small Stadiate program that runs on a Mac while you watch. It acts as the go-between for your lights, speakers, and extra screens, which is why it’s needed for room effects. You can skip it and still use Stadiate on your Apple TV.</p></details>
         <details><summary>Can I celebrate my fantasy football players?<span aria-hidden="true">+</span></summary><p>Yes, with the Mac server. Use Sleeper, a manual roster, or the experimental CBS connector, choose starters only or your whole roster, and check that your players are mapped. NFL fantasy players can be watched even when their teams aren’t in Follows. Their scoring events still pass through the anti-spoiler delay and per-game SYNC. This is player-score detection and celebration, not a fantasy-points or league-standings service. CBS is best-effort, not an official public API, and its embedded sign-in may be blocked. The safe preview is a labeled demonstration; it does not trigger real lights or sounds.</p></details>
         <details><summary>Does Stadiate stream the actual game?<span aria-hidden="true">+</span></summary><p>No. Standalone boards visualize sports data; Stadiate does not include broadcast rights, TV channels, or a sports subscription. With the Mac server, you can bring your own supported video source through screen or USB capture. That requires ffmpeg, the relevant macOS permissions, and an unprotected source; DRM restrictions still apply.</p></details>
         <details><summary>Can it run alongside another app on one Apple TV?<span aria-hidden="true">+</span></summary><p>Not as an overlay on another tvOS app. Stadiate needs to be the foreground app to show its board, poll scores, and serve its phone remote. Use it on a companion screen beside your broadcast, or use the Mac server’s supported capture setup to bring video into a Stadiate board.</p></details>
@@ -264,15 +340,15 @@
     <section class="start-section" id="start">
       <div class="wrap">
         <div class="start-top"><p class="eyebrow">Your home-field advantage starts here</p><span class="release-label"><span class="status-dot"></span> PUBLIC RELEASE COMING SOON</span></div>
-        <h2>Any room.<br><span>Your stadium.</span></h2>
+        <h2>Any room.<br><span class="jewel">Your stadium.</span></h2>
         <div class="start-bottom">
           <p>Apple TV on its own. Or the whole room with a Mac.<br>Choose your setup now. Be ready for kickoff.</p>
-          <a class="button button-dark" href="#setup">Choose your setup <span aria-hidden="true">↗</span></a>
+          <a class="button button-primary" href="#setup">Choose your setup <span aria-hidden="true">→</span></a>
         </div>
         <div class="getting-started">
-          <div><span class="micro">01 / APPLE TV</span><p>When available, install Stadiate, choose your teams, then pick Board, Arena, Ticker, or Art View. Scan the phone-remote QR to pair.</p></div>
-          <div><span class="micro">02 / OPTIONAL MAC SERVER</span><p>With a Stadiate Mac build, start the hub and complete its setup wizard. On Apple TV, open Settings → Hub (optional) to pair.</p></div>
-          <div><span class="micro">RELEASE STATUS</span><p>The Mac app is currently in private builds; a public signed installer is not yet available. Public download links will appear here when ready.</p></div>
+          <div><span class="micro">1 · Apple TV</span><p>When available, install Stadiate, choose your teams, then pick Board, Arena, Ticker, or Art View. Scan the phone-remote QR to pair.</p></div>
+          <div><span class="micro">2 · Optional Mac server</span><p>With a Stadiate Mac build, start the hub and complete its setup wizard. On Apple TV, open Settings → Hub (optional) to pair.</p></div>
+          <div><span class="micro">Release status</span><p>The Mac app is currently in private builds; a public signed installer is not yet available. Public download links will appear here when ready.</p></div>
         </div>
       </div>
     </section>
@@ -282,9 +358,9 @@
     <div class="wrap footer-top">
       <a class="brand" href="./"><img src="assets/icon.png" alt="" width="34" height="34"><span>STADIATE<span class="brand-dot">.</span></span></a>
       <p>For the love of the game.<br>And the room you watch it in.</p>
-      <nav aria-label="Footer navigation"><a href="#boards">The boards</a><a href="#setup">Your setup</a><a href="privacy.html">Privacy</a></nav>
+      <nav aria-label="Footer navigation"><a href="#how">How it works</a><a href="#room">Feel the room</a><a href="#setup">What you need</a><a href="privacy.html">Privacy</a></nav>
     </div>
-    <div class="wrap footer-bottom"><span>© 2026 Stadiate</span><span>Independent of Apple, sports leagues, teams, and data providers. All trademarks belong to their owners.</span><a href="#main">BACK TO TOP ↑</a></div>
+    <div class="wrap footer-bottom"><span>© 2026 Stadiate</span><span>Independent of Apple, sports leagues, teams, and data providers. All trademarks belong to their owners.</span><a href="#main">Back to top ↑</a></div>
   </footer>
 
   <dialog class="lightbox" id="lightbox" aria-labelledby="lightbox-caption">
