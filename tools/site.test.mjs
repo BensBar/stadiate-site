@@ -249,12 +249,11 @@ test('every HTML page loads the cookieless analytics beacon exactly once', async
   assert.match(privacy, /tv\.stadiate\.com/);
 });
 
-test('the main TV replays the verified Falcons-Saints drive and fires the touchdown on cue', async () => {
+test('the drive shown on the page is the drive that was captured', async () => {
   const manifest = JSON.parse(await readFile(new URL('../assets/shots/drive-capture.json', import.meta.url), 'utf8'));
   const page = await newPage({ reducedMotion: 'reduce' });
   try {
     await page.goto(base);
-    await page.clock.install();
     const host = new URL(base).host;
     const offsite = [];
     page.on('request', (request) => {
@@ -274,24 +273,66 @@ test('the main TV replays the verified Falcons-Saints drive and fires the touchd
     assert.equal(onPage.at(-1).scoring, true, 'the drive must end on the scoring play');
     assert.match(await page.locator('#art-pic').getAttribute('src'), /drive-board\.jpg$/);
 
-    const cue = Number(await page.locator('#play-drive').getAttribute('data-td-at'));
-    assert.equal(cue, 14);
+    assert.equal(Number(await page.locator('#play-drive').getAttribute('data-td-at')), 14);
+    // No video ships with the site, so the page must stand on its own.
+    assert.equal(await page.locator('#tv-clip').getAttribute('src'), null);
+    assert.equal(await page.locator('.r-tv .tko').count(), 0);
+    assert.deepEqual(offsite, [], 'the demo must load nothing off-site');
+  } finally {
+    await page.close();
+  }
+});
+
+test('an installed clip plays on the main TV, with sound, and scores on the cue', async () => {
+  // Synthetic fixture, so the clip path is exercised without shipping any video.
+  const fixture = await readFile(new URL('./fixtures/clip.webm', import.meta.url));
+  const page = await newPage({ reducedMotion: 'reduce' });
+  try {
+    await page.route('**/assets/clips/*', (route) =>
+      route.fulfill({ status: 200, contentType: 'video/webm', body: fixture }));
+    await page.goto(base);
+    const clip = page.locator('#tv-clip');
+    // Nothing is fetched until someone asks for it.
+    assert.equal(await clip.getAttribute('src'), null);
+    assert.equal(await clip.isVisible(), false);
+
     const room = page.locator('#room-scene');
     const on = () => room.evaluate((element) => element.classList.contains('tko-on'));
-
     await page.locator('#play-drive').click();
-    await page.clock.fastForward(200);
-    assert.equal(await page.locator('#tv-drive').isVisible(), true);
-    assert.equal(await page.locator('#drive-clock').textContent(), manifest.drive[0].clock);
-    assert.equal(await on(), false, 'the room must stay quiet until the score');
+    await page.waitForFunction(() => {
+      const video = document.querySelector('#tv-clip');
+      return !video.hidden && !video.paused && video.currentTime > 0;
+    }, null, { timeout: 10000 });
+    assert.equal(await clip.evaluate((video) => video.muted), false, 'the clip must play with sound');
+    assert.equal(await page.locator('#tv-unmute').isVisible(), false);
+    assert.equal(await on(), false, 'the room must stay quiet before the cue');
+    // The play-by-play fallback must not run underneath the video.
+    assert.equal(await page.locator('#tv-drive').isVisible(), false);
 
-    await page.clock.fastForward(cue * 1000);
-    await page.clock.fastForward(600);
-    assert.equal(await on(), true);
+    const cue = Number(await page.locator('#play-drive').getAttribute('data-td-at'));
+    // Run the clip fast rather than seeking: a stubbed response is not seekable.
+    await clip.evaluate((video) => { video.playbackRate = 16; });
+    await page.waitForFunction((at) => {
+      const video = document.querySelector('#tv-clip');
+      return video.currentTime >= at && document.querySelector('#room-scene').classList.contains('tko-on');
+    }, cue, { timeout: 20000 });
     assert.equal(await page.locator('#drive-list li.now').getAttribute('data-scoring'), 'true');
-    assert.equal(await page.locator('#drive-text').textContent(), manifest.drive.at(-1).text);
-    assert.equal(await page.locator('.r-tv .tko').count(), 0);
-    assert.deepEqual(offsite, [], 'the drive must play without loading anything off-site');
+  } finally {
+    await page.close();
+  }
+});
+
+test('the main TV falls back to the play-by-play when a clip fails to load', async () => {
+  const page = await newPage({ reducedMotion: 'reduce' });
+  try {
+    await page.route('**/assets/clips/*', (route) => route.fulfill({ status: 404, body: '' }));
+    await page.goto(base);
+    await page.locator('#play-drive').click();
+    await page.waitForFunction(() => !document.querySelector('#tv-drive').hidden, null, { timeout: 10000 });
+    assert.equal(await page.locator('#tv-clip').isVisible(), false);
+    await page.waitForFunction(() => document.querySelector('#room-scene').classList.contains('tko-on'),
+      null, { timeout: 20000 });
+    assert.equal(await page.locator('#drive-list li.now').getAttribute('data-scoring'), 'true');
   } finally {
     await page.close();
   }

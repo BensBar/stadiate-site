@@ -1,3 +1,7 @@
 node_modules/
 .DS_Store
 *.log
+
+# Room demo video is optional, licensed separately, and never committed.
+assets/clips/*
+!assets/clips/README.md

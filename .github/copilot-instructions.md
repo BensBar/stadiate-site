@@ -99,12 +99,18 @@ player stats, capture time, and a **SHA-256 per file** — a test re-hashes ever
 and fails on mismatch. So: regenerate images and `capture.json` together via
 `npm run screenshots`, never hand-edit either.
 
-The room demo's main TV is not video. The NFL does not allow its highlight of
-the play to be embedded (the embed returns error 153), and re-hosting it would
-be infringement, so the TV replays the real play-by-play from
-`assets/shots/drive-capture.json` with the touchdown landing on the cue in
-`data-td-at` on `#play-drive`. Keep that markup generated from the manifest, and
-keep the copy honest: the page may not imply it is showing a broadcast.
+The room demo's main TV has two modes, and the touchdown fires on the
+`data-td-at` cue on `#play-drive` in both. If a video exists at the path in
+`data-clip`, it plays with sound; otherwise the TV replays the play-by-play
+from `assets/shots/drive-capture.json`. Keep that markup generated from the
+manifest, and keep the copy honest: the page may not imply it is showing a
+broadcast.
+
+**Never commit a clip, and never download or re-host the NFL highlight.** It is
+not embeddable (error 153) and not ours to publish. `assets/clips/` is
+git-ignored except for its README, the published site therefore runs the
+play-by-play fallback, and the fine print and broadcast-rights FAQ describe
+that fallback. Anyone installing a licensed clip must update both.
 
 The link-preview card `assets/og.jpg` is **derived**, not hand-made: `npm run og`
 downscales `live-board.jpg` to 1200×675 after checking it against its recorded hash,

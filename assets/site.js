@@ -262,21 +262,28 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   document.querySelectorAll('.ev').forEach(b => (b.onclick = () => play(b.dataset.ev)));
   setTeam('Atlanta Falcons', 'New Orleans Saints');
 
-  /* ---------- the main TV: the real drive, on request ----------
-     The NFL does not allow this highlight to be embedded, so instead of
-     re-hosting it the main TV replays the drive itself, from the verified
-     play-by-play in assets/shots/drive-capture.json. The touchdown lands at the
-     cue point below, and that is when the room reacts, exactly as it would to a
-     live score. The clip itself is linked out to YouTube. */
+  /* ---------- the main TV ----------
+     Two ways to show the play. If a licensed clip has been installed at the
+     path in data-clip, the TV plays it with sound and the touchdown fires at
+     the cue in data-td-at. Nothing is bundled with the site: the NFL does not
+     permit its highlight to be embedded or re-hosted, so when no clip is
+     present the TV falls back to replaying the drive itself, from the verified
+     play-by-play in assets/shots/drive-capture.json. Either way the score lands
+     at the same moment and the room reacts exactly as it would to a live one. */
   const driveBtn = $('#play-drive'), tvDrive = $('#tv-drive'), driveList = $('#drive-list');
-  const TD_AT = Number(driveBtn?.dataset.tdAt ?? 14) * 1000;
+  const clip = $('#tv-clip'), unmuteBtn = $('#tv-unmute');
+  const clipSrc = driveBtn?.dataset.clip;
+  const TD_SEC = Number(driveBtn?.dataset.tdAt ?? 14);
   const steps = driveList ? [...driveList.children] : [];
-  let driveTimers = [];
+  const scoringStep = steps.findIndex((li) => li.dataset.scoring === 'true');
+  let driveTimers = [], clipUsable = Boolean(clip && clipSrc), fired = false;
 
   function stopDrive() {
     driveTimers.forEach(clearTimeout); driveTimers = [];
     steps.forEach((li) => li.classList.remove('now', 'done'));
     if (tvDrive) tvDrive.hidden = true;
+    if (clip) { clip.pause(); clip.hidden = true; }
+    if (unmuteBtn) unmuteBtn.hidden = true;
     room.classList.remove('playing');
   }
 
@@ -292,22 +299,65 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
     tvDrive.hidden = false;
   }
 
+  // No clip installed: replay the drive from the captured play-by-play.
+  function playFeed() {
+    if (!steps.length) return;
+    const gap = (TD_SEC * 1000) / (steps.length - 1);
+    steps.forEach((li, i) => {
+      driveTimers.push(setTimeout(() => {
+        showStep(i);
+        if (li.dataset.scoring === 'true') play('td');
+      }, Math.round(i * gap)));
+    });
+    driveTimers.push(setTimeout(stopDrive, TD_SEC * 1000 + 9000));
+  }
+
+  // A clip is installed: play it with sound and score on the cue.
+  function playClip() {
+    if (!clip.getAttribute('src')) clip.setAttribute('src', clipSrc);
+    clip.hidden = false;
+    fired = false;
+    try { clip.currentTime = 0; } catch { /* not seekable yet; it starts at 0 anyway */ }
+    clip.muted = false;
+    // Must stay synchronous: awaiting anything here spends the user gesture.
+    const started = clip.play();
+    if (started) started.catch(() => {
+      // Sound was refused, so fall back to muted and offer a tap to unmute.
+      clip.muted = true;
+      clip.play().then(() => { if (unmuteBtn) unmuteBtn.hidden = false; }).catch(useFeed);
+    });
+  }
+
+  function useFeed() {
+    clipUsable = false;
+    if (clip) { clip.hidden = true; }
+    if (unmuteBtn) unmuteBtn.hidden = true;
+    playFeed();
+  }
+
+  if (clip) {
+    clip.addEventListener('error', () => { if (!clip.hidden || clipUsable) useFeed(); });
+    clip.addEventListener('timeupdate', () => {
+      if (fired || clip.currentTime < TD_SEC) return;
+      fired = true;
+      if (scoringStep > -1) steps.forEach((li, i) => li.classList.toggle('now', i === scoringStep));
+      play('td');
+    });
+    clip.addEventListener('ended', () => driveTimers.push(setTimeout(stopDrive, 4000)));
+  }
+
+  if (unmuteBtn) {
+    unmuteBtn.onclick = () => { clip.muted = false; unmuteBtn.hidden = true; };
+  }
+
   if (driveBtn && steps.length) {
     driveBtn.onclick = () => {
       stopDrive();
       reset();
       room.classList.add('playing');
-      // Space the drive so the scoring play lands exactly on the cue.
-      const gap = TD_AT / (steps.length - 1);
-      steps.forEach((li, i) => {
-        driveTimers.push(setTimeout(() => {
-          showStep(i);
-          if (li.dataset.scoring === 'true') play('td');
-        }, Math.round(i * gap)));
-      });
-      driveTimers.push(setTimeout(stopDrive, TD_AT + 9000));
-      driveBtn.textContent = '▶︎ Replay the drive';
+      driveBtn.textContent = '\u25B6\uFE0E Replay the drive';
       cap.innerHTML = '<strong>Atlanta\u2019s opening drive.</strong> Watch the second screen: Stadiate is following the real play feed, and the room is waiting for the score.';
+      if (clipUsable) playClip(); else playFeed();
     };
   }
 

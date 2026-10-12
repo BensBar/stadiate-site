@@ -104,6 +104,19 @@ The play text in that manifest is rendered into `index.html` verbatim and the
 test suite asserts the two still match, so the drive on the page cannot drift
 from the drive that was captured.
 
+### The main TV can play a real clip
+
+The demo's main TV plays a video if one is installed at
+`assets/clips/falcons-saints-td.mp4`, with sound, firing the touchdown at the
+`data-td-at` cue on `#play-drive`. Nothing is bundled: that folder is
+git-ignored except for its README, because the NFL highlight of this play is
+neither embeddable (YouTube returns error 153) nor ours to re-host. Only
+install a file you have the right to publish, and update the fine print and the
+broadcast-rights FAQ when you do. With no clip present — which is what the
+published site does — the TV replays the play-by-play instead. See
+`assets/clips/README.md`.
+
+
 ## Product claims and release status
 
 The comparison was checked against `BensBar/stadiate`'s tvOS documentation,
