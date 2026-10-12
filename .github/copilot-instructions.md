@@ -14,6 +14,7 @@ npm run dev        # tools/server.mjs → http://127.0.0.1:4173
 npm test           # node --test tools/site.test.mjs (Playwright + ephemeral server)
 npx playwright install chromium   # one-time, if Chromium is missing
 BASE=http://localhost:8787 npm run screenshots   # needs a running Stadiate hub
+npm run og         # rebuild assets/og.jpg from the live-board capture
 ```
 
 Run a single test by name:
@@ -96,6 +97,12 @@ Georgia 38–14 Vanderbilt). `capture.json` records source URLs, event IDs, scor
 player stats, capture time, and a **SHA-256 per file** — a test re-hashes every image
 and fails on mismatch. So: regenerate images and `capture.json` together via
 `npm run screenshots`, never hand-edit either.
+
+The link-preview card `assets/og.jpg` is **derived**, not hand-made: `npm run og`
+downscales `live-board.jpg` to 1200×675 after checking it against its recorded hash,
+so the share image can't drift from a real capture. Re-run it after `npm run
+screenshots`. A test asserts the card is not served from `assets/glass/`, because
+shared links must preview as sports, not stained-glass art.
 
 `tools/capture-data.mjs` pulls finals and player stats from public ESPN summaries and
 verifies event ID, final status, and score-vs-last-play agreement; incomplete or

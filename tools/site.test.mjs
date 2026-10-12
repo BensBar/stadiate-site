@@ -127,15 +127,18 @@ test('room demo is local-only, repeatable, and resets; FAQ uses native disclosur
   }
 });
 
-test('link previews use the stained-glass card without requiring JavaScript', async () => {
+test('link previews use a real game board, not stained-glass art', async () => {
   const page = await newPage({ javaScriptEnabled: false });
   try {
     await page.goto(base);
     const url = await page.locator('meta[property="og:image"]').getAttribute('content');
     assert.equal(await page.locator('meta[name="twitter:image"]').getAttribute('content'), url);
     assert.equal(await page.locator('meta[property="og:image:width"]').getAttribute('content'), '1200');
+    assert.equal(await page.locator('meta[property="og:image:height"]').getAttribute('content'), '675');
     assert.ok(await page.locator('meta[property="og:image:alt"]').getAttribute('content'));
-    const response = await page.request.get(base + new URL(url).pathname);
+    const pathname = new URL(url).pathname;
+    assert.doesNotMatch(pathname, /\/glass\//, 'the share card must not be stained-glass art');
+    const response = await page.request.get(base + pathname);
     assert.equal(response.status(), 200);
     assert.match(response.headers()['content-type'], /image\/jpeg/);
   } finally {

@@ -74,6 +74,16 @@ registers a board, modifies a layout on the hub, reads private configuration,
 or triggers real-room effects. Unrelated API requests are explicitly blocked
 and logged. All image and renderer errors fail the capture.
 
+The link-preview card is derived from those captures rather than drawn by hand:
+
+```bash
+npm run og
+```
+
+`tools/make-og.mjs` verifies `live-board.jpg` against its recorded hash, then
+downscales it to the 1200×675 card at `assets/og.jpg`. Re-run it whenever the
+screenshots are regenerated, so a shared link always previews the real board.
+
 ## Product claims and release status
 
 The comparison was checked against `BensBar/stadiate`'s tvOS documentation,
