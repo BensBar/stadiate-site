@@ -101,8 +101,10 @@ and fails on mismatch. So: regenerate images and `capture.json` together via
 
 The room demo's main TV has two modes, and the touchdown fires on the
 `data-td-at` cue on `#play-drive` in both. If a video exists at the path in
-`data-clip`, it plays with sound; otherwise the TV replays the play-by-play
-from `assets/shots/drive-capture.json`. Keep that markup generated from the
+`data-clip`, it plays with sound; otherwise the TV draws the play itself from
+`assets/shots/drive-capture.json` — the ball moves along the field to the yard
+line in each play's `data-yd`, reaching the end zone on the cue. That artwork is
+original; never substitute footage for it. Keep that markup generated from the
 manifest, and keep the copy honest: the page may not imply it is showing a
 broadcast.
 

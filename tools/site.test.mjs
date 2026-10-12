@@ -323,16 +323,28 @@ test('an installed clip plays on the main TV, with sound, and scores on the cue'
 });
 
 test('the main TV falls back to the play-by-play when a clip fails to load', async () => {
+  const manifest = JSON.parse(await readFile(new URL('../assets/shots/drive-capture.json', import.meta.url), 'utf8'));
   const page = await newPage({ reducedMotion: 'reduce' });
   try {
     await page.route('**/assets/clips/*', (route) => route.fulfill({ status: 404, body: '' }));
     await page.goto(base);
+
+    // The ball is drawn from the captured yard lines, not from any footage.
+    const yards = await page.locator('#drive-list li').evaluateAll((items) =>
+      items.map((item) => Number(item.dataset.yd)));
+    assert.deepEqual(yards, manifest.drive.map((play) => 100 - play.endYardsToEndzone));
+    assert.equal(yards.at(-1), 100, 'the scoring play must finish in the end zone');
+
     await page.locator('#play-drive').click();
     await page.waitForFunction(() => !document.querySelector('#tv-drive').hidden, null, { timeout: 10000 });
     assert.equal(await page.locator('#tv-clip').isVisible(), false);
+    assert.equal(await page.locator('#tv-ball').isVisible(), true);
+
     await page.waitForFunction(() => document.querySelector('#room-scene').classList.contains('tko-on'),
       null, { timeout: 20000 });
     assert.equal(await page.locator('#drive-list li.now').getAttribute('data-scoring'), 'true');
+    // 8% + 100 yards * 0.84 is the goal line the drive is attacking.
+    assert.equal(await page.locator('#tv-ball').evaluate((element) => element.style.left), '92%');
   } finally {
     await page.close();
   }

@@ -272,6 +272,9 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
      at the same moment and the room reacts exactly as it would to a live one. */
   const driveBtn = $('#play-drive'), tvDrive = $('#tv-drive'), driveList = $('#drive-list');
   const clip = $('#tv-clip'), unmuteBtn = $('#tv-unmute');
+  const ball = $('#tv-ball'), goal = $('#tv-goal');
+  // How long the scoring run takes to cross the field, so it lands on the cue.
+  const RUN_MS = 1600;
   const clipSrc = driveBtn?.dataset.clip;
   const TD_SEC = Number(driveBtn?.dataset.tdAt ?? 14);
   const steps = driveList ? [...driveList.children] : [];
@@ -282,6 +285,8 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
     driveTimers.forEach(clearTimeout); driveTimers = [];
     steps.forEach((li) => li.classList.remove('now', 'done'));
     if (tvDrive) tvDrive.hidden = true;
+    if (ball) { ball.hidden = true; ball.style.left = ''; ball.style.transitionDuration = ''; }
+    if (goal) goal.hidden = true;
     if (clip) { clip.pause(); clip.hidden = true; }
     if (unmuteBtn) unmuteBtn.hidden = true;
     room.classList.remove('playing');
@@ -297,19 +302,38 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
     $('#drive-clock').textContent = li.dataset.clock;
     $('#drive-text').textContent = li.querySelector('.dl-text').textContent;
     tvDrive.hidden = false;
+    moveBall(Number(li.dataset.yd), li.dataset.scoring === 'true');
+  }
+
+  /* The ball on the field is drawn here, not filmed: the yard line in data-yd
+     comes straight from the captured play-by-play. The field runs from a team's
+     own goal line at 8% to the goal line it is attacking at 92%. */
+  function moveBall(yard, scoring) {
+    if (!ball || !Number.isFinite(yard)) return;
+    if (goal) goal.hidden = false;
+    const place = () => {
+      ball.style.transitionDuration = scoring ? `${RUN_MS}ms` : '';
+      ball.style.left = `${8 + yard * 0.84}%`;
+    };
+    if (ball.hidden) {
+      ball.hidden = false;
+      // Let the starting position paint before transitioning away from it.
+      requestAnimationFrame(() => requestAnimationFrame(place));
+    } else place();
   }
 
   // No clip installed: replay the drive from the captured play-by-play.
   function playFeed() {
     if (!steps.length) return;
-    const gap = (TD_SEC * 1000) / (steps.length - 1);
+    const cue = TD_SEC * 1000;
+    // The scoring play starts early enough that the run reaches the end zone
+    // exactly on the cue; the rest of the drive is spread over the time before.
+    const gap = (cue - RUN_MS) / (steps.length - 1);
     steps.forEach((li, i) => {
-      driveTimers.push(setTimeout(() => {
-        showStep(i);
-        if (li.dataset.scoring === 'true') play('td');
-      }, Math.round(i * gap)));
+      driveTimers.push(setTimeout(() => showStep(i), Math.round(i * gap)));
     });
-    driveTimers.push(setTimeout(stopDrive, TD_SEC * 1000 + 9000));
+    driveTimers.push(setTimeout(() => play('td'), cue));
+    driveTimers.push(setTimeout(stopDrive, cue + 9000));
   }
 
   // A clip is installed: play it with sound and score on the cue.
@@ -341,6 +365,7 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
       if (fired || clip.currentTime < TD_SEC) return;
       fired = true;
       if (scoringStep > -1) steps.forEach((li, i) => li.classList.toggle('now', i === scoringStep));
+      if (ball) ball.hidden = true;
       play('td');
     });
     clip.addEventListener('ended', () => driveTimers.push(setTimeout(stopDrive, 4000)));

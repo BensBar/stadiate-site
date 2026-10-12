@@ -112,9 +112,14 @@ The demo's main TV plays a video if one is installed at
 git-ignored except for its README, because the NFL highlight of this play is
 neither embeddable (YouTube returns error 153) nor ours to re-host. Only
 install a file you have the right to publish, and update the fine print and the
-broadcast-rights FAQ when you do. With no clip present — which is what the
-published site does — the TV replays the play-by-play instead. See
-`assets/clips/README.md`.
+broadcast-rights FAQ when you do.
+
+With no clip present — which is what the published site does — the TV draws the
+play instead of showing video: the ball travels to the yard line each play
+finished on (`data-yd`, taken from the capture's `endYardsToEndzone`) and
+reaches the end zone on the cue. That field is original artwork driven by real
+data, so it carries no rights of anyone else's. Do not replace it with footage.
+See `assets/clips/README.md`.
 
 
 ## Product claims and release status

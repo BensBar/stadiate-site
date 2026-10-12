@@ -111,6 +111,8 @@ try {
     drive: [...game.plays].reverse().map((p) => ({
       clock: p.clock, down: p.shortDownDistanceText, team: teamAbbrev(game, p), text: p.text,
       scoring: p.scoring, awayScore: p.awayScore, homeScore: p.homeScore,
+      // Where the ball finished, so the page can draw the drive on a field.
+      endYardsToEndzone: p.endYardsToEndzone,
     })),
     captures: [{
       file: `${NAME}.jpg`,

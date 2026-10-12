@@ -127,6 +127,15 @@ h2.title{font-size:clamp(30px,4.8vw,50px);line-height:1.08;font-weight:900;lette
 .b-field::after{content:"";position:absolute;left:0;right:0;top:0;height:14%;background:linear-gradient(rgba(0,0,0,.6),transparent)}
 .b-live{position:absolute;left:50%;bottom:6%;transform:translateX(-50%);white-space:nowrap;font:700 2.6cqw/1 system-ui;letter-spacing:.12em;text-transform:uppercase;
   color:#fff;padding:1cqw 2cqw;border-radius:999px;background:rgba(0,0,0,.55);border:1px solid rgba(255,255,255,.25)}
+.bp-goal{position:absolute;left:92%;top:16%;bottom:22%;width:.5cqw;z-index:4;
+  background:linear-gradient(transparent,var(--gold) 20%,var(--gold) 80%,transparent);opacity:.8}
+.bp-ball{position:absolute;top:52%;left:8%;width:3.2cqw;height:3.2cqw;border-radius:50%;z-index:5;
+  transform:translate(-50%,-50%);background:radial-gradient(circle at 35% 33%,#fff,#f2f4f8 55%,#c8ccd6);
+  border:.35cqw solid var(--c1);
+  box-shadow:0 0 .5cqw rgba(0,0,0,.7),0 0 2.2cqw var(--c1),0 0 6cqw color-mix(in srgb,var(--c1) 70%,transparent);
+  transition:left .7s cubic-bezier(.33,0,.2,1)}
+.bp-goal[hidden],.bp-ball[hidden]{display:none}
+@media (prefers-reduced-motion:reduce){.bp-ball{transition:none}}
 .tv-clip{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4;background:#000;display:block}
 .tv-clip[hidden]{display:none}
 .unmute{position:absolute;left:50%;bottom:7%;transform:translateX(-50%);z-index:6;cursor:pointer;white-space:nowrap;

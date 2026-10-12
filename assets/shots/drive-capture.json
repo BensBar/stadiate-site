@@ -1,5 +1,5 @@
 {
-  "capturedAt": "2026-10-12T15:00:22.511Z",
+  "capturedAt": "2026-10-12T23:16:40.147Z",
   "displayTimezone": "America/New_York",
   "renderer": "Current Stadiate web board, Action View.",
   "data": "The Atlanta–New Orleans game of October 5, 2026 as it stood at one verified scoring play, rebuilt from the public ESPN summary for that completed game. Not a recording of a live broadcast. No hub settings or real boards were modified.",
@@ -37,7 +37,8 @@
       "text": "D.Carlson kicks 65 yards from NO 35 to landing zone to end zone, Touchback to the ATL 20.",
       "scoring": false,
       "awayScore": 0,
-      "homeScore": 0
+      "homeScore": 0,
+      "endYardsToEndzone": 80
     },
     {
       "clock": "15:00",
@@ -46,7 +47,8 @@
       "text": "(Shotgun) M.Penix pass short right to D.London to ATL 32 for 12 yards (J.Blackmon).",
       "scoring": false,
       "awayScore": 0,
-      "homeScore": 0
+      "homeScore": 0,
+      "endYardsToEndzone": 68
     },
     {
       "clock": "14:22",
@@ -55,7 +57,8 @@
       "text": "(Shotgun) M.Penix pass short left to A.Hooper to ATL 41 for 9 yards (J.Sanker).",
       "scoring": false,
       "awayScore": 0,
-      "homeScore": 0
+      "homeScore": 0,
+      "endYardsToEndzone": 59
     },
     {
       "clock": "13:34",
@@ -64,7 +67,8 @@
       "text": "Bi.Robinson left end for 59 yards, TOUCHDOWN. N.Folk extra point is GOOD, Center-L.McCullough, Holder-J.Bailey.",
       "scoring": true,
       "awayScore": 7,
-      "homeScore": 0
+      "homeScore": 0,
+      "endYardsToEndzone": 0
     }
   ],
   "captures": [
