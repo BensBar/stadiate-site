@@ -99,13 +99,6 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   const $ = (s, r = document) => r.querySelector(s);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* ---------- ribbon ---------- */
-  const rib = $('#ribbon');
-  const mix = ALL.slice().sort((x, y) => (x.c1 > y.c1 ? 1 : -1));
-  for (let k = 0; k < 2; k++) mix.forEach(t => {
-    const im = new Image(); im.src = t.img; im.alt = ''; im.loading = 'lazy'; im.width = 72; im.height = 72; rib.appendChild(im);
-  });
-
   /* ---------- audio (synthesized, no files) ---------- */
   let ac, master, noise, soundOn = true;
   function audio() {

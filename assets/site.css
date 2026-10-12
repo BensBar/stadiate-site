@@ -89,16 +89,6 @@ main{overflow-x:clip}
 .dots button{width:10px;height:10px;border-radius:50%;border:0;background:#3a3f55;cursor:pointer;padding:0;transition:.3s}
 .dots button.on{background:var(--gold);width:26px;border-radius:6px}
 
-/* glass ribbon marquee */
-.ribbon{position:relative;padding:22px 0;overflow:hidden;
-  border-block:1px solid rgba(233,196,106,.25);background:linear-gradient(90deg,rgba(255,45,85,.07),rgba(47,107,255,.07),rgba(31,199,122,.07));
-  -webkit-mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.ribbon-track{display:flex;gap:34px;width:max-content;animation:marquee 90s linear infinite}
-.ribbon:hover .ribbon-track{animation-play-state:paused}
-.ribbon img{width:72px;height:72px;object-fit:contain;filter:drop-shadow(0 4px 14px rgba(0,0,0,.6));transition:transform .25s}
-.ribbon img:hover{transform:scale(1.25) rotate(-4deg)}
-@keyframes marquee{to{transform:translateX(-50%)}}
-
 /* sections */
 .eyebrow{font:700 13px/1.4 var(--display);letter-spacing:4px;text-transform:uppercase;color:var(--gold)}
 h2.title{font-size:clamp(30px,4.8vw,50px);line-height:1.08;font-weight:900;letter-spacing:-1px;margin:12px 0 12px}
@@ -244,7 +234,6 @@ h2.title{font-size:clamp(30px,4.8vw,50px);line-height:1.08;font-weight:900;lette
 
 @media(prefers-reduced-motion:reduce){
   *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important}
-  .ribbon-track{animation:none}
   .js .reveal{opacity:1;transform:none}
 }
 
