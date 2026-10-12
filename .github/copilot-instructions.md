@@ -15,6 +15,7 @@ npm test           # node --test tools/site.test.mjs (Playwright + ephemeral ser
 npx playwright install chromium   # one-time, if Chromium is missing
 BASE=http://localhost:8787 npm run screenshots   # needs a running Stadiate hub
 npm run og         # rebuild assets/og.jpg from the live-board capture
+BASE=http://localhost:8787 npm run screenshots:drive   # room-demo drive capture
 ```
 
 Run a single test by name:
@@ -97,6 +98,13 @@ Georgia 38–14 Vanderbilt). `capture.json` records source URLs, event IDs, scor
 player stats, capture time, and a **SHA-256 per file** — a test re-hashes every image
 and fails on mismatch. So: regenerate images and `capture.json` together via
 `npm run screenshots`, never hand-edit either.
+
+The room demo's main TV is not video. The NFL does not allow its highlight of
+the play to be embedded (the embed returns error 153), and re-hosting it would
+be infringement, so the TV replays the real play-by-play from
+`assets/shots/drive-capture.json` with the touchdown landing on the cue in
+`data-td-at` on `#play-drive`. Keep that markup generated from the manifest, and
+keep the copy honest: the page may not imply it is showing a broadcast.
 
 The link-preview card `assets/og.jpg` is **derived**, not hand-made: `npm run og`
 downscales `live-board.jpg` to 1200×675 after checking it against its recorded hash,

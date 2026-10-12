@@ -104,7 +104,7 @@
     <section id="room" class="section wrap center room-wrap-section">
       <p class="eyebrow">Feel the room</p>
       <h2 class="title">Your team scores.<br><span class="jewel">Your whole room reacts.</span></h2>
-      <p class="sub">Here’s the idea. Stadiate watches the game with you. The instant your team scores, your lamps flash in team colors, the goal horn sounds, and a framed art TV on the side wall bursts into a touchdown celebration. Your main broadcast is never touched. <strong>Pick a team below and press Touchdown to see it.</strong></p>
+      <p class="sub">Here’s the idea. Stadiate watches the game with you. The instant your team scores, your lamps flash in team colors, the goal horn sounds, and the second screen on the side wall bursts into a touchdown celebration. Your main broadcast is never touched. <strong>Press “Play the drive” to watch it happen on Bijan Robinson’s 59-yard touchdown, or press Touchdown to fire it right now.</strong></p>
 
       <div class="room-wrap">
         <div class="room" id="room-scene">
@@ -117,17 +117,21 @@
           <div class="spk l"><i></i><i></i><i></i></div>
           <div class="spk r"><i></i><i></i><i></i></div>
           <div class="r-tv frame">
-            <div class="board">
+            <div class="board" id="tv-board">
               <div class="b-field"></div>
               <img class="b-logo l" id="tv-l" alt="">
               <img class="b-logo r" id="tv-r" alt="">
               <span class="b-live">Your game, uninterrupted</span>
+              <div class="tv-drive" id="tv-drive" hidden aria-hidden="true">
+                <span class="td-clock" id="drive-clock"></span>
+                <span class="td-text" id="drive-text"></span>
+              </div>
             </div>
           </div>
           <div class="r-art"><div class="art-frame"><div class="art-screen">
-            <img class="art-pic" src="assets/shots/art-terrace.jpg" alt="" width="1280" height="720" loading="lazy">
+            <img class="art-pic" id="art-pic" src="assets/shots/drive-board.jpg" alt="Stadiate Action View for Atlanta at New Orleans, showing Atlanta 7, New Orleans 0 with 13:34 left in the first quarter." width="1920" height="1080" loading="lazy">
             <div class="tko"><img id="tko-img" alt=""><span id="tko-txt">TOUCHDOWN</span></div>
-          </div></div><span class="art-label">Framed TV</span></div>
+          </div></div><span class="art-label">Second screen</span></div>
           <svg class="sofa" viewBox="0 0 1600 330" preserveAspectRatio="xMidYMax meet" aria-hidden="true"><g fill="#05060b"><g class="fan f1"><g class="arm" style="transform-origin:502px 218px;transform:rotate(var(--r));--r:-165deg;--u:-30deg"><rect x="488" y="66" width="28" height="154" rx="14"/><circle cx="502" cy="64" r="20"/></g><g class="arm" style="transform-origin:618px 218px;transform:rotate(var(--r));--r:165deg;--u:30deg"><rect x="604" y="66" width="28" height="154" rx="14"/><circle cx="618" cy="64" r="20"/></g><ellipse cx="560" cy="244" rx="84" ry="54"/><rect x="542" y="190" width="36" height="44" rx="10"/><circle cx="560" cy="160" r="48"/></g><g class="fan f2"><g class="arm" style="transform-origin:742px 218px;transform:rotate(var(--r));--r:-165deg;--u:-30deg"><rect x="728" y="66" width="28" height="154" rx="14"/><circle cx="742" cy="64" r="20"/></g><g class="arm" style="transform-origin:858px 218px;transform:rotate(var(--r));--r:165deg;--u:30deg"><rect x="844" y="66" width="28" height="154" rx="14"/><circle cx="858" cy="64" r="20"/></g><ellipse cx="800" cy="244" rx="84" ry="54"/><rect x="782" y="176" width="36" height="44" rx="10"/><circle cx="800" cy="146" r="48"/></g><g class="fan f3"><g class="arm" style="transform-origin:982px 218px;transform:rotate(var(--r));--r:-165deg;--u:-30deg"><rect x="968" y="66" width="28" height="154" rx="14"/><circle cx="982" cy="64" r="20"/></g><g class="arm" style="transform-origin:1098px 218px;transform:rotate(var(--r));--r:165deg;--u:30deg"><rect x="1084" y="66" width="28" height="154" rx="14"/><circle cx="1098" cy="64" r="20"/></g><ellipse cx="1040" cy="244" rx="84" ry="54"/><rect x="1022" y="194" width="36" height="44" rx="10"/><circle cx="1040" cy="164" r="48"/></g><path d="M290 236q0-14 14-14h992q14 0 14 14v94H290z"/><rect x="200" y="200" width="130" height="130" rx="40"/><rect x="1270" y="200" width="130" height="130" rx="40"/></g></svg>
           <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
           <div class="r-badge"><img id="badge-img" alt=""><span id="badge-txt">Following</span></div>
@@ -141,6 +145,10 @@
             <button class="snd" id="snd" type="button" aria-pressed="true">🔊 Sound on</button>
           </div>
           <div class="row">
+            <button class="drive" id="play-drive" type="button" data-td-at="14">▶︎ Play the drive</button>
+            <a class="clip-link" href="https://www.youtube.com/watch?v=xHkboaySHmw" target="_blank" rel="noopener noreferrer">Watch the real play on YouTube ↗</a>
+          </div>
+          <div class="row">
             <button class="ev big" id="celebrate-button" type="button" data-ev="td">🏈 Touchdown!</button>
             <button class="ev" type="button" data-ev="fg">Field goal</button>
             <button class="ev" type="button" data-ev="win">🏆 Win</button>
@@ -148,10 +156,16 @@
           </div>
         </div>
         <ol class="timeline" id="timeline" aria-label="What happens when your team scores">
-          <li>⚡ Score detected</li><li>💡 Lights go team colors</li><li>🔊 Goal horn</li><li>🖼️ Art TV celebrates</li><li>🙌 Room erupts</li>
+          <li>⚡ Score detected</li><li>💡 Lights go team colors</li><li>🔊 Goal horn</li><li>🖼️ Second screen celebrates</li><li>🙌 Room erupts</li>
         </ol>
         <p class="room-cap" id="demo-status" role="status" aria-live="polite">Pick a team, then press <strong>Touchdown</strong>.</p>
-        <p class="fine">This is an illustration of what Stadiate does, not a recording. The sound is generated in your browser and nothing is sent to any lights or speakers. In real life, lights and speakers need the Mac server and compatible devices; colored effects need color-capable lights.</p>
+        <ol class="drive-list" id="drive-list" aria-label="Atlanta&#8217;s opening drive at New Orleans, October 5, 2026">
+          <li data-clock="15:00" data-team="NO"><span class="dl-clock">15:00</span><span class="dl-team">NO</span><span class="dl-text">D.Carlson kicks 65 yards from NO 35 to landing zone to end zone, Touchback to the ATL 20.</span></li>
+          <li data-clock="15:00" data-team="ATL"><span class="dl-clock">15:00</span><span class="dl-team">ATL</span><span class="dl-text">(Shotgun) M.Penix pass short right to D.London to ATL 32 for 12 yards (J.Blackmon).</span></li>
+          <li data-clock="14:22" data-team="ATL"><span class="dl-clock">14:22</span><span class="dl-team">ATL</span><span class="dl-text">(Shotgun) M.Penix pass short left to A.Hooper to ATL 41 for 9 yards (J.Sanker).</span></li>
+          <li data-clock="13:34" data-team="ATL" data-scoring="true"><span class="dl-clock">13:34</span><span class="dl-team">ATL</span><span class="dl-text">Bi.Robinson left end for 59 yards, TOUCHDOWN. N.Folk extra point is GOOD, Center-L.McCullough, Holder-J.Bailey.</span></li>
+        </ol>
+        <p class="fine">This is an illustration of what Stadiate does. The room effects are simulated: the sound is generated in your browser and nothing is sent to any lights or speakers. The main TV is not a broadcast — it replays the verified play-by-play of Atlanta’s opening drive at New Orleans on October 5, 2026, so the touchdown lands where it really did. The second screen is a real Stadiate Action View captured at that moment. The NFL does not allow its highlight of the play to be embedded, so it is linked out to YouTube instead. In real life, lights and speakers need the Mac server and compatible devices; colored effects need color-capable lights.</p>
       </div>
 
       <div class="senses">
@@ -326,7 +340,7 @@
         <details open><summary>So what actually is Stadiate?<span aria-hidden="true">+</span></summary><p>Stadiate is an app for Apple TV that shows live sports scores as a big, beautiful scoreboard or as living art. If you add the optional Mac server, it can also flash your smart lights, play sounds, and light up a second screen (like a framed art TV) when your team scores, while your main game keeps playing. It doesn’t stream the game itself.</p></details>
         <details><summary>What is the “Mac server”?<span aria-hidden="true">+</span></summary><p>A small Stadiate program that runs on a Mac while you watch. It acts as the go-between for your lights, speakers, and extra screens, which is why it’s needed for room effects. You can skip it and still use Stadiate on your Apple TV.</p></details>
         <details><summary>Can I celebrate my fantasy football players?<span aria-hidden="true">+</span></summary><p>Yes, with the Mac server. Use Sleeper, a manual roster, or the experimental CBS connector, choose starters only or your whole roster, and check that your players are mapped. NFL fantasy players can be watched even when their teams aren’t in Follows. Their scoring events still pass through the anti-spoiler delay and per-game SYNC. This is player-score detection and celebration, not a fantasy-points or league-standings service. CBS is best-effort, not an official public API, and its embedded sign-in may be blocked. The safe preview is a labeled demonstration; it does not trigger real lights or sounds.</p></details>
-        <details><summary>Does Stadiate stream the actual game?<span aria-hidden="true">+</span></summary><p>No. Standalone boards visualize sports data; Stadiate does not include broadcast rights, TV channels, or a sports subscription. With the Mac server, you can bring your own supported video source through screen or USB capture. That requires ffmpeg, the relevant macOS permissions, and an unprotected source; DRM restrictions still apply.</p></details>
+        <details><summary>Does Stadiate stream the actual game?<span aria-hidden="true">+</span></summary><p>No. Standalone boards visualize sports data; Stadiate does not include broadcast rights, TV channels, or a sports subscription. The room demo above never shows broadcast video: its main TV replays a real play-by-play feed, and the highlight of that play is simply linked out to YouTube. With the Mac server, you can bring your own supported video source through screen or USB capture. That requires ffmpeg, the relevant macOS permissions, and an unprotected source; DRM restrictions still apply.</p></details>
         <details><summary>Can it run alongside another app on one Apple TV?<span aria-hidden="true">+</span></summary><p>Not as an overlay on another tvOS app. Stadiate needs to be the foreground app to show its board, poll scores, and serve its phone remote. Use it on a companion screen beside your broadcast, or use the Mac server’s supported capture setup to bring video into a Stadiate board.</p></details>
         <details><summary>Do Art View and the phone remote need a Mac?<span aria-hidden="true">+</span></summary><p>No. Art View gets its sports data on the Apple TV and includes its artwork in the app. For the standalone phone remote, open Settings → Phone Remote on the TV and scan the QR code with a phone on the same Wi-Fi. The pairing code protects control commands.</p></details>
         <details><summary>Do I need smart lights or special hardware?<span aria-hidden="true">+</span></summary><p>Not for standalone Apple TV boards, Art View, ticker, or native celebrations. For room automation, add the Mac server and compatible gear: a Hue bridge and lights, Govee devices with LAN Control enabled, Sonos, or devices managed by Home Assistant. A capture device is only needed if you choose the USB video-capture route.</p></details>

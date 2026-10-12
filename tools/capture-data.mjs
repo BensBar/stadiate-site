@@ -92,3 +92,88 @@ export async function loadCaptureGames(base) {
   }));
   return { games: sources.map(({ game }) => game), sources };
 }
+
+// Rebuild the game exactly as it stood at one verified scoring play, so a capture
+// can show a moment mid-game instead of the final. Every value still comes from
+// the public ESPN summary for a completed game; nothing is interpolated.
+export function gameAtScoringPlay(summary, league, playId) {
+  const game = scoreboardFromSummary(summary, league);
+  const scoring = (summary.scoringPlays ?? []).find((play) => String(play.id) === playId);
+  if (!scoring) throw new Error(`No verified scoring play ${playId}`);
+
+  const ordered = (summary.drives?.previous ?? []).flatMap((drive) => drive.plays ?? []);
+  const index = ordered.findIndex((play) => String(play.id) === playId);
+  if (index < 0) throw new Error(`Scoring play ${playId} is missing from the drive chart`);
+  const through = ordered.slice(0, index + 1);
+
+  const play = ordered[index];
+  if (play.awayScore !== scoring.awayScore || play.homeScore !== scoring.homeScore) {
+    throw new Error(`Drive chart and scoring summary disagree at ${playId}`);
+  }
+  if (play.clock?.displayValue !== scoring.clock?.displayValue
+    || play.period?.number !== scoring.period?.number) {
+    throw new Error(`Clock mismatch for ${playId}`);
+  }
+
+  for (const team of game.teams) {
+    team.score = String(team.homeAway === 'home' ? play.homeScore : play.awayScore);
+  }
+  game.state = 'in';
+  game.status = `${ordinal(play.period.number)} Quarter`;
+  game.clock = play.clock.displayValue;
+  game.meta = { period: play.period.number };
+  game.plays = through.map(toFeedPlay).reverse();
+  game.action = { kind: 'field', lastPlay: game.plays[0] };
+  // ESPN only publishes end-of-game box scores, so there is no honest player line
+  // for this moment. Showing the final totals beside a first-quarter clock would
+  // misrepresent the play, so the spotlight is left empty.
+  game.spotlightPlayers = [];
+  game.capturedPlay = {
+    id: String(play.id), text: scoring.text, type: scoring.type?.text,
+    period: play.period.number, clock: play.clock.displayValue,
+    awayScore: play.awayScore, homeScore: play.homeScore,
+  };
+  return game;
+}
+
+function ordinal(n) {
+  return ['', '1st', '2nd', '3rd', '4th'][n] ?? `Period ${n}`;
+}
+
+function toFeedPlay(play) {
+  const start = play.start ?? {};
+  const end = play.end ?? {};
+  if (!play.id || !play.text || !play.clock?.displayValue || !play.period?.number) {
+    throw new Error(`Incomplete play in drive chart: ${play.id ?? 'unknown'}`);
+  }
+  return {
+    id: String(play.id),
+    seq: Number(play.sequenceNumber),
+    text: play.text,
+    shortText: play.shortText ?? play.text,
+    scoring: Boolean(play.scoringPlay),
+    scoreValue: 0,
+    teamId: play.teamParticipants?.[0]?.id ?? start.team?.id ?? null,
+    period: play.period.number,
+    clock: play.clock.displayValue,
+    homeScore: play.homeScore,
+    awayScore: play.awayScore,
+    wallclock: play.wallclock,
+    typeId: play.type?.id ?? null,
+    typeText: play.type?.text ?? null,
+    athletes: [],
+    down: start.down ?? 0,
+    distance: start.distance ?? 0,
+    yardsToEndzone: start.yardsToEndzone ?? 0,
+    endYardsToEndzone: end.yardsToEndzone ?? 0,
+    endDown: end.down ?? 0,
+    endDistance: end.distance ?? 0,
+    downDistanceText: start.downDistanceText ?? null,
+    shortDownDistanceText: start.shortDownDistanceText ?? null,
+    possessionText: start.possessionText ?? null,
+    possessionTeamId: start.team?.id ?? null,
+    yards: play.statYardage ?? 0,
+    turnover: Boolean(play.isTurnover),
+    penalty: Boolean(play.isPenalty),
+  };
+}

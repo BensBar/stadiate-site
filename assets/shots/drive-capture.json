@@ -1,0 +1,82 @@
+{
+  "capturedAt": "2026-10-12T15:00:22.511Z",
+  "displayTimezone": "America/New_York",
+  "renderer": "Current Stadiate web board, Action View.",
+  "data": "The Atlanta–New Orleans game of October 5, 2026 as it stood at one verified scoring play, rebuilt from the public ESPN summary for that completed game. Not a recording of a live broadcast. No hub settings or real boards were modified.",
+  "source": {
+    "game": "nfl:401872979",
+    "url": "https://site.api.espn.com/apis/site/v2/sports/football/nfl/summary?event=401872979",
+    "date": "2026-10-06T00:15Z",
+    "play": {
+      "id": "401872979110",
+      "text": "Bijan Robinson 59 Yd Rush (Nick Folk Kick)",
+      "type": "Rushing Touchdown",
+      "period": 1,
+      "clock": "13:34",
+      "awayScore": 7,
+      "homeScore": 0
+    },
+    "teams": [
+      {
+        "abbrev": "NO",
+        "score": "0",
+        "homeAway": "home"
+      },
+      {
+        "abbrev": "ATL",
+        "score": "7",
+        "homeAway": "away"
+      }
+    ]
+  },
+  "drive": [
+    {
+      "clock": "15:00",
+      "down": null,
+      "team": "NO",
+      "text": "D.Carlson kicks 65 yards from NO 35 to landing zone to end zone, Touchback to the ATL 20.",
+      "scoring": false,
+      "awayScore": 0,
+      "homeScore": 0
+    },
+    {
+      "clock": "15:00",
+      "down": "1st & 10",
+      "team": "ATL",
+      "text": "(Shotgun) M.Penix pass short right to D.London to ATL 32 for 12 yards (J.Blackmon).",
+      "scoring": false,
+      "awayScore": 0,
+      "homeScore": 0
+    },
+    {
+      "clock": "14:22",
+      "down": "1st & 10",
+      "team": "ATL",
+      "text": "(Shotgun) M.Penix pass short left to A.Hooper to ATL 41 for 9 yards (J.Sanker).",
+      "scoring": false,
+      "awayScore": 0,
+      "homeScore": 0
+    },
+    {
+      "clock": "13:34",
+      "down": "2nd & 1",
+      "team": "ATL",
+      "text": "Bi.Robinson left end for 59 yards, TOUCHDOWN. N.Folk extra point is GOOD, Center-L.McCullough, Holder-J.Bailey.",
+      "scoring": true,
+      "awayScore": 7,
+      "homeScore": 0
+    }
+  ],
+  "captures": [
+    {
+      "file": "drive-board.jpg",
+      "sha256": "e417366ec8b783f13278aa1357f7cde2dc98d2ea4cfa9ac27c35a9ec7462cefc",
+      "games": [
+        "nfl:401872979"
+      ]
+    }
+  ],
+  "files": [
+    "drive-board.jpg"
+  ]
+}

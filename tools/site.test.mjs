@@ -109,7 +109,7 @@ test('room demo is local-only, repeatable, and resets; FAQ uses native disclosur
     assert.equal(await on(), true);
     assert.equal(await page.locator('.r-art #tko-img').count(), 1);
     assert.equal(await page.locator('.r-tv .tko').count(), 0);
-    assert.match(await page.locator('#demo-status').textContent(), /framed art TV/);
+    assert.match(await page.locator('#demo-status').textContent(), /second screen/);
     await page.clock.fastForward(8000);
     assert.equal(await on(), false);
     await page.locator('#celebrate-button').click();
@@ -247,4 +247,52 @@ test('every HTML page loads the cookieless analytics beacon exactly once', async
   assert.match(privacy, /Cloudflare Web Analytics/);
   assert.match(privacy, /https:\/\/www\.cloudflare\.com\/privacypolicy\//);
   assert.match(privacy, /tv\.stadiate\.com/);
+});
+
+test('the main TV replays the verified Falcons-Saints drive and fires the touchdown on cue', async () => {
+  const manifest = JSON.parse(await readFile(new URL('../assets/shots/drive-capture.json', import.meta.url), 'utf8'));
+  const page = await newPage({ reducedMotion: 'reduce' });
+  try {
+    await page.goto(base);
+    await page.clock.install();
+    const host = new URL(base).host;
+    const offsite = [];
+    page.on('request', (request) => {
+      const requested = new URL(request.url()).host;
+      if (requested !== host && !requested.endsWith('cloudflareinsights.com')) offsite.push(request.url());
+    });
+
+    // The play-by-play on the page must be the captured feed, verbatim.
+    const onPage = await page.locator('#drive-list li').evaluateAll((items) => items.map((item) => ({
+      clock: item.dataset.clock,
+      team: item.dataset.team,
+      scoring: item.dataset.scoring === 'true',
+      text: item.querySelector('.dl-text').textContent,
+    })));
+    assert.deepEqual(onPage, manifest.drive.map(({ clock, team, scoring, text }) =>
+      ({ clock, team, scoring: Boolean(scoring), text })));
+    assert.equal(onPage.at(-1).scoring, true, 'the drive must end on the scoring play');
+    assert.match(await page.locator('#art-pic').getAttribute('src'), /drive-board\.jpg$/);
+
+    const cue = Number(await page.locator('#play-drive').getAttribute('data-td-at'));
+    assert.equal(cue, 14);
+    const room = page.locator('#room-scene');
+    const on = () => room.evaluate((element) => element.classList.contains('tko-on'));
+
+    await page.locator('#play-drive').click();
+    await page.clock.fastForward(200);
+    assert.equal(await page.locator('#tv-drive').isVisible(), true);
+    assert.equal(await page.locator('#drive-clock').textContent(), manifest.drive[0].clock);
+    assert.equal(await on(), false, 'the room must stay quiet until the score');
+
+    await page.clock.fastForward(cue * 1000);
+    await page.clock.fastForward(600);
+    assert.equal(await on(), true);
+    assert.equal(await page.locator('#drive-list li.now').getAttribute('data-scoring'), 'true');
+    assert.equal(await page.locator('#drive-text').textContent(), manifest.drive.at(-1).text);
+    assert.equal(await page.locator('.r-tv .tko').count(), 0);
+    assert.deepEqual(offsite, [], 'the drive must play without loading anything off-site');
+  } finally {
+    await page.close();
+  }
 });

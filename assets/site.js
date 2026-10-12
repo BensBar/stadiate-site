@@ -193,10 +193,10 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   });
   let team, rival, timers = [];
   const later = (ms, fn) => timers.push(setTimeout(fn, ms));
-  function setTeam(name) {
+  function setTeam(name, rivalName) {
     team = find(name); sel.value = team.n;
     const pool = ALL.filter(t => t.lg === team.lg && t.n !== team.n);
-    rival = pool[Math.floor(Math.random() * pool.length)];
+    rival = (rivalName && find(rivalName)) || pool[Math.floor(Math.random() * pool.length)];
     room.style.setProperty('--c1', team.c1); room.style.setProperty('--c2', team.c2);
     document.querySelectorAll('.ev:not(.rival)').forEach(b => { b.style.setProperty('--c1', team.c1); b.style.setProperty('--c2', team.c2); });
     timeline.style.setProperty('--c1', team.c1);
@@ -208,11 +208,11 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
 
   const EV = {
     td: { word: 'TOUCHDOWN', flashes: 10, sound: () => { SND.horn(); crowd(3.2, 1); }, confetti: 200, cheer: true,
-      cap: t => `<strong>${t.n} touchdown.</strong> Lamps flashed in team colors, the goal horn sounded, the framed art TV on the wall lit up with a celebration (your main game stayed on), and the couch jumped up. That’s the whole room reacting.` },
+      cap: t => `<strong>${t.n} touchdown.</strong> Lamps flashed in team colors, the goal horn sounded, the second screen on the wall lit up with a celebration (your main game stayed on), and the couch jumped up. That’s the whole room reacting.` },
     fg: { word: 'FIELD GOAL', flashes: 4, sound: () => { SND.chime(); crowd(1.8, 0.6); }, confetti: 70, cheer: true,
       cap: t => `<strong>Three points for ${t.n}.</strong> A smaller moment can get a smaller celebration: a quick pulse and a cheer.` },
     win: { word: 'VICTORY', flashes: 16, sound: () => { SND.fanfare(); SND.horn(); crowd(4.2, 1); }, confetti: 360, cheer: true,
-      cap: t => `<strong>${t.n} win!</strong> Full stadium mode: a long light show, the fanfare, and confetti, with the framed art TV celebrating on the side wall.` },
+      cap: t => `<strong>${t.n} win!</strong> Full stadium mode: a long light show, the fanfare, and confetti, with the second screen celebrating on the side wall.` },
     rival: { word: 'UGH.', flashes: 0, sound: () => SND.trombone(), confetti: 0, sad: true,
       cap: t => `<strong>${t.n} scored on you.</strong> Not every score is a party. With custom rules, the room can react to the other team too, like dimming for a moment of silence.` },
   };
@@ -260,7 +260,56 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
     later(end + 3600, () => { room.style.setProperty('--lit', 0.3); chips.forEach(c => c.classList.remove('on')); });
   }
   document.querySelectorAll('.ev').forEach(b => (b.onclick = () => play(b.dataset.ev)));
-  setTeam('Atlanta Falcons');
+  setTeam('Atlanta Falcons', 'New Orleans Saints');
+
+  /* ---------- the main TV: the real drive, on request ----------
+     The NFL does not allow this highlight to be embedded, so instead of
+     re-hosting it the main TV replays the drive itself, from the verified
+     play-by-play in assets/shots/drive-capture.json. The touchdown lands at the
+     cue point below, and that is when the room reacts, exactly as it would to a
+     live score. The clip itself is linked out to YouTube. */
+  const driveBtn = $('#play-drive'), tvDrive = $('#tv-drive'), driveList = $('#drive-list');
+  const TD_AT = Number(driveBtn?.dataset.tdAt ?? 14) * 1000;
+  const steps = driveList ? [...driveList.children] : [];
+  let driveTimers = [];
+
+  function stopDrive() {
+    driveTimers.forEach(clearTimeout); driveTimers = [];
+    steps.forEach((li) => li.classList.remove('now', 'done'));
+    if (tvDrive) tvDrive.hidden = true;
+    room.classList.remove('playing');
+  }
+
+  function showStep(index) {
+    const li = steps[index];
+    if (!li || !tvDrive) return;
+    steps.forEach((other, i) => {
+      other.classList.toggle('now', i === index);
+      other.classList.toggle('done', i < index);
+    });
+    $('#drive-clock').textContent = li.dataset.clock;
+    $('#drive-text').textContent = li.querySelector('.dl-text').textContent;
+    tvDrive.hidden = false;
+  }
+
+  if (driveBtn && steps.length) {
+    driveBtn.onclick = () => {
+      stopDrive();
+      reset();
+      room.classList.add('playing');
+      // Space the drive so the scoring play lands exactly on the cue.
+      const gap = TD_AT / (steps.length - 1);
+      steps.forEach((li, i) => {
+        driveTimers.push(setTimeout(() => {
+          showStep(i);
+          if (li.dataset.scoring === 'true') play('td');
+        }, Math.round(i * gap)));
+      });
+      driveTimers.push(setTimeout(stopDrive, TD_AT + 9000));
+      driveBtn.textContent = '▶︎ Replay the drive';
+      cap.innerHTML = '<strong>Atlanta\u2019s opening drive.</strong> Watch the second screen: Stadiate is following the real play feed, and the room is waiting for the score.';
+    };
+  }
 
   // Silent preview the first time the room scrolls into view.
   let previewed = false;

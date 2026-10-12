@@ -84,6 +84,26 @@ npm run og
 downscales it to the 1200×675 card at `assets/og.jpg`. Re-run it whenever the
 screenshots are regenerated, so a shared link always previews the real board.
 
+The room demo's main TV needs one more capture, taken at a single verified
+scoring play rather than at a final score:
+
+```bash
+BASE=http://localhost:8787 npm run screenshots:drive
+```
+
+`tools/shoot-drive.mjs` rebuilds the October 5, 2026 Atlanta–New Orleans game
+as it stood at Bijan Robinson's 59-yard touchdown (Q1 13:34), captures the
+Action View to `assets/shots/drive-board.jpg`, and records that play plus the
+rest of the drive in its own `assets/shots/drive-capture.json`. It writes a
+separate manifest on purpose, so regenerating it never churns the provenance of
+the ten main screenshots. Mid-game captures leave `spotlightPlayers` empty:
+ESPN only publishes end-of-game box scores, so showing player lines beside a
+first-quarter clock would state something untrue.
+
+The play text in that manifest is rendered into `index.html` verbatim and the
+test suite asserts the two still match, so the drive on the page cannot drift
+from the drive that was captured.
+
 ## Product claims and release status
 
 The comparison was checked against `BensBar/stadiate`'s tvOS documentation,

@@ -6,7 +6,8 @@
     "dev": "node tools/server.mjs",
     "test": "node --test tools/site.test.mjs",
     "screenshots": "node tools/shoot.mjs",
-    "og": "node tools/make-og.mjs"
+    "og": "node tools/make-og.mjs",
+    "screenshots:drive": "node tools/shoot-drive.mjs"
   },
   "keywords": [],
   "author": "",
