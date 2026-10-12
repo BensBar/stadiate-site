@@ -22,7 +22,7 @@
   <meta property="og:type" content="website">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="preload" href="assets/fonts/Cinzel-VariableFont_wght.ttf" as="font" type="font/ttf" crossorigin>
-  <link rel="preload" as="image" href="assets/glass/window-1280.webp" imagesrcset="assets/glass/window-1280.webp 1280w, assets/glass/window-2560.webp 2560w" imagesizes="(max-width: 1100px) 100vw, 1060px">
+  <link rel="preload" as="image" href="assets/shots/live-board.jpg" fetchpriority="high">
   <link rel="stylesheet" href="assets/site.css">
   <script src="assets/teams.js" defer></script>
   <script src="assets/site.js" defer></script>
@@ -62,20 +62,15 @@
           <a class="button button-ghost" href="#how">How does it work?</a>
         </div>
 
-        <div class="stage" id="stage">
+        <figure class="stage" id="stage">
           <div class="frame">
-            <div class="board" id="hero-board">
-              <img class="b-bg" src="assets/glass/window-1280.webp" srcset="assets/glass/window-1280.webp 1280w, assets/glass/window-2560.webp 2560w" sizes="(max-width: 1100px) 100vw, 1060px" width="2560" height="1440" alt="A stained-glass Stadiate scoreboard: a rose window over a glowing stadium, with team crests on either side" fetchpriority="high">
-              <img class="b-logo l" alt="">
-              <img class="b-logo r" alt="">
-              <div class="b-lbl ln"></div><div class="b-lbl rn"></div><div class="b-lbl ctr"></div>
-              <div class="b-ins"><div class="b-match"></div><div class="b-time"><span class="live-dot"></span><span class="t"></span></div><div class="b-venue"></div></div>
-              <div class="gleam"></div>
-              <div class="b-flash"></div>
-            </div>
+            <a class="image-expand board" id="hero-expand" href="assets/shots/live-board.jpg" data-lightbox data-caption="Game view — New England 29, Buffalo 26 · October 4, 2026. Real final scores and stats rendered in the current Stadiate web board, not recorded live." aria-label="Enlarge the Stadiate game board screenshot">
+              <img src="assets/shots/live-board.jpg" width="1920" height="1080" alt="A Stadiate game board rendering New England 29, Buffalo 26, with the field, down and distance, player stats, and recent plays" fetchpriority="high">
+              <span class="expand-label" aria-hidden="true">Full screen ↗</span>
+            </a>
           </div>
-          <div class="stage-cap"><span>A stained-glass game board for your TV. Illustrative matchups.</span><div class="dots" id="dots"></div></div>
-        </div>
+          <figcaption class="stage-cap"><span>A real Stadiate board: New England 29, Buffalo 26 — the actual October 4, 2026 final.</span></figcaption>
+        </figure>
       </div>
     </section>
 

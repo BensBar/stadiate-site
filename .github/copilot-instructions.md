@@ -48,9 +48,8 @@ returns 404, so don't widen that allowlist.
   owns its screenshot filename, title, description, platform label, and alt text in a
   JS object; the matching `<button data-view>` / `<button data-art>` in HTML carries
   only the key. Add a view or scene in **both** places or the test loop fails.
-- **An IIFE** — everything driven by team data: the cycling hero board (`SCENES`),
-  the crest ribbon, synthesized audio, the confetti canvas, the room demo, and the
-  team gallery.
+- **An IIFE** — everything driven by team data: the crest ribbon, synthesized audio,
+  the confetti canvas, the room demo, and the team gallery.
 
 `assets/teams.js` is **generated data**, not hand-authored. It sets one global,
 `window.STADIATE_TEAMS = { nfl: [...], ncaaf: [...] }`, with terse keys: `n` full name,
@@ -107,7 +106,11 @@ room effects. Scores, names, clocks, and stats are never invented.
   `tools/*.mjs` is ESM Node and is the only exception.
 - Page order deliberately leads with sports: hero → plain-English explainer → room demo
   → the screens/boards → **then** Art View → teams → sync → fantasy → setup → FAQ.
-  Art is atmosphere, not the pitch; keep it after the sports sections.
+  Art is atmosphere, not the pitch; keep it after the sports sections. For the same
+  reason the hero's first visual is a **real** capture (`live-board.jpg`, the actual
+  New England 29–26 Buffalo final), not stained-glass artwork or an illustrative
+  matchup. Stained glass stays as texture: the crest ribbon, the `#teams` gallery,
+  and the `.start-section` backdrop.
 - Gallery tiles, timeline chips, the ribbon, and the team `<select>` are built in JS
   from `STADIATE_TEAMS` — don't hardcode team markup in `index.html`.
 - Crests: 384×384 transparent WebP (`cwebp -q 82 -alpha_q 90 -resize 384 384`).

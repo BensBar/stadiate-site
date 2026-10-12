@@ -98,65 +98,6 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   const find = (name) => ALL.find(t => t.n === name);
   const $ = (s, r = document) => r.querySelector(s);
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const up = (s) => s.toUpperCase();
-  const nick = (t) => t.lg === 'nfl' ? t.n.split(' ').slice(-1)[0] : t.n;
-
-  /* ---------- hero: cycling stained-glass board ---------- */
-  const SCENES = [
-    { a: 'Atlanta Falcons', b: 'Baltimore Ravens', ctr: 'SUNDAY NIGHT', s: [24, 20], t: '4TH QTR · 0:42 · FALCONS BALL', v: 'MERCEDES-BENZ STADIUM', who: 0 },
-    { a: 'Georgia', b: 'Alabama', ctr: 'SATURDAY NIGHT', s: [17, 21], t: '3RD QTR · 6:15 · 2ND & 4', v: 'SANFORD STADIUM', who: 0 },
-    { a: 'Detroit Lions', b: 'Green Bay Packers', ctr: 'THANKSGIVING', s: [13, 17], t: '2ND QTR · 1:58 · 1ST & GOAL', v: 'FORD FIELD', who: 0 },
-    { a: 'Texas', b: 'Oklahoma', ctr: 'RED RIVER RIVALRY', s: [28, 24], t: '4TH QTR · 3:30 · 3RD & 2', v: 'COTTON BOWL', who: 1 },
-    { a: 'Kansas City Chiefs', b: 'Buffalo Bills', ctr: 'AFC SHOWDOWN', s: [23, 23], t: 'OVERTIME · 7:12 · BILLS BALL', v: 'ARROWHEAD STADIUM', who: 1 },
-    { a: 'Ohio State', b: 'Oregon', ctr: 'PRIMETIME', s: [14, 10], t: '2ND QTR · 1:04 · 1ST & 10', v: 'OHIO STADIUM', who: 1 },
-  ];
-  const hb = $('#hero-board'), stage = $('#stage');
-  const hl = $('.b-logo.l', hb), hr = $('.b-logo.r', hb);
-  const dotsEl = $('#dots');
-  let scene = 0, sceneTimer, scoreTimer;
-  SCENES.forEach((_, i) => {
-    const b = document.createElement('button');
-    b.setAttribute('aria-label', `Show matchup ${i + 1}`);
-    b.onclick = () => showScene(i, true);
-    dotsEl.appendChild(b);
-  });
-  function setMatch(sc, s) {
-    const A = find(sc.a), B = find(sc.b);
-    $('.b-match', hb).innerHTML = `${up(nick(B))} <b data-i="1">${s[1]}</b> &nbsp;·&nbsp; ${up(nick(A))} <b data-i="0">${s[0]}</b>`;
-  }
-  function showScene(i, manual) {
-    clearTimeout(sceneTimer); clearTimeout(scoreTimer);
-    scene = (i + SCENES.length) % SCENES.length;
-    const sc = SCENES[scene], A = find(sc.a), B = find(sc.b);
-    [...dotsEl.children].forEach((d, j) => d.classList.toggle('on', j === scene));
-    hl.classList.add('out'); hr.classList.add('out');
-    hb.querySelectorAll('.b-lbl').forEach(e => (e.style.opacity = 0));
-    setTimeout(() => {
-      hl.src = A.img; hl.alt = A.n; hr.src = B.img; hr.alt = B.n;
-      $('.ln', hb).textContent = up(A.n); $('.rn', hb).textContent = up(B.n); $('.ctr', hb).textContent = sc.ctr;
-      setMatch(sc, sc.s);
-      $('.b-time .t', hb).textContent = sc.t; $('.b-venue', hb).textContent = sc.v;
-      hb.querySelectorAll('.b-lbl').forEach(e => (e.style.opacity = 1));
-      hl.classList.remove('out'); hr.classList.remove('out');
-      stage.style.setProperty('--gl', A.c1); stage.style.setProperty('--gr', B.c1);
-    }, manual ? 250 : 450);
-    if (reduced) return;
-    scoreTimer = setTimeout(() => heroScore(sc), 3400);
-    sceneTimer = setTimeout(() => showScene(scene + 1), 7200);
-  }
-  function heroScore(sc) {
-    const T2 = find(sc.who ? sc.b : sc.a);
-    const s = [...sc.s]; s[sc.who] += 7;
-    setMatch(sc, s);
-    $(`.b-match b[data-i="${sc.who}"]`, hb).classList.add('bump');
-    $('.b-time .t', hb).textContent = `TOUCHDOWN ${up(nick(T2))}!`;
-    const f = $('.b-flash', hb);
-    f.style.setProperty('--fx', sc.who ? '82%' : '17%'); f.style.setProperty('--fc', T2.c1);
-    f.classList.remove('go'); void f.offsetWidth; f.classList.add('go');
-    stage.style.setProperty(sc.who ? '--gl' : '--gr', T2.c2);
-    stage.classList.add('flash'); setTimeout(() => stage.classList.remove('flash'), 1300);
-  }
-  showScene(0);
 
   /* ---------- ribbon ---------- */
   const rib = $('#ribbon');

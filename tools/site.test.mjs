@@ -143,6 +143,26 @@ test('link previews use the stained-glass card without requiring JavaScript', as
   }
 });
 
+test('the page opens on a real game capture, with sports sections ahead of art', async () => {
+  const manifest = JSON.parse(await readFile(new URL('../assets/shots/capture.json', import.meta.url), 'utf8'));
+  const page = await newPage({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
+  try {
+    await page.goto(base);
+    const source = new URL(await page.locator('.hero img').first().getAttribute('src'), base).pathname;
+    assert.ok(manifest.captures.some((capture) => source === `/assets/shots/${capture.file}`),
+      `Hero leads with ${source}, which is not a provenanced capture`);
+    assert.ok(!source.startsWith('/assets/shots/art-'), `Hero leads with Art View (${source})`);
+    assert.equal(await page.locator('.hero img[src*="/glass/"]').count(), 0);
+    const order = await page.evaluate(() => [...document.querySelectorAll('main > section')].map((section) => section.id));
+    for (const sports of ['how', 'room', 'boards']) {
+      assert.ok(order.indexOf(sports) > -1 && order.indexOf(sports) < order.indexOf('art'),
+        `#${sports} must come before #art`);
+    }
+  } finally {
+    await page.close();
+  }
+});
+
 test('capture provenance identifies real finals and matches every full-size screenshot', async () => {
   const manifest = JSON.parse(await readFile(new URL('../assets/shots/capture.json', import.meta.url), 'utf8'));
   assert.equal(manifest.sources.length, 7);
