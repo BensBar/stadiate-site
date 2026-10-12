@@ -26,8 +26,11 @@ There is no linter. `npm test` is the only gate, and it is strict: it fails on a
 console error, any HTTP 4xx/5xx for a page asset, horizontal overflow at 320–1440px,
 or a `#`-anchor with no matching element. Run it after touching HTML, CSS, or JS.
 
-Deploy is Cloudflare Pages: preset None, empty build command, output directory `/`.
-Every push to `main` redeploys `stadiate.com`. `CNAME` is a leftover from GitHub Pages.
+Deploy is **GitHub Pages**, built from `main` at the repository root — no build
+config, live within about a minute of a push. `CNAME` is load-bearing: it holds the
+custom domain, so don't move or delete it. Cloudflare supplies DNS and the analytics
+beacon but does not host or proxy the site, which is why the beacon is hand-written
+into each page. Check state with `gh api repos/BensBar/stadiate-site/pages`.
 
 ## Architecture
 
@@ -38,7 +41,8 @@ third-party script is the cookieless Cloudflare Web Analytics beacon.
 
 `tools/server.mjs` exports `startServer(port)` and is shared by `npm run dev` and the
 test suite. It serves only `index.html`, `privacy.html`, and `assets/**`, and maps
-`/privacy` → `privacy.html` (matching Cloudflare Pages). A test asserts `/.git/config`
+`/privacy` → `privacy.html` (matching how Pages serves extensionless URLs). A test
+asserts `/.git/config`
 returns 404, so don't widen that allowlist.
 
 `assets/site.js` has two halves:

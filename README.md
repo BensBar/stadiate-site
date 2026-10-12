@@ -27,16 +27,21 @@ They cover 320–1440px layouts, image loading, anchor targets, all gallery
 choices, keyboard/lightbox behavior, the local-only celebration preview,
 FAQ disclosure, and the no-JavaScript/privacy path.
 
-## Deploy (Cloudflare Pages)
+## Deploy (GitHub Pages)
 
-DNS for `stadiate.com` is already on Cloudflare, so:
+`stadiate.com` is served by GitHub Pages from `main` at the repository root, so
+there is nothing to build or configure per deploy:
 
-1. Push this repo to GitHub.
-2. Cloudflare dashboard → **Workers & Pages → Create → Pages → Connect to Git** → pick this repo.
-3. Build settings: **Framework preset: None**, **Build command: (empty)**, **Output directory: `/`**.
-4. After the first deploy → **Custom domains** → add `stadiate.com` and `www.stadiate.com`.
+1. Push to `main`. Pages rebuilds and the change is usually live within a minute.
+2. `CNAME` holds the custom domain and must stay at the repository root.
+3. DNS for the apex points at the GitHub Pages addresses (`185.199.108–111.153`),
+   and HTTPS is issued and enforced by GitHub.
 
-Automatic HTTPS is included; every push to `main` redeploys.
+Cloudflare still provides DNS and the Web Analytics beacon, but it does **not**
+host or proxy the site — which is exactly why the beacon has to be written into
+each page by hand (see above) rather than injected automatically.
+
+Check deploy state with `gh api repos/BensBar/stadiate-site/pages`.
 
 ## Product screenshots
 
