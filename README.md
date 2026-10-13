@@ -27,6 +27,20 @@ They cover 320–1440px layouts, image loading, anchor targets, all gallery
 choices, keyboard/lightbox behavior, the local-only celebration preview,
 FAQ disclosure, and the no-JavaScript/privacy path.
 
+The landing page keeps its default reading path under 350 words: the idea,
+a hero room demo, three steps, and two ways to start. Scoreboard/Art View galleries,
+the feature comparison (including fantasy), team collection, and demo details
+use native `details` disclosures, accessible without JavaScript.
+Position Stadiate as live scores and room celebrations, not an Apple TV-only
+product: Apple TV runs standalone; the Mac app also serves boards to compatible
+web browsers without an Apple TV. Do not promise every smart-TV browser or
+invent native apps for other platforms.
+Black textured surfaces, red controls, and silver/white accents frame the content.
+Red-to-silver gradients move slowly (28–32 seconds), without rainbow hues;
+reduced motion disables that movement. Team colors stay inside product previews.
+Layout tests cap the default page at 4,300px on a 375px-wide phone and 3,500px
+at 1440px desktop width, with optional details closed.
+
 ## Deploy (GitHub Pages)
 
 `stadiate.com` is served by GitHub Pages from `main` at the repository root, so
@@ -57,7 +71,15 @@ Capture with a current Stadiate hub reachable at `BASE`:
 
 ```bash
 BASE=http://localhost:8787 npm run screenshots
+BASE=http://localhost:8787 npm run screenshots:cathedral
 ```
+
+The Cathedral capture has its own `cathedral-capture.json`, so adding or
+refreshing it leaves the original ten captures and their provenance unchanged.
+The Art View picker features The Terrace, Let’s Van Gogh!, The Game-Day Journal,
+and Cathedral of the Gridiron. These are website display names, not changes to
+the product's theme IDs. The current web catalog has 16 themes: four featured,
+12 more available.
 
 `tools/capture-data.mjs` obtains historical results and individual player stats
 from public ESPN event summaries, and historical play-by-play from the hub's
@@ -84,7 +106,7 @@ npm run og
 downscales it to the 1200×675 card at `assets/og.jpg`. Re-run it whenever the
 screenshots are regenerated, so a shared link always previews the real board.
 
-The room demo's main TV needs one more capture, taken at a single verified
+The room demo's second screen needs one more capture, taken at a single verified
 scoring play rather than at a final score:
 
 ```bash
@@ -104,22 +126,33 @@ The play text in that manifest is rendered into `index.html` verbatim and the
 test suite asserts the two still match, so the drive on the page cannot drift
 from the drive that was captured.
 
-### The main TV can play a real clip
+### The main TV plays video with game audio
 
-The demo's main TV plays a video if one is installed at
-`assets/clips/falcons-saints-td.mp4`, with sound, firing the touchdown at the
-`data-td-at` cue on `#play-drive`. Nothing is bundled: that folder is
-git-ignored except for its README, because the NFL highlight of this play is
-neither embeddable (YouTube returns error 153) nor ours to re-host. Only
-install a file you have the right to publish, and update the fine print and the
-broadcast-rights FAQ when you do.
+`assets/clips/bijan-touchdown.mp4` is an H.264/AAC conversion of the locally
+supplied clip, with its original game audio and an excerpt of Stadiate's
+`falcons-thunder.mp3` mixed in at the touchdown. The site owner confirmed permission
+to publish this clip. The source file remains git-ignored. A real first-frame
+poster and the earlier silent GIF conversion are also retained.
+See `assets/clips/README.md` for conversion commands.
 
-With no clip present — which is what the published site does — the TV draws the
-play instead of showing video: the ball travels to the yard line each play
-finished on (`data-yd`, taken from the capture's `endYardsToEndzone`) and
-reaches the end zone on the cue. That field is original artwork driven by real
-data, so it carries no rights of anyone else's. Do not replace it with footage.
-See `assets/clips/README.md`.
+The video attempts muted inline playback when the TV enters view. A direct
+"Play with sound" tap starts or unmutes it in the user gesture, which iPhone
+Safari requires. Blocked autoplay presents the same tap control, not an error
+fallback. All playback/sound controls sit below the room, not over the TV.
+The preview server supports `video/mp4` and byte-range requests.
+Replay restarts the clip; Stop or hiding the page stops it. The touchdown fires
+from media playback time at `data-td-at` (13 seconds), so buffering or pausing
+cannot run the celebration early. The actual Falcons horn is mixed into the
+same AAC track at 13 seconds, with game audio lowered beneath it. The video
+and all audio end at 17.5 seconds, after 4.5 seconds of horn; the `ended` handler
+also cancels room effects. Do not layer a synthesized horn over this recording.
+
+Reduced-motion visitors see the still frame until they explicitly press Play;
+that click plays the video with audio. Failed media loads use verified play-by-play:
+the ball travels to each play's `data-yd` yard line, taken from the capture's
+`endYardsToEndzone`, and reaches the end zone on the cue. Without JavaScript,
+visitors can read the drive and open the MP4 directly. Keep the demo fine print
+and broadcast-rights FAQ accurate when changing media.
 
 
 ## Product claims and release status
@@ -149,7 +182,8 @@ app documentation on `main`.
   Do not link visitors to the private product repository or invent store URLs.
 
 The room demo is a CSS/WebAudio illustration, labeled as such. It makes no
-device-control requests and synthesizes its sounds in the browser. The main TV
+device-control requests. The optional team/event buttons synthesize sounds;
+the featured video carries the actual Falcons recording. The main TV
 keeps showing the game; the touchdown celebration plays on a separate framed art
 screen on a side wall, so the broadcast is never "taken over". Galleries remain static image links without JavaScript;
 with JavaScript they gain scene selection and a keyboard-accessible native dialog.

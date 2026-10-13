@@ -26,12 +26,10 @@ const views = {
 };
 
 const artScenes = {
-  terrace: { title: 'Terrazza dei Limoni', alt: 'Sunlit Mediterranean terrace with game scores inscribed into marble pedestals and a ceramic pot' },
-  nocturne: { title: 'Notte Stellata', alt: 'Star-filled Mediterranean night with live scores on a café chalkboard, wall plaque, and ceramic vase' },
-  ukiyoe: { title: 'A new wave', alt: 'Japanese-inspired print with Mount Fuji, blue waves, and game scores in a paper cartouche' },
-  italian: { title: 'Il Libro dei Punteggi', alt: 'Italian still life with game scores lettered onto the pages of an open book' },
-  neon: { title: 'Neon nights', alt: 'Nighttime neon artwork with glowing sports scores incorporated into the scene' },
-  botanical: { title: 'In full bloom', alt: 'Botanical artwork with game scores lettered into its illustrated composition' },
+  terrace: { title: 'The Terrace', alt: 'Sunlit Mediterranean terrace with game scores inscribed into marble pedestals and a ceramic pot' },
+  nocturne: { title: 'Let’s Van Gogh!', alt: 'Star-filled Mediterranean night with live scores on a café chalkboard, wall plaque, and ceramic vase' },
+  italian: { title: 'The Game-Day Journal', alt: 'Italian still life with game scores lettered onto the pages of an open book' },
+  cathedral: { title: 'Cathedral of the Gridiron', alt: 'Stained-glass cathedral window displaying Dallas’s 34–30 final against Houston' },
 };
 
 const boardImage = document.querySelector('#board-image');
@@ -63,7 +61,7 @@ artButtons.forEach((button, index) => {
     artImage.src = `assets/shots/art-${button.dataset.art}.jpg`;
     artImage.alt = scene.alt;
     document.querySelector('#art-title').textContent = scene.title;
-    document.querySelector('#art-count').textContent = `${String(index + 1).padStart(2, '0')} / 06`;
+    document.querySelector('#art-count').textContent = `${String(index + 1).padStart(2, '0')} / ${String(artButtons.length).padStart(2, '0')}`;
     artExpand.href = artImage.src;
     artExpand.dataset.caption = `${scene.title} — Stadiate Art View rendering real October 3–4, 2026 final scores.`;
     artExpand.setAttribute('aria-label', `Enlarge ${scene.title} Art View`);
@@ -100,7 +98,17 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ---------- audio (synthesized, no files) ---------- */
-  let ac, master, noise, soundOn = true;
+  let ac, master, noise, soundOn = false;
+  const effectSources = new Set();
+  function effectSource(node) {
+    effectSources.add(node);
+    node.addEventListener('ended', () => effectSources.delete(node));
+    return node;
+  }
+  function stopEffects() {
+    effectSources.forEach(node => node.stop());
+    effectSources.clear();
+  }
   function audio() {
     if (!soundOn) return null;
     if (!ac) {
@@ -117,11 +125,11 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   }
   function crowd(dur = 2.8, peak = 0.9) {
     const a = audio(); if (!a) return;
-    const t = a.currentTime, src = a.createBufferSource(); src.buffer = noise; src.loop = true;
+    const t = a.currentTime, src = effectSource(a.createBufferSource()); src.buffer = noise; src.loop = true;
     const bp = a.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 1000; bp.Q.value = 0.5;
     const g = a.createGain(); g.gain.setValueAtTime(0, t);
     g.gain.linearRampToValueAtTime(peak, t + 0.25); g.gain.setTargetAtTime(peak * 0.55, t + 0.7, 0.6); g.gain.setTargetAtTime(0, t + dur - 0.9, 0.35);
-    const lfo = a.createOscillator(), lg = a.createGain(); lfo.frequency.value = 4.7; lg.gain.value = 0.12; lfo.connect(lg).connect(g.gain);
+    const lfo = effectSource(a.createOscillator()), lg = a.createGain(); lfo.frequency.value = 4.7; lg.gain.value = 0.12; lfo.connect(lg).connect(g.gain);
     src.connect(bp).connect(g).connect(master); src.start(t); lfo.start(t); src.stop(t + dur + 0.6); lfo.stop(t + dur + 0.6);
   }
   function tone(freqs, start, dur, type = 'sawtooth', vol = 0.18, cutoff = 1300, vib = 0) {
@@ -131,22 +139,28 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
     g.gain.setValueAtTime(vol, t + dur - 0.15); g.gain.linearRampToValueAtTime(0, t + dur);
     lp.connect(g).connect(master);
     freqs.forEach(f => {
-      const o = a.createOscillator(); o.type = type; o.frequency.value = f; o.detune.value = (Math.random() - 0.5) * 12;
-      if (vib) { const l = a.createOscillator(), lg = a.createGain(); l.frequency.value = 6; lg.gain.value = vib; l.connect(lg).connect(o.frequency); l.start(t); l.stop(t + dur); }
+      const o = effectSource(a.createOscillator()); o.type = type; o.frequency.value = f; o.detune.value = (Math.random() - 0.5) * 12;
+      if (vib) { const l = effectSource(a.createOscillator()), lg = a.createGain(); l.frequency.value = 6; lg.gain.value = vib; l.connect(lg).connect(o.frequency); l.start(t); l.stop(t + dur); }
       o.connect(lp); o.start(t); o.stop(t + dur + 0.05);
     });
   }
   const SND = {
-    horn() { tone([110, 138.6, 164.8], 0, 1.9, 'sawtooth', 0.2, 900); tone([220], 0, 1.9, 'square', 0.04, 1600); },
+    horn(duration = 1.9) { tone([110, 138.6, 164.8], 0, duration, 'sawtooth', 0.2, 900); tone([220], 0, duration, 'square', 0.04, 1600); },
     fanfare() { [[523.25, 0, .16], [659.25, .16, .16], [783.99, .32, .16], [1046.5, .48, .7]].forEach(([f, s, d]) => tone([f, f / 2], s, d, 'square', 0.07, 2600)); },
     chime() { tone([659.25, 987.77], 0, 0.5, 'triangle', 0.16, 4000); tone([783.99, 1174.66], 0.18, 0.8, 'triangle', 0.16, 4000); },
     trombone() { [[233.08, 0, .5], [220, .5, .5], [207.65, 1, .5], [196, 1.5, 1.4]].forEach(([f, s, d], i) => tone([f], s, d, 'sawtooth', 0.14, 1100, i === 3 ? 5 : 0)); },
   };
   const sndBtn = $('#snd');
-  sndBtn.onclick = () => {
-    soundOn = !soundOn; sndBtn.setAttribute('aria-pressed', soundOn);
+  function setSound(enabled) {
+    soundOn = enabled; sndBtn.setAttribute('aria-pressed', soundOn);
     sndBtn.textContent = soundOn ? '🔊 Sound on' : '🔇 Sound off';
-    if (!soundOn && ac) ac.suspend();
+    clip.muted = !soundOn;
+    if (!soundOn && ac) { stopEffects(); ac.suspend(); }
+    if (soundOn) audio();
+  }
+  sndBtn.onclick = () => {
+    setSound(!soundOn);
+    if (soundOn && !clip.hidden && clip.paused) playClip();
   };
 
   /* ---------- confetti ---------- */
@@ -204,11 +218,11 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
     $('#badge-img').src = team.img; $('#badge-txt').textContent = `Following ${team.n} vs ${rival.n}`;
   }
   const timeline = $('#timeline');
-  sel.onchange = () => { setTeam(sel.value); play('td'); };
+  sel.onchange = () => { previewed = true; stopDrive(); setTeam(sel.value); play('td'); };
 
   const EV = {
-    td: { word: 'TOUCHDOWN', flashes: 10, sound: () => { SND.horn(); crowd(3.2, 1); }, confetti: 200, cheer: true,
-      cap: t => `<strong>${t.n} touchdown.</strong> Lamps flashed in team colors, the goal horn sounded, the second screen on the wall lit up with a celebration (your main game stayed on), and the couch jumped up. That’s the whole room reacting.` },
+    td: { word: 'TOUCHDOWN', flashes: 10, sound: () => { SND.horn(4.5); crowd(3.2, 1); }, confetti: 200, cheer: true,
+      cap: t => `<strong>${t.n} touchdown.</strong> Lights and the second screen celebrate. Your game keeps playing.` },
     fg: { word: 'FIELD GOAL', flashes: 4, sound: () => { SND.chime(); crowd(1.8, 0.6); }, confetti: 70, cheer: true,
       cap: t => `<strong>Three points for ${t.n}.</strong> A smaller moment can get a smaller celebration: a quick pulse and a cheer.` },
     win: { word: 'VICTORY', flashes: 16, sound: () => { SND.fanfare(); SND.horn(); crowd(4.2, 1); }, confetti: 360, cheer: true,
@@ -218,7 +232,11 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   };
   function reset() {
     timers.forEach(clearTimeout); timers = [];
+    stopEffects();
+    cancelAnimationFrame(raf); raf = 0; parts = [];
+    cx.clearRect(0, 0, cv.width, cv.height);
     room.classList.remove('tko-on', 'cheer', 'boom', 'sad', 'shake');
+    room.style.setProperty('--lit', 0.3);
     chips.forEach(c => c.classList.remove('on'));
     room.style.setProperty('--c1', team.c1); room.style.setProperty('--c2', team.c2);
   }
@@ -250,7 +268,7 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
     later(380, () => {
       if (e.cheer) room.classList.add('cheer');
       if (!reduced) room.classList.add('shake');
-      burst(e.confetti, [team.c1, team.c2, '#f7dc95', '#ffffff'], kind === 'win' ? 1.25 : 1);
+      burst(e.confetti, [team.c1, team.c2, '#c4c7ce', '#ffffff'], kind === 'win' ? 1.25 : 1);
       chips[4].classList.add('on');
     });
     const end = 90 + e.flashes * 230;
@@ -259,19 +277,18 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
     later(end + 2000, () => room.classList.remove('tko-on'));
     later(end + 3600, () => { room.style.setProperty('--lit', 0.3); chips.forEach(c => c.classList.remove('on')); });
   }
-  document.querySelectorAll('.ev').forEach(b => (b.onclick = () => play(b.dataset.ev)));
+  document.querySelectorAll('.ev').forEach(b => (b.onclick = () => {
+    previewed = true;
+    stopDrive();
+    play(b.dataset.ev);
+  }));
   setTeam('Atlanta Falcons', 'New Orleans Saints');
 
   /* ---------- the main TV ----------
-     Two ways to show the play. If a licensed clip has been installed at the
-     path in data-clip, the TV plays it with sound and the touchdown fires at
-     the cue in data-td-at. Nothing is bundled with the site: the NFL does not
-     permit its highlight to be embedded or re-hosted, so when no clip is
-     present the TV falls back to replaying the drive itself, from the verified
-     play-by-play in assets/shots/drive-capture.json. Either way the score lands
-     at the same moment and the room reacts exactly as it would to a live one. */
+     Start the play once when the TV enters view. Reduced motion waits for a
+     click; a failed load uses verified play-by-play at the same scoring cue. */
   const driveBtn = $('#play-drive'), tvDrive = $('#tv-drive'), driveList = $('#drive-list');
-  const clip = $('#tv-clip'), unmuteBtn = $('#tv-unmute');
+  const clip = $('#tv-clip'), poster = $('#tv-poster'), stopBtn = $('#stop-drive');
   const ball = $('#tv-ball'), goal = $('#tv-goal');
   // How long the scoring run takes to cross the field, so it lands on the cue.
   const RUN_MS = 1600;
@@ -279,17 +296,24 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   const TD_SEC = Number(driveBtn?.dataset.tdAt ?? 13);
   const steps = driveList ? [...driveList.children] : [];
   const scoringStep = steps.findIndex((li) => li.dataset.scoring === 'true');
-  let driveTimers = [], clipUsable = Boolean(clip && clipSrc), fired = false;
+  let driveTimers = [], clipUsable = Boolean(clip && clipSrc);
+  let playbackId = 0, fired = false;
 
   function stopDrive() {
+    playbackId++;
+    room.classList.remove('playing');
     driveTimers.forEach(clearTimeout); driveTimers = [];
     steps.forEach((li) => li.classList.remove('now', 'done'));
     if (tvDrive) tvDrive.hidden = true;
     if (ball) { ball.hidden = true; ball.style.left = ''; ball.style.transitionDuration = ''; }
     if (goal) goal.hidden = true;
-    if (clip) { clip.pause(); clip.hidden = true; }
-    if (unmuteBtn) unmuteBtn.hidden = true;
-    room.classList.remove('playing');
+    if (clip) {
+      clip.pause();
+      clip.hidden = true;
+    }
+    if (poster) poster.hidden = false;
+    driveBtn?.removeAttribute('aria-busy');
+    if (stopBtn) stopBtn.hidden = true;
   }
 
   function showStep(index) {
@@ -325,6 +349,7 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   // No clip installed: replay the drive from the captured play-by-play.
   function playFeed() {
     if (!steps.length) return;
+    if (poster) poster.hidden = true;
     const cue = TD_SEC * 1000;
     // The scoring play starts early enough that the run reaches the end zone
     // exactly on the cue; the rest of the drive is spread over the time before.
@@ -333,64 +358,122 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
       driveTimers.push(setTimeout(() => showStep(i), Math.round(i * gap)));
     });
     driveTimers.push(setTimeout(() => play('td'), cue));
-    driveTimers.push(setTimeout(stopDrive, cue + 9000));
+    driveTimers.push(setTimeout(finishDrive, cue + 4500));
   }
 
-  // A clip is installed: play it with sound and score on the cue.
   function playClip() {
-    if (!clip.getAttribute('src')) clip.setAttribute('src', clipSrc);
+    const id = playbackId;
+    if (!clip.getAttribute('src')) clip.src = clipSrc;
     clip.hidden = false;
-    fired = false;
-    try { clip.currentTime = 0; } catch { /* not seekable yet; it starts at 0 anyway */ }
-    clip.muted = false;
-    // Must stay synchronous: awaiting anything here spends the user gesture.
-    const started = clip.play();
-    if (started) started.catch(() => {
-      // Sound was refused, so fall back to muted and offer a tap to unmute.
-      clip.muted = true;
-      clip.play().then(() => { if (unmuteBtn) unmuteBtn.hidden = false; }).catch(useFeed);
+    clip.muted = !soundOn;
+    // Keep play() inside the tap handler so iOS allows game audio.
+    clip.play().catch((error) => {
+      if (id !== playbackId) return;
+      driveBtn.removeAttribute('aria-busy');
+      if (error.name === 'NotAllowedError' || error.name === 'AbortError') {
+        driveBtn.textContent = '\u25B6 Play with sound';
+        cap.textContent = 'Tap Play with sound below the TV to start.';
+      } else {
+        console.warn('Demo video could not play; showing play-by-play instead.', error);
+        useFeed();
+      }
     });
   }
+
+  clip.addEventListener('playing', () => {
+    if (clip.hidden) return;
+    driveBtn.removeAttribute('aria-busy');
+    driveBtn.textContent = '\u21BB Replay with sound';
+    if (!fired) cap.textContent = 'Watch Bijan. The room reacts when he reaches the end zone.';
+  });
+  clip.addEventListener('timeupdate', () => {
+    if (clip.hidden || clip.paused || clip.seeking || !room.classList.contains('playing')) return;
+    if (clip.currentTime < TD_SEC) {
+      if (fired) reset();
+      fired = false;
+    } else if (!fired) {
+      fired = true;
+      if (scoringStep > -1) steps.forEach((li, i) => li.classList.toggle('now', i === scoringStep));
+      // The actual Falcons horn is already mixed into the video's audio track.
+      play('td', true);
+    }
+  });
+  clip.addEventListener('pause', () => {
+    if (clip.hidden || clip.ended || !room.classList.contains('playing')) return;
+    reset();
+    driveBtn.textContent = '\u25B6 Resume with sound';
+    cap.textContent = 'Paused. Use Resume below the TV to continue.';
+  });
+  clip.addEventListener('volumechange', () => {
+    soundOn = !clip.muted && clip.volume > 0;
+    sndBtn.setAttribute('aria-pressed', soundOn);
+    sndBtn.textContent = soundOn ? '🔊 Sound on' : '🔇 Sound off';
+    if (!soundOn) stopEffects();
+  });
+  function finishDrive() {
+    stopDrive();
+    reset();
+    cap.textContent = 'Replay it to watch the room react again.';
+  }
+  clip.addEventListener('ended', finishDrive);
+  clip.addEventListener('error', () => {
+    if (clipUsable && !clip.hidden) useFeed();
+  });
 
   function useFeed() {
     clipUsable = false;
-    if (clip) { clip.hidden = true; }
-    if (unmuteBtn) unmuteBtn.hidden = true;
+    stopDrive();
+    room.classList.add('playing');
+    if (stopBtn) stopBtn.hidden = false;
+    cap.textContent = 'The play could not load. Showing the captured play-by-play instead.';
     playFeed();
   }
 
-  if (clip) {
-    clip.addEventListener('error', () => { if (!clip.hidden || clipUsable) useFeed(); });
-    clip.addEventListener('timeupdate', () => {
-      if (fired || clip.currentTime < TD_SEC) return;
-      fired = true;
-      if (scoringStep > -1) steps.forEach((li, i) => li.classList.toggle('now', i === scoringStep));
-      if (ball) ball.hidden = true;
-      play('td');
-    });
-    clip.addEventListener('ended', () => driveTimers.push(setTimeout(stopDrive, 4000)));
+  if (stopBtn) stopBtn.onclick = () => {
+    stopDrive();
+    reset();
+    cap.textContent = 'Stopped. Press Replay with sound to watch again.';
+  };
+
+  function startDrive(withSound = false) {
+    previewed = true;
+    stopDrive();
+    reset();
+    setTeam('Atlanta Falcons', 'New Orleans Saints');
+    room.classList.add('playing');
+    if (stopBtn) stopBtn.hidden = false;
+    driveBtn.textContent = '\u21BB Replay with sound';
+    cap.textContent = 'Loading the play on the main TV\u2026';
+    fired = false;
+    if (withSound) setSound(true);
+    if (clipUsable) {
+      driveBtn.setAttribute('aria-busy', 'true');
+      clip.currentTime = 0;
+      playClip();
+    } else {
+      cap.textContent = 'Showing the captured play-by-play.';
+      playFeed();
+    }
   }
 
-  if (unmuteBtn) {
-    unmuteBtn.onclick = () => { clip.muted = false; unmuteBtn.hidden = true; };
-  }
+  if (driveBtn && steps.length) driveBtn.onclick = () => {
+    if (!clip.hidden && clipUsable && clip.paused && !clip.ended) {
+      setSound(true);
+      playClip();
+    } else startDrive(true);
+  };
 
-  if (driveBtn && steps.length) {
-    driveBtn.onclick = () => {
+  let previewed = false;
+  new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting && !previewed && !reduced && !document.hidden) startDrive();
+  }, { threshold: 0.45 }).observe(room);
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden && room.classList.contains('playing')) {
       stopDrive();
       reset();
-      room.classList.add('playing');
-      driveBtn.textContent = '\u25B6\uFE0E Replay the drive';
-      cap.innerHTML = '<strong>Atlanta\u2019s opening drive.</strong> Watch the second screen: Stadiate is following the real play feed, and the room is waiting for the score.';
-      if (clipUsable) playClip(); else playFeed();
-    };
-  }
-
-  // Silent preview the first time the room scrolls into view.
-  let previewed = false;
-  new IntersectionObserver((ents, io) => {
-    if (ents[0].isIntersecting && !previewed && !reduced) { previewed = true; io.disconnect(); setTimeout(() => play('td', true), 500); }
-  }, { threshold: 0.6 }).observe(room);
+      cap.textContent = 'Press Replay with sound to watch again.';
+    }
+  });
 
   /* ---------- gallery ---------- */
   const gal = $('#gallery');
@@ -403,6 +486,8 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
       b.innerHTML = `${t.rank ? `<span class="rk">#${t.rank}</span>` : ''}<img src="${t.img}" alt="" loading="lazy" width="384" height="384"><b>${t.lg === 'nfl' ? t.s : t.n}</b><small>${t.lg === 'nfl' ? t.n.replace(' ' + t.s, '') : t.m}</small>`;
       b.setAttribute('aria-label', `Light the room for ${t.n}`);
       b.onclick = () => {
+        previewed = true;
+        stopDrive();
         setTeam(t.n);
         room.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
         setTimeout(() => play('td'), reduced ? 0 : 650);

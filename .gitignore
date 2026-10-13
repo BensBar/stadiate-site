@@ -2,6 +2,9 @@ node_modules/
 .DS_Store
 *.log
 
-# Room demo video is optional, licensed separately, and never committed.
+# Keep source media ignored; include only the approved demo derivatives.
 assets/clips/*
 !assets/clips/README.md
+!assets/clips/falcons-saints-td.gif
+!assets/clips/falcons-saints-poster.jpg
+!assets/clips/bijan-touchdown.mp4

@@ -50,7 +50,7 @@ returns 404, so don't widen that allowlist.
 `assets/site.js` has two halves:
 
 - **Top level** — the board **view picker** (`views` map, 4 entries), the **Art View**
-  scene picker (`artScenes`, 6 entries), and the `<dialog>` **lightbox**. Each picker
+  scene picker (`artScenes`, 4 entries), and the `<dialog>` **lightbox**. Each picker
   owns its screenshot filename, title, description, platform label, and alt text in a
   JS object; the matching `<button data-view>` / `<button data-art>` in HTML carries
   only the key. Add a view or scene in **both** places or the test loop fails.
@@ -73,7 +73,8 @@ and the privacy link all still work. Never add a feature that is unreachable wit
 ### The room demo is an illustration, not a product call
 
 `#room-scene` is pure CSS + WebAudio. Sounds are synthesized from oscillators and a
-noise buffer — there are **no audio files**. The `EV` map (`td`/`fg`/`win`/`rival`)
+noise buffer for the optional team/event buttons; the featured video carries
+recorded Falcons audio in its AAC track. The `EV` map (`td`/`fg`/`win`/`rival`)
 defines word, flash count, sound, confetti count, and caption; `play()` sequences it
 through `later()` timers collected in `timers` so `reset()` can cancel a half-finished
 celebration. A test installs a fake clock, replays it twice, and asserts **zero
@@ -98,21 +99,31 @@ Georgia 38–14 Vanderbilt). `capture.json` records source URLs, event IDs, scor
 player stats, capture time, and a **SHA-256 per file** — a test re-hashes every image
 and fails on mismatch. So: regenerate images and `capture.json` together via
 `npm run screenshots`, never hand-edit either.
+The additional Cathedral preview uses `npm run screenshots:cathedral` and
+`cathedral-capture.json`, without changing the original ten captures.
 
-The room demo's main TV has two modes, and the touchdown fires on the
-`data-td-at` cue on `#play-drive` in both. If a video exists at the path in
-`data-clip`, it plays with sound; otherwise the TV draws the play itself from
-`assets/shots/drive-capture.json` — the ball moves along the field to the yard
-line in each play's `data-yd`, reaching the end zone on the cue. That artwork is
-original; never substitute footage for it. Keep that markup generated from the
-manifest, and keep the copy honest: the page may not imply it is showing a
-broadcast.
+The main TV plays H.264/AAC video from `data-clip`, with original game audio
+and Stadiate's actual `falcons-thunder.mp3` mixed into the same track at 13s.
+Muted inline autoplay is attempted when it enters view; a direct Play with sound
+tap starts/unmutes it, including when iPhone blocks autoplay. Reduced motion
+waits for that tap. Use media `currentTime` for the `data-td-at` cue (13s), not
+a wall timer. Stop/page hiding cancels playback; native pause must not trigger
+the scoring cue. All video and audio end at 17.5s, after 4.5s of horn, and
+`ended` clears room effects. Do not synthesize another horn over the recording.
+Playback and sound controls belong below the TV, never over the footage.
+The preview server must support MP4 MIME and byte ranges for Safari.
+The real first-frame poster covers the idle TV before/after playback.
+Load failures use `assets/shots/drive-capture.json` instead: the ball moves to each
+play's `data-yd`, reaching the end zone on the cue. Keep that fallback markup
+generated from the manifest. Extra team/event controls are in a collapsed disclosure.
 
-**Never commit a clip, and never download or re-host the NFL highlight.** It is
-not embeddable (error 153) and not ours to publish. `assets/clips/` is
-git-ignored except for its README, the published site therefore runs the
-play-by-play fallback, and the fine print and broadcast-rights FAQ describe
-that fallback. Anyone installing a licensed clip must update both.
+The site owner confirmed permission to publish the supplied touchdown clip.
+`assets/clips/` is git-ignored except for its README and the derived
+`bijan-touchdown.mp4`, `falcons-saints-td.gif`, and `falcons-saints-poster.jpg`;
+never commit the source MP4 or download replacement
+highlights without permission. The conversion command is in that README.
+The demo fine print and broadcast-rights FAQ must describe the actual media,
+without implying that Stadiate streams games or includes broadcast rights.
 
 The link-preview card `assets/og.jpg` is **derived**, not hand-made: `npm run og`
 downscales `live-board.jpg` to 1200×675 after checking it against its recorded hash,
@@ -131,13 +142,21 @@ room effects. Scores, names, clocks, and stats are never invented.
 
 - Vanilla JS, no framework, no browser modules (`site.js` is a plain deferred script).
   `tools/*.mjs` is ESM Node and is the only exception.
-- Page order deliberately leads with sports: hero → plain-English explainer → room demo
-  → the screens/boards → **then** Art View → teams → sync → fantasy → setup → FAQ.
+- Page order deliberately leads with sports: hero room demo → three numbered steps
+  → optional scoreboard/Art View/team galleries → two setup choices → brief FAQ.
   Art is atmosphere, not the pitch; keep it after the sports sections. For the same
-  reason the hero's first visual is a **real** capture (`live-board.jpg`, the actual
-  New England 29–26 Buffalo final), not stained-glass artwork or an illustrative
-  matchup. Stained glass stays as texture, and only where the visitor opts in: the
-  `#teams` gallery and the `.start-section` backdrop.
+  reason the hero's first visual is the Bijan touchdown on the demo's main TV.
+  The New England–Buffalo capture stays in the scoreboard gallery and share card.
+  Page chrome uses red, black, silver, and white, with subtle textures
+  and slow red-to-silver gradients (28–32 seconds), never rainbow hues.
+  Honor reduced motion. Keep the numbered setup steps and board choices.
+  Team colors and stained glass belong in product previews and the opt-in gallery.
+- Lead with live scores and room celebrations, not Apple TV alone. Offer the
+  standalone Apple TV app and Mac-powered boards on compatible browser screens
+  as two entry points. Do not promise every browser or other native TV apps.
+- Keep the default reading path under 350 words. Galleries, the full comparison
+  (including fantasy), and demo provenance/play-by-play use native `details`,
+  closed by default and accessible without JavaScript. Avoid repeating lists.
 - Gallery tiles, timeline chips, and the team `<select>` are built in JS
   from `STADIATE_TEAMS` — don't hardcode team markup in `index.html`.
 - Crests: 384×384 transparent WebP (`cwebp -q 82 -alpha_q 90 -resize 384 384`).

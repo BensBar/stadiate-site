@@ -9,8 +9,11 @@ const BASE = process.env.BASE || 'http://localhost:8787';
 const OUT = new URL('../assets/shots/', import.meta.url);
 const { games, sources } = await loadCaptureGames(BASE);
 const captures = [];
+const cathedralOnly = process.argv.includes('--cathedral');
 
-const layouts = [
+const layouts = cathedralOnly ? [
+  ['art-cathedral', { type: 'art', artStyle: 'cathedral', leagues: ['nfl'] }, '#art-main[data-family="cathedral"] .art-bg'],
+] : [
   ['live-board', { type: 'action', game: games[0].game }, '#action-main .field-wrap'],
   ['college-board', { type: 'action', game: games[4].game }, '#action-main .field-wrap'],
   ['multiview', { type: 'multiview', mosaic: 'grid-2x2', leagues: ['nfl'] }, '#multiview-main'],
@@ -116,7 +119,7 @@ try {
     }
     console.log(`Captured ${name}.jpg`);
   }
-  await writeFile(new URL('capture.json', OUT), JSON.stringify({
+  await writeFile(new URL(cathedralOnly ? 'cathedral-capture.json' : 'capture.json', OUT), JSON.stringify({
     capturedAt: new Date().toISOString(),
     displayTimezone: 'America/New_York',
     renderer: 'Current Stadiate web board; Art View shares its theme specification with tvOS.',
