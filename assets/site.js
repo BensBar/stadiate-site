@@ -276,7 +276,7 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   // How long the scoring run takes to cross the field, so it lands on the cue.
   const RUN_MS = 1600;
   const clipSrc = driveBtn?.dataset.clip;
-  const TD_SEC = Number(driveBtn?.dataset.tdAt ?? 14);
+  const TD_SEC = Number(driveBtn?.dataset.tdAt ?? 13);
   const steps = driveList ? [...driveList.children] : [];
   const scoringStep = steps.findIndex((li) => li.dataset.scoring === 'true');
   let driveTimers = [], clipUsable = Boolean(clip && clipSrc), fired = false;

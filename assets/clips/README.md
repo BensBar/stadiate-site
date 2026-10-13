@@ -21,11 +21,11 @@ re-host. **Only drop a file here that you have the right to publish.**
   `assets/shots/drive-capture.json`. This is what the public site does today.
 
 Either way the touchdown fires at the cue in `data-td-at` on `#play-drive`
-(14 seconds), so the room reacts at the right moment.
+(13 seconds, when he crosses the goal line), so the room reacts at the right moment.
 
 ## Requirements
 
-- **The touchdown must happen at 14 seconds**, or change `data-td-at` to match.
+- **The touchdown must happen at 13 seconds**, or change `data-td-at` to match.
 - H.264/AAC MP4, so it plays everywhere without a JS player.
 - 16:9; it is drawn with `object-fit: cover`.
 - Keep it small. It loads only on click (`preload="none"`), but it is still

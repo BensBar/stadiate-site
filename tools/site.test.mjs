@@ -273,7 +273,7 @@ test('the drive shown on the page is the drive that was captured', async () => {
     assert.equal(onPage.at(-1).scoring, true, 'the drive must end on the scoring play');
     assert.match(await page.locator('#art-pic').getAttribute('src'), /drive-board\.jpg$/);
 
-    assert.equal(Number(await page.locator('#play-drive').getAttribute('data-td-at')), 14);
+    assert.equal(Number(await page.locator('#play-drive').getAttribute('data-td-at')), 13);
     // No video ships with the site, so the page must stand on its own.
     assert.equal(await page.locator('#tv-clip').getAttribute('src'), null);
     assert.equal(await page.locator('.r-tv .tko').count(), 0);
