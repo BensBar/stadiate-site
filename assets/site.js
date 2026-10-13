@@ -1,27 +1,27 @@
 const views = {
   action: {
     file: 'live-board', title: 'Feel every down.',
-    description: 'The field. The possession. The play that changes everything. A live game visualization, not a video broadcast.',
+    description: 'Follow every play. Scores, not a broadcast.',
     alt: 'Football Action View rendering New England 29, Buffalo 26, with real final player stats and recent plays from October 4, 2026',
-    platform: 'MAC SERVER · WEB BOARD', name: 'Game view',
+    platform: 'STADIATE HUB · MAC', name: 'Game view',
   },
   multiview: {
     file: 'multiview', title: 'One screen. All your games.',
-    description: 'Keep an eye on the whole slate with team-colored scoreboards. Pick a native multiview on Apple TV or configure each board through the hub.',
+    description: 'Keep the whole slate in sight. Follow several games without choosing just one.',
     alt: 'Four NFL scoreboards showing real final results from October 4, 2026',
-    platform: 'APPLE TV OR MAC SERVER', name: 'Multiview',
+    platform: 'APPLE TV OR HUB ON MAC', name: 'Multiview',
   },
   art: {
     file: 'art-terrace', title: 'The score becomes part of the scene.',
-    description: 'A sunlit terrace, a night café, a painter’s scorebook. Live game data belongs to the painting, not a box on top of it.',
+    description: 'A terrace. A night café. A painter’s scorebook. Your scores belong in the scene.',
     alt: 'Mediterranean terrace with real October 3–4, 2026 final sports scores inscribed into marble and ceramic surfaces',
-    platform: 'APPLE TV OR MAC SERVER', name: 'Art View',
+    platform: 'APPLE TV OR HUB ON MAC', name: 'Art View',
   },
   ticker: {
     file: 'command-ticker', title: 'Let the whole slate roll.',
-    description: 'A continuous procession of team colors, scores, and game clocks. Built for the screen you can’t help glancing at.',
+    description: 'Team colors, scores, and game clocks. Keep the latest in view as the slate rolls by.',
     alt: 'Stadiate ticker with large scrolling team-colored NFL score cards',
-    platform: 'APPLE TV OR MAC SERVER', name: 'Ticker',
+    platform: 'APPLE TV OR HUB ON MAC', name: 'Ticker',
   },
 };
 
@@ -89,6 +89,32 @@ lightbox.addEventListener('click', (event) => {
 });
 lightbox.addEventListener('close', () => lightboxTrigger?.focus());
 
+const shareButton = document.querySelector('#share-site');
+const shareStatus = document.querySelector('#share-status');
+const shareUrl = document.querySelector('link[rel="canonical"]').href;
+if (navigator.share || navigator.clipboard?.writeText) {
+  shareButton.hidden = false;
+  if (!navigator.share) shareButton.textContent = 'Copy site link';
+  shareButton.addEventListener('click', async () => {
+    shareButton.disabled = true;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: 'Stadiate your house.', text: 'Don’t just watch the game. Bring the stadium home.', url: shareUrl });
+        shareStatus.textContent = 'Thanks for sharing Stadiate.';
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+        shareStatus.textContent = 'Link copied. Send it to your game-day crew.';
+      }
+    } catch (error) {
+      shareStatus.textContent = error.name === 'AbortError'
+        ? 'Sharing canceled. The site link is below whenever you’re ready.'
+        : 'Unable to share automatically. Copy the stadiate.com link below to share it.';
+    } finally {
+      shareButton.disabled = false;
+    }
+  });
+}
+
 (() => {
   const T = window.STADIATE_TEAMS;
   if (!T) return;
@@ -153,7 +179,7 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   const sndBtn = $('#snd');
   function setSound(enabled) {
     soundOn = enabled; sndBtn.setAttribute('aria-pressed', soundOn);
-    sndBtn.textContent = soundOn ? '🔊 Sound on' : '🔇 Sound off';
+    sndBtn.textContent = soundOn ? 'Sound on' : 'Sound off';
     clip.muted = !soundOn;
     if (!soundOn && ac) { stopEffects(); ac.suspend(); }
     if (soundOn) audio();
@@ -226,9 +252,9 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
     fg: { word: 'FIELD GOAL', flashes: 4, sound: () => { SND.chime(); crowd(1.8, 0.6); }, confetti: 70, cheer: true,
       cap: t => `<strong>Three points for ${t.n}.</strong> A smaller moment can get a smaller celebration: a quick pulse and a cheer.` },
     win: { word: 'VICTORY', flashes: 16, sound: () => { SND.fanfare(); SND.horn(); crowd(4.2, 1); }, confetti: 360, cheer: true,
-      cap: t => `<strong>${t.n} win!</strong> Full stadium mode: a long light show, the fanfare, and confetti, with the second screen celebrating on the side wall.` },
+      cap: t => `<strong>${t.n} win!</strong> Lights, sound, and the second screen celebrate with you.` },
     rival: { word: 'UGH.', flashes: 0, sound: () => SND.trombone(), confetti: 0, sad: true,
-      cap: t => `<strong>${t.n} scored on you.</strong> Not every score is a party. With custom rules, the room can react to the other team too, like dimming for a moment of silence.` },
+      cap: t => `<strong>${t.n} scored on you.</strong> The room dims. Not every score is a party.` },
   };
   function reset() {
     timers.forEach(clearTimeout); timers = [];
@@ -258,7 +284,8 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
       return;
     }
     later(90, () => chips[1].classList.add('on'));
-    for (let i = 0; i < e.flashes; i++) later(90 + i * 230, () => {
+    if (reduced) room.style.setProperty('--lit', 0.6);
+    for (let i = 0; !reduced && i < e.flashes; i++) later(90 + i * 230, () => {
       const odd = i % 2;
       room.style.setProperty('--c1', odd ? team.c2 : team.c1); room.style.setProperty('--c2', odd ? team.c1 : team.c2);
       room.style.setProperty('--lit', odd ? 0.55 : 1);
@@ -371,8 +398,8 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
       if (id !== playbackId) return;
       driveBtn.removeAttribute('aria-busy');
       if (error.name === 'NotAllowedError' || error.name === 'AbortError') {
-        driveBtn.textContent = '\u25B6 Play with sound';
-        cap.textContent = 'Tap Play with sound below the TV to start.';
+        driveBtn.textContent = '\u25B6 Play the touchdown';
+        cap.textContent = 'Tap Play the touchdown to start with sound.';
       } else {
         console.warn('Demo video could not play; showing play-by-play instead.', error);
         useFeed();
@@ -383,8 +410,8 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   clip.addEventListener('playing', () => {
     if (clip.hidden) return;
     driveBtn.removeAttribute('aria-busy');
-    driveBtn.textContent = '\u21BB Replay with sound';
-    if (!fired) cap.textContent = 'Watch Bijan. The room reacts when he reaches the end zone.';
+    driveBtn.textContent = '\u21BB Replay touchdown';
+    if (!fired) cap.textContent = 'Watch Bijan. The room celebrates his touchdown.';
   });
   clip.addEventListener('timeupdate', () => {
     if (clip.hidden || clip.paused || clip.seeking || !room.classList.contains('playing')) return;
@@ -401,18 +428,19 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   clip.addEventListener('pause', () => {
     if (clip.hidden || clip.ended || !room.classList.contains('playing')) return;
     reset();
-    driveBtn.textContent = '\u25B6 Resume with sound';
+    driveBtn.textContent = '\u25B6 Resume touchdown';
     cap.textContent = 'Paused. Use Resume below the TV to continue.';
   });
   clip.addEventListener('volumechange', () => {
     soundOn = !clip.muted && clip.volume > 0;
     sndBtn.setAttribute('aria-pressed', soundOn);
-    sndBtn.textContent = soundOn ? '🔊 Sound on' : '🔇 Sound off';
+    sndBtn.textContent = soundOn ? 'Sound on' : 'Sound off';
     if (!soundOn) stopEffects();
   });
   function finishDrive() {
     stopDrive();
     reset();
+    driveBtn.textContent = '\u21BB Replay touchdown';
     cap.textContent = 'Replay it to watch the room react again.';
   }
   clip.addEventListener('ended', finishDrive);
@@ -432,7 +460,8 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
   if (stopBtn) stopBtn.onclick = () => {
     stopDrive();
     reset();
-    cap.textContent = 'Stopped. Press Replay with sound to watch again.';
+    driveBtn.textContent = '\u21BB Replay touchdown';
+    cap.textContent = 'Stopped. Press Replay touchdown to watch again.';
   };
 
   function startDrive(withSound = false) {
@@ -442,7 +471,7 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
     setTeam('Atlanta Falcons', 'New Orleans Saints');
     room.classList.add('playing');
     if (stopBtn) stopBtn.hidden = false;
-    driveBtn.textContent = '\u21BB Replay with sound';
+    driveBtn.textContent = '\u21BB Replay touchdown';
     cap.textContent = 'Loading the play on the main TV\u2026';
     fired = false;
     if (withSound) setSound(true);
@@ -471,7 +500,8 @@ lightbox.addEventListener('close', () => lightboxTrigger?.focus());
     if (document.hidden && room.classList.contains('playing')) {
       stopDrive();
       reset();
-      cap.textContent = 'Press Replay with sound to watch again.';
+      driveBtn.textContent = '\u21BB Replay touchdown';
+      cap.textContent = 'Press Replay touchdown to watch again.';
     }
   });
 

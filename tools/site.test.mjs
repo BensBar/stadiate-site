@@ -28,11 +28,12 @@ after(async () => {
 });
 
 test('responsive page has no overflow, missing images, script errors, or broken anchors', async () => {
-  for (const width of [320, 375, 768, 1024, 1440]) {
+  for (const width of [320, 375, 390, 430, 768, 1024, 1440, 1920, 3840]) {
     const page = await newPage({ viewport: { width, height: 900 }, reducedMotion: 'reduce' });
     try {
       const errors = [];
       page.on('pageerror', (error) => errors.push(error.message));
+      page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
       page.on('response', (response) => { if (response.status() >= 400) errors.push(`${response.status()} ${response.url()}`); });
       await page.goto(base);
       await page.evaluate(async () => {
@@ -46,9 +47,10 @@ test('responsive page has no overflow, missing images, script errors, or broken 
         links.filter((link) => !document.getElementById(link.hash.slice(1))).map((link) => link.hash)), []);
       assert.deepEqual(errors, [], `Browser errors at ${width}px`);
       assert.equal(await page.locator('#comparison tbody tr').count(), 12);
-      assert.match(await page.locator('#fantasy').textContent(), /Mac server feature/);
+      assert.match(await page.locator('#fantasy').textContent(), /Stadiate Hub feature · Mac required/);
       assert.match(await page.locator('#fantasy').textContent(), /EXPERIMENTAL/);
-      assert.match(await page.locator('#how').textContent(), /Three steps/);
+      assert.equal(await page.locator('#how .step').count(), 3);
+      assert.doesNotMatch(await page.locator('main').textContent(), /Mac server/i);
       assert.equal(await page.locator('#teams .tile').count() >= 32, true);
     } finally {
       await page.close();
@@ -60,19 +62,24 @@ test('all board and art selectors update screenshots, copy, and full-screen link
   const page = await newPage();
   try {
     await page.goto(base);
-    await page.locator('#board-previews > summary').click();
+    assert.equal(await page.locator('#board-expand').isVisible(), true, 'board previews are discoverable without opening a disclosure');
+    assert.equal(await page.locator('#art-expand').isVisible(), true, 'a real Art View is visible on the default path');
     for (const [key, file] of [['action', 'live-board'], ['multiview', 'multiview'], ['art', 'art-terrace'], ['ticker', 'command-ticker']]) {
       await page.locator(`[data-view="${key}"]`).click();
       assert.equal(await page.locator('[data-view][aria-pressed="true"]').count(), 1);
       assert.ok((await page.locator('#board-image').getAttribute('src')).endsWith(`${file}.jpg`));
       assert.ok((await page.locator('#board-expand').getAttribute('href')).endsWith(`${file}.jpg`));
       await page.locator('#board-image').evaluate((image) => image.decode());
+      await page.locator('#board-expand').click();
+      assert.equal(await page.locator('#lightbox').evaluate((dialog) => dialog.open), true);
+      assert.ok((await page.locator('#lightbox-image').getAttribute('src')).endsWith(`${file}.jpg`));
+      await page.keyboard.press('Escape');
     }
     await page.locator('#art-previews > summary').click();
     const scenes = ['terrace', 'nocturne', 'italian', 'cathedral'];
     const titles = ['The Terrace', 'Let’s Van Gogh!', 'The Game-Day Journal', 'Cathedral of the Gridiron'];
     assert.deepEqual(await page.locator('[data-art]').evaluateAll((buttons) => buttons.map(button => button.dataset.art)), scenes);
-    assert.match(await page.locator('#art .section-intro').textContent(), /12 more themes/);
+    assert.match(await page.locator('#art-previews .section-intro').textContent(), /12 more themes/);
     for (const [index, key] of scenes.entries()) {
       await page.locator(`[data-art="${key}"]`).click();
       assert.equal(await page.locator('[data-art][aria-pressed="true"]').count(), 1);
@@ -92,6 +99,7 @@ test('all board and art selectors update screenshots, copy, and full-screen link
     await page.locator('#board-expand').click();
     await page.getByRole('button', { name: 'Close full-screen image' }).click();
     assert.equal(await page.locator('#lightbox').evaluate((dialog) => dialog.open), false);
+    await page.locator('.capture-details summary').click();
     await page.locator('.college-preview').click();
     assert.match(await page.locator('#lightbox-image').getAttribute('src'), /college-board.jpg$/);
     assert.match(await page.locator('#lightbox-caption').textContent(), /Georgia 38, Vanderbilt 14/);
@@ -102,8 +110,8 @@ test('all board and art selectors update screenshots, copy, and full-screen link
 });
 
 test('the compact page keeps detail optional and uses slow red and silver accents', async () => {
-  // Before this simplification: 8,411px on mobile and 7,011px on desktop.
-  for (const [width, maxHeight] of [[375, 4300], [1440, 3500]]) {
+  // Keep visible scoreboards and Art View without restoring the old 8,411px mobile page.
+  for (const [width, maxHeight] of [[375, 5200], [1440, 4600]]) {
     const page = await newPage({ viewport: { width, height: 900 }, reducedMotion: 'no-preference' });
     try {
       await page.goto(base);
@@ -112,9 +120,9 @@ test('the compact page keeps detail optional and uses slow red and silver accent
         `Keep the main reading path short at ${width}px`);
       assert.ok(await page.locator('main').evaluate((element) => element.innerText.trim().split(/\s+/).length) < 350,
         'The default page should explain the product in fewer than 350 words');
-      assert.match(await page.locator('.platform-line').innerText(), /Apple TV app.*Mac-powered browser boards/);
-      assert.match(await page.locator('.server-card').innerText(), /compatible web browser.*No Apple TV needed/s);
-      for (const selector of ['.demo-details', '#board-previews', '#art-previews', '#teams details', '#comparison']) {
+      assert.match(await page.locator('.setup-card').first().innerText(), /No Mac required/);
+      assert.match(await page.locator('.server-card').innerText(), /Requires a Mac.*compatible devices.*No Apple TV needed/s);
+      for (const selector of ['.demo-details', '.capture-details', '#art-previews', '#teams details', '#comparison']) {
         const details = page.locator(selector);
         assert.equal(await details.evaluate((element) => element.open), false);
         await details.locator('summary').focus();
@@ -126,6 +134,8 @@ test('the compact page keeps detail optional and uses slow red and silver accent
       assert.equal(await page.locator('#gallery .tile').first().isVisible(), true);
       assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth),
         `Expanded details must not overflow at ${width}px`);
+      assert.ok(await page.locator('.table-scroll').evaluate(element => element.scrollWidth <= element.clientWidth),
+        'The comparison should fit without sideways scrolling');
       const accents = await page.locator('.jewel, .hero-texture, .button-primary').evaluateAll((elements) =>
         elements.map((element) => {
           const style = getComputedStyle(element);
@@ -182,6 +192,10 @@ test('room demo is local-only, repeatable, and resets; FAQ uses native disclosur
     await page.locator('#celebrate-button').click();
     await page.clock.fastForward(600);
     assert.equal(await on(), true);
+    const colors = () => room.evaluate(element => ['--c1', '--c2', '--lit'].map(name => element.style.getPropertyValue(name)));
+    const steady = await colors();
+    await page.clock.fastForward(1000);
+    assert.deepEqual(await colors(), steady, 'reduced motion must not alternate room colors');
     assert.equal(await page.locator('.r-art #tko-img').count(), 1);
     assert.equal(await page.locator('.r-tv .tko').count(), 0);
     assert.match(await page.locator('#demo-status').textContent(), /second screen/);
@@ -221,8 +235,8 @@ test('link previews use a real game board, not stained-glass art', async () => {
   }
 });
 
-test('the hero opens on the TV demo with unobstructed controls in the first phone viewport', async () => {
-  for (const [width, height] of [[320, 568], [390, 664]]) {
+test('the headline and demo controls are visible on phones, desktop, and TV', async () => {
+  for (const [width, height] of [[320, 568], [375, 667], [390, 664], [430, 932], [768, 1024], [1440, 900], [3840, 2160]]) {
     const page = await newPage({ viewport: { width, height }, reducedMotion: 'reduce' });
     try {
       await page.goto(base);
@@ -233,10 +247,14 @@ test('the hero opens on the TV demo with unobstructed controls in the first phon
       assert.equal(await page.locator('.r-tv button, .r-tv video[controls]').count(), 0);
       const roomBounds = await page.locator('#room-scene').boundingBox();
       assert.ok(roomBounds.y > 0 && roomBounds.y + roomBounds.height < height);
+      const headline = await page.locator('h1').boundingBox();
+      assert.ok(headline.y >= 60 && headline.y + headline.height < height, `Headline is visible at ${width}px`);
+      assert.match(await page.locator('h1').innerText(), /Don’t just watch the game\.\s*Stadiate your house\./);
       for (const selector of ['#play-drive', '#snd']) {
         const bounds = await page.locator(selector).boundingBox();
         assert.ok(bounds.y >= roomBounds.y + roomBounds.height, `${selector} must be below the TV`);
         assert.ok(bounds.y + bounds.height < height, `${selector} must be visible without scrolling at ${width}px`);
+        assert.ok(bounds.height >= 44, `${selector} must be a comfortable touch target`);
       }
       const order = await page.evaluate(() => [...document.querySelectorAll('main > section')].map((section) => section.id));
       assert.ok(order.indexOf('top') < order.indexOf('how'));
@@ -311,10 +329,13 @@ test('content and privacy remain accessible without JavaScript', async () => {
     await page.keyboard.press('Enter');
     assert.equal(await page.locator('#drive-list').isVisible(), true);
     for (const id of ['board', 'art']) {
-      await page.locator(`#${id}-previews > summary`).focus();
-      await page.keyboard.press('Enter');
       assert.equal(await page.locator(`#${id}-expand`).isVisible(), true);
     }
+    assert.equal(await page.locator('.view-picker').isVisible(), false);
+    assert.equal(await page.locator('#share-site').isVisible(), false);
+    assert.equal(await page.locator('.save-link a').isVisible(), true);
+    await page.locator('#art-previews > summary').click();
+    assert.equal(await page.locator('#art-previews .no-script a').count(), 3);
     assert.equal(await page.locator('.no-script').first().isVisible(), true);
     await page.locator('a[href="privacy.html"]').last().click();
     assert.equal(await page.locator('h1').textContent(), 'Privacy Policy');
@@ -404,7 +425,7 @@ test('the video autoplays muted, scores from media time, and replays with sound'
     await page.waitForTimeout(300);
     assert.notDeepEqual(await clip.screenshot(), firstFrame, 'the main TV must actually play video');
     assert.equal(await on(), false, 'the room must stay quiet before the cue');
-    assert.match(await page.locator('#play-drive').textContent(), /Replay with sound/);
+    assert.match(await page.locator('#play-drive').textContent(), /Replay touchdown/);
     assert.equal(await page.locator('#snd').getAttribute('aria-pressed'), 'false', 'autoplay must start without sound');
     assert.equal(await page.locator('#team').isVisible(), false, 'extra choices stay out of the primary playback controls');
     assert.equal(await page.locator('#tv-drive').isVisible(), false);
@@ -586,6 +607,89 @@ test('the recorded Falcons horn and all video and audio end 4.5 seconds after th
       const video = document.querySelector('#tv-clip');
       return !video.hidden && !video.paused && video.currentTime > 0 && video.currentTime < 2;
     });
+  } finally {
+    await page.close();
+  }
+});
+
+test('sharing uses the public URL and reports success, cancellation, or failure honestly', async () => {
+  for (const outcome of ['shared', 'canceled', 'failed', 'copy-failed', 'unavailable']) {
+    const page = await newPage({ reducedMotion: 'reduce' });
+    try {
+      await page.addInitScript((outcome) => {
+        Object.defineProperty(navigator, 'share', { configurable: true, value:
+          ['copy-failed', 'unavailable'].includes(outcome) ? undefined : async (data) => {
+            window.sharedData = data;
+            if (outcome === 'canceled') throw new DOMException('Canceled', 'AbortError');
+            if (outcome === 'failed') throw new DOMException('Denied', 'NotAllowedError');
+          },
+        });
+        Object.defineProperty(navigator, 'clipboard', { configurable: true, value:
+          outcome === 'copy-failed' ? { writeText: async () => { throw new DOMException('Denied', 'NotAllowedError'); } } : undefined,
+        });
+      }, outcome);
+      await page.goto(base);
+      const button = page.locator('#share-site');
+      if (outcome === 'unavailable') {
+        assert.equal(await button.isVisible(), false);
+        assert.equal(await page.locator('.save-link a').getAttribute('href'), 'https://stadiate.com/');
+      } else {
+        await button.click();
+        if (outcome === 'shared') {
+          assert.equal(await page.evaluate(() => window.sharedData.url), 'https://stadiate.com/');
+          assert.match(await page.locator('#share-status').innerText(), /Thanks for sharing/);
+        } else {
+          assert.match(await page.locator('#share-status').innerText(), outcome === 'canceled' ? /Sharing canceled/ : /Unable to share automatically/);
+          assert.doesNotMatch(await page.locator('#share-status').innerText(), /copied|Thanks for sharing/);
+        }
+        assert.equal(await button.isDisabled(), false);
+      }
+    } finally {
+      await page.close();
+    }
+  }
+  const page = await newPage({ reducedMotion: 'reduce' });
+  try {
+    await page.addInitScript(() => Object.defineProperty(navigator, 'share', { value: undefined }));
+    await page.context().grantPermissions(['clipboard-read', 'clipboard-write']);
+    await page.goto(base);
+    await page.getByRole('button', { name: 'Copy site link' }).click();
+    assert.equal(await page.evaluate(() => navigator.clipboard.readText()), 'https://stadiate.com/');
+    assert.match(await page.locator('#share-status').innerText(), /Link copied/);
+  } finally {
+    await page.close();
+  }
+});
+
+test('launch metadata and local links describe a truthful, working preview', async () => {
+  const page = await newPage({ reducedMotion: 'reduce' });
+  try {
+    await page.goto(base);
+    assert.match(await page.title(), /Stadiate Your House/);
+    for (const selector of ['meta[name="description"]', 'meta[property="og:description"]', 'meta[name="twitter:description"]']) {
+      assert.match(await page.locator(selector).getAttribute('content'), /Mac/);
+    }
+    assert.match(await page.locator('#start').innerText(), /COMING SOON.*Private beta/s);
+    assert.equal(await page.locator('form').count(), 0, 'do not imply a working early-access signup');
+    assert.equal(await page.locator('link[rel="preload"][as="image"]').getAttribute('href'), 'assets/clips/falcons-saints-poster.jpg');
+    const paths = await page.locator('a[href]').evaluateAll(links => [...new Set(links
+      .filter(link => link.origin === location.origin && !link.hash)
+      .map(link => new URL(link.href).pathname))]);
+    for (const path of paths) {
+      assert.equal((await page.request.get(base + path)).status(), 200, `Working local link: ${path}`);
+    }
+    for (const width of [320, 375, 390, 430, 768, 1440]) {
+      await page.setViewportSize({ width, height: 900 });
+      await page.locator('#comparison').evaluate(element => { element.open = true; });
+      assert.ok(await page.locator('.table-scroll').evaluate(element => element.scrollWidth <= element.clientWidth),
+        `Comparison fits at ${width}px`);
+      await page.locator('#art-expand').click();
+      const dialog = await page.locator('#lightbox').boundingBox();
+      assert.ok(Math.abs((dialog.x + dialog.width / 2) - width / 2) < 2, `Lightbox centered at ${width}px`);
+      await page.locator('.nav-cta').evaluate(element => element.focus());
+      assert.equal(await page.locator('#lightbox').evaluate(element => element.contains(document.activeElement)), true);
+      await page.keyboard.press('Escape');
+    }
   } finally {
     await page.close();
   }

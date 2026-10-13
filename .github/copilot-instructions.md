@@ -144,9 +144,12 @@ room effects. Scores, names, clocks, and stats are never invented.
 
 - Vanilla JS, no framework, no browser modules (`site.js` is a plain deferred script).
   `tools/*.mjs` is ESM Node and is the only exception.
-- Page order deliberately leads with sports: hero room demo → three numbered steps
-  → optional scoreboard/Art View/team galleries → two setup choices → brief FAQ.
-  Art is atmosphere, not the pitch; keep it after the sports sections. For the same
+- Lead with “Don’t just watch the game. Stadiate your house.” Make the touchdown
+  demo the primary action and make one-screen starting requirements clear.
+  Page order leads with sports: hero room demo → three numbered steps
+  → visible scoreboard and Art View previews → optional team gallery
+  → two setup choices → brief FAQ → truthful launch/share action.
+  Art View is a product differentiator; keep it after the sports sections. For the same
   reason the hero's first visual is the Bijan touchdown on the demo's main TV.
   The New England–Buffalo capture stays in the scoreboard gallery and share card.
   Page chrome uses red, black, silver, and white, with subtle textures
@@ -156,8 +159,8 @@ room effects. Scores, names, clocks, and stats are never invented.
 - Lead with live scores and room celebrations, not Apple TV alone. Offer the
   standalone Apple TV app and Mac-powered boards on compatible browser screens
   as two entry points. Do not promise every browser or other native TV apps.
-- Keep the default reading path under 350 words. Galleries, the full comparison
-  (including fantasy), and demo provenance/play-by-play use native `details`,
+- Keep the default reading path under 350 words. Additional gallery scenes, the
+  full comparison (including fantasy), and demo provenance/play-by-play use native `details`,
   closed by default and accessible without JavaScript. Avoid repeating lists.
 - Gallery tiles, timeline chips, and the team `<select>` are built in JS
   from `STADIATE_TEAMS` — don't hardcode team markup in `index.html`.
@@ -170,7 +173,8 @@ room effects. Scores, names, clocks, and stats are never invented.
   before `</body>`, and `privacy.html`'s "This website" section must stay accurate.
   A test counts occurrences and asserts zero cookies are set.
 - Copy is plain-English and second-person. Keep claims honest and test-checked:
-  Apple TV is standalone-first; the Mac server is what adds lights, sounds, coordinated
+  Use “Stadiate Hub” for the optional Mac software in consumer copy, not “Mac server.”
+  Apple TV is standalone-first; Hub on Mac is what adds lights, sounds, coordinated
   boards, capture, and fantasy; fantasy celebrates player scoring events, not point
   totals, and CBS stays labeled EXPERIMENTAL; Stadiate does not stream games or overlay
   other tvOS apps. Preserve the coming-soon release status and never invent store URLs
