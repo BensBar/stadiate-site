@@ -104,6 +104,8 @@ The additional Cathedral preview uses `npm run screenshots:cathedral` and
 
 The main TV plays H.264/AAC video from `data-clip`, with original game audio
 and Stadiate's actual `falcons-thunder.mp3` mixed into the same track at 13s.
+Keep game audio at full volume through 14.5s, with the horn at 10% underneath.
+Crossfade over the next 0.5s to full horn and 25% game audio, after the full call.
 Muted inline autoplay is attempted when it enters view; a direct Play with sound
 tap starts/unmutes it, including when iPhone blocks autoplay. Reduced motion
 waits for that tap. Use media `currentTime` for the `data-td-at` cue (13s), not

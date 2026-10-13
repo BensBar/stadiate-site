@@ -143,7 +143,9 @@ The preview server supports `video/mp4` and byte-range requests.
 Replay restarts the clip; Stop or hiding the page stops it. The touchdown fires
 from media playback time at `data-td-at` (13 seconds), so buffering or pausing
 cannot run the celebration early. The actual Falcons horn is mixed into the
-same AAC track at 13 seconds, with game audio lowered beneath it. The video
+same AAC track at 13 seconds, quietly underneath the announcer's full-volume
+touchdown call. Between 14.5 and 15 seconds, the horn rises smoothly while game
+audio lowers to 25%; never cut the announcer off mid-word. The video
 and all audio end at 17.5 seconds, after 4.5 seconds of horn; the `ended` handler
 also cancels room effects. Do not layer a synthesized horn over this recording.
 

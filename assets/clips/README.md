@@ -12,7 +12,7 @@ MP4 remains git-ignored. Reproduce the 640 x 360 H.264/AAC MP4 with
 
 ```bash
 ffmpeg -i assets/clips/falcons-saints-td.mp4 -i "$FALCONS_HORN" \
-  -filter_complex "[0:v]scale=640:-2:flags=lanczos,fps=30[v];[0:a]atrim=duration=17.5,volume='if(gte(t,13),0.25,1)':eval=frame[game];[1:a]atrim=duration=4.5,asetpts=PTS-STARTPTS,afade=t=out:st=4.35:d=0.15,adelay=13000|13000[horn];[game][horn]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95:level=false:latency=true,afade=t=out:st=17.35:d=0.15[a]" \
+  -filter_complex "[0:v]scale=640:-2:flags=lanczos,fps=30[v];[0:a]atrim=duration=17.5,volume='if(gte(t,14.5),max(0.25,1-1.5*(t-14.5)),1)':eval=frame[game];[1:a]atrim=duration=4.5,asetpts=PTS-STARTPTS,volume='if(gte(t,1.5),min(1,0.1+1.8*(t-1.5)),0.1)':eval=frame,afade=t=out:st=4.35:d=0.15,adelay=13000|13000[horn];[game][horn]amix=inputs=2:duration=first:normalize=0,alimiter=limit=0.95:level=false:latency=true,afade=t=out:st=17.35:d=0.15[a]" \
   -map '[v]' -map '[a]' -t 17.5 \
   -c:v libx264 -profile:v main -pix_fmt yuv420p -crf 25 -preset medium \
   -c:a aac -b:a 128k -movflags +faststart assets/clips/bijan-touchdown.mp4
@@ -27,7 +27,10 @@ below the TV. No controls cover the footage. The local server must serve
 The touchdown follows `currentTime` at the 13-second cue, not a wall timer.
 Pausing or buffering cannot trigger the room early. Stop and page hiding cancel
 playback and room effects. The first 4.5 seconds of `falcons-thunder.mp3` are
-mixed into the AAC track at 13 seconds, with game audio lowered underneath.
+mixed into the AAC track at 13 seconds. Keep the announcer at full volume
+through 14.5 seconds so his complete touchdown call stays audible; the train
+starts underneath at 10% volume. From 14.5 to 15 seconds, smoothly raise the
+train to full volume while lowering game audio to 25%.
 Both video and audio end at 17.5 seconds, and the final 150 ms fade out.
 Using one media clock keeps the horn synchronized through buffering, pausing,
 muting, and replay. The demo does not add a synthesized horn over this track.
