@@ -250,6 +250,13 @@ test('the hero opens on the TV demo with unobstructed controls in the first phon
   }
 });
 
+test('the optional art catalog is schema version 1 with no published packs', async () => {
+  const content = await readFile(new URL('../art-packs/catalog.json', import.meta.url), 'utf8');
+  const expected = { schemaVersion: 1, packs: [] };
+  assert.deepEqual(JSON.parse(content), expected);
+  assert.equal(content, `${JSON.stringify(expected, null, 2)}\n`);
+});
+
 test('capture provenance identifies real finals and matches every full-size screenshot', async () => {
   for (const file of ['capture.json', 'cathedral-capture.json']) {
     const manifest = JSON.parse(await readFile(new URL(`../assets/shots/${file}`, import.meta.url), 'utf8'));
