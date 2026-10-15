@@ -1,6 +1,6 @@
 # stadiate-site
 
-Marketing site for **Stadiate** — _any room can be your stadium._
+Marketing site for **Stadiate** — _Don’t just watch the game. Stadiate your house._
 
 Static site (no build step): `index.html` + `privacy.html` + `assets/`.
 The homepage uses self-hosted CSS, JavaScript, fonts, and product captures.
@@ -23,23 +23,36 @@ npm test
 
 Tests use the existing Playwright dependency with an ephemeral local server.
 If Chromium isn't installed, run `npx playwright install chromium`.
-They cover 320–1440px layouts, image loading, anchor targets, all gallery
+They cover 320–3840px layouts, image loading, anchor targets, all gallery
 choices, keyboard/lightbox behavior, the local-only celebration preview,
 FAQ disclosure, and the no-JavaScript/privacy path.
 
 The landing page keeps its default reading path under 350 words: the idea,
-a hero room demo, three steps, and two ways to start. Scoreboard/Art View galleries,
-the feature comparison (including fantasy), team collection, and demo details
-use native `details` disclosures, accessible without JavaScript.
+a hero room demo, three steps, discoverable screens, and two ways to start.
+The scoreboard picker and a real Art View preview are visible by default.
+More Art View scenes, college football, screenshot sources, the comparison
+(including fantasy), team collection, and demo details use native `details`,
+accessible without JavaScript.
+Gallery labels describe screenshot previews and full-screen images, not interactive product demos.
 Position Stadiate as live scores and room celebrations, not an Apple TV-only
-product: Apple TV runs standalone; the Mac app also serves boards to compatible
+product: Apple TV runs standalone; **Stadiate Hub** is the optional Mac software
+that adds compatible lights, sound, and connected screens. Use that name in
+consumer copy, not “Mac server.” The Mac app also serves boards to compatible
 web browsers without an Apple TV. Do not promise every smart-TV browser or
 invent native apps for other platforms.
 Black textured surfaces, red controls, and silver/white accents frame the content.
 Red-to-silver gradients move slowly (28–32 seconds), without rainbow hues;
 reduced motion disables that movement. Team colors stay inside product previews.
-Layout tests cap the default page at 4,300px on a 375px-wide phone and 3,500px
-at 1440px desktop width, with optional details closed.
+Layout tests cap the default page at 5,200px on a 375px-wide phone and 4,600px
+at 1440px desktop width, including the newly visible product previews.
+The headline and playback controls must fit the first viewport, including
+320×568 phones. Larger screens use a wider, scaled layout, not a tiny centered site.
+
+The launch CTA uses the native share sheet when available, otherwise copies the
+canonical public URL using the Clipboard API. Cancellation and permission failures
+are reported without claiming success. A visible site link remains usable without
+JavaScript or either API. There is no signup backend, public beta invitation,
+App Store listing, or public installer; do not invent those destinations.
 
 ## Deploy (GitHub Pages)
 
@@ -136,7 +149,7 @@ poster and the earlier silent GIF conversion are also retained.
 See `assets/clips/README.md` for conversion commands.
 
 The video attempts muted inline playback when the TV enters view. A direct
-"Play with sound" tap starts or unmutes it in the user gesture, which iPhone
+"Play the touchdown" tap starts or unmutes it in the user gesture, which iPhone
 Safari requires. Blocked autoplay presents the same tap control, not an error
 fallback. All playback/sound controls sit below the room, not over the TV.
 The preview server supports `video/mp4` and byte-range requests.
@@ -150,7 +163,9 @@ and all audio end at 17.5 seconds, after 4.5 seconds of horn; the `ended` handle
 also cancels room effects. Do not layer a synthesized horn over this recording.
 
 Reduced-motion visitors see the still frame until they explicitly press Play;
-that click plays the video with audio. Failed media loads use verified play-by-play:
+that click plays the video with audio. Celebrations use steady lighting rather
+than alternating colors, with transitions and decorative motion disabled.
+Failed media loads use verified play-by-play:
 the ball travels to each play's `data-yd` yard line, taken from the capture's
 `endYardsToEndzone`, and reaches the end zone on the cue. Without JavaScript,
 visitors can read the drive and open the MP4 directly. Keep the demo fine print
